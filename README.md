@@ -6,7 +6,7 @@ Introduces SpecMaster, a complete and ready-to-use python library for the applic
 ## Table of contents
 * [General info](#general-info)
 * [Setup](#Setup)
-* [Usage](#Usage)
+* [Features](#Features)
   * [Spectrum Visualization](#Spectrum-Visualization)
   * [Database Splitting](#Database-Splitting)
   * [Data Augmentation](#Data-Augmentation)
@@ -47,7 +47,7 @@ Listed below are the main modules needed to operate the codes:
 * Tensor flow (GPU or CPU)
 
 
-## Usage
+## Features
 
 ### Getting Started 
 
