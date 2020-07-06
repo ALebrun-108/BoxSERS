@@ -75,12 +75,10 @@ Two functions allows to visualize the spectra as graphs
 ```python
 from specmaster import spectro_plot, random_plot
 
-# plots 4 randomly selected spectra
-random_plot(Wn, x, random_spectra=4)
-
-spectro_plot(Wn, Spec[0])  # plots the first spectrum in Spec
-spectro_plot(Wn, Spec[0], spec[2]) # plots first and third spectra in Spec
-spectro_plot(Wn, Spectra)  # plots all spectra in Spec 
+random_plot(wn, spec, random_spectra=4)  # plots 4 randomly selected spectra
+spectro_plot(wn, spec[0])  # plots the first spectrum
+spectro_plot(wn, spec[0], spec[2]) # plots first and third spectra
+spectro_plot(wn, spec)  # plots all spectra
 ```
 
 ### Database Splitting
