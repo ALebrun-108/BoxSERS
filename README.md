@@ -25,7 +25,7 @@ Listed below are the main modules needed to operate the codes:
 * Tensor flow (GPU or CPU)
 
 
-## Usage
+## Usage / Description 
 
 SpecMaster package is ready to use and efficient and covers methods for data augmentation, spectral correction, dimensional reduction and data visualization. Some machine training models that offer several options are also included
 
@@ -36,21 +36,27 @@ This repository main components are the modules **Models.py** and **Function_Rep
 
 **Important:** This project doesn't cover database conception and requires user to have completed this step before using this project. As an indication, the rows of the database must correspond to the different spectra and the columns to the different Raman shift. The column(s) with the labels must be appended to the left of the database.
 
-
+### Spectrum Visualization
 
 ### Database Splitting
 * Generation of the training, validation and test sets
 * Visualization feature to check the distribution of the different classes in each newly generated set.
 
-### Data Augmentation
+```bash
+pip install specmaster
+```
+
+### Spectral Data Augmentation
 * Spectra mixeup: linear combination of two or three spectra 
 * Simple data augmentation methods: Noise addition, offset , multiplicative factor
 * Visualization feature to check the results of different data augmentation methods
-### Spectra Correction
+
+### Spectral Data Correction
 * Savitsy-Golay Smoothing
 * ALS baseline correction 
 * Data cut 
-### PCA validation
+
+### Dimensional reduction
 * Principal component analysis visualization 
 
 ## Machine Learning Models 
