@@ -62,10 +62,13 @@ spectra = data.to_numpy(dtype='float64')[0:, 1:]
 ```
 
 ### Spectrum Visualization
-* allo
-  * random_plot: Returns a graph of randomly selected spectra.
-  * spectro_plot: Returns a graph of the selected spectrum(s).
-* djdj
+
+The package includes two functions that allow you to visualize the spectra in graphical form 
+
+* random_plot: Returns a graph of a certain number of randomly selected spectra.
+ * random_spectra: number of spectra that are randomly selected
+* spectro_plot: Returns a graph of one or more selected spectra.
+
 
 ```python
 from specmaster import spectro_plot, random_plot
