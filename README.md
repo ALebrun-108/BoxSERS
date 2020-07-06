@@ -86,10 +86,10 @@ Splitting the database spectra into subsets validated by distribution plot.
 ```python
 from specmaster import data_split, distribution_plot
 
-# Separates the database spectra into test(database fraction = 0.4)and training(database fraction = 0.6) subsets
+# Separates the database spectra into test(0.4) and training(0.6) subsets.
 (x_train, x_test, y_train, y_test) = data_split(spectra, lab_enc, b_size=0.4)
 
-# plots the classes distribution within the training set
+# plots the classes distribution within the training set.
 distribution_plot(y_train, title='Train set distribution', class_names=classnames)
 ```
 
