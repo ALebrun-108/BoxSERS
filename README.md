@@ -58,8 +58,8 @@ spectra = data.to_numpy(dtype='float64')[0:, 1:]
 ```python
 from specmaster import spectro_plot, random_plot
 
-random_plot(Wn, spectra, title='Graph using spectra selected randomly', random_spectra=4)
-spectro_plot(Wn, spectra[0], spectra[670], title='Graph using spectra selected directly')
+random_plot(Wn, spectra, random_spectra=4)
+spectro_plot(Wn, spectra[0], spectra[2])
 ```
 
 ### Database Splitting
