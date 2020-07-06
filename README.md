@@ -66,15 +66,15 @@ spectra = data.to_numpy(dtype='float64')[0:, 1:]
 The package includes two functions that allow you to visualize the spectra in graphical form 
 
 - **random_plot**: Returns a graph of a certain number of randomly selected spectra.
-    * random_spectra: number of spectra that are randomly selected
-    * dsdsd
 - **spectro_plot**: Returns a graph of one or more selected spectra.
-
 
 ```python
 from specmaster import spectro_plot, random_plot
 
+# plot of 4 randomly selected spectra
 random_plot(Wn, spectra, random_spectra=4)
+
+# plot of the first(index=0) and third spectra(index=2) of the spectral database.
 spectro_plot(Wn, spectra[0], spectra[2])
 ```
 
