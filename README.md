@@ -100,13 +100,14 @@ distribution_plot(y_train, title='Train set distribution', class_names=classname
 * Principal component analysis visualization
 
 ```python
-pca_m = SpectroICA(n_comp=50)
-pca_m.fit_model(x_train_sc)
-#pca_m.explained_var_plot()
-pca_m.scatter_plot(x_test_sc, y_test, targets=classnames, comp_x=1, comp_y=2)
-pca_m.pca_component(Wn, 2)
-pcax= pca_m.transform_spectra(x_train_sc)
-pcaxx= pca_m.transform_spectra(x_test_sc)
+from specmaster.pca_model import SpectroPCA, SpectroFA, SpectroICA
+
+pca_model = SpectroICA(n_comp=50)
+pca_model.fit_model(x_train)
+pca_model.scatter_plot(x_test, y_test, targets=classnames, comp_x=1, comp_y=2)
+pca_model.pca_component(Wn, 2)
+x_pca = pca_model.transform_spectra(x_train)
+
 ```
 
 ### Unsupervised Machine Learning Models 
