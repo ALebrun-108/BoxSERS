@@ -51,31 +51,22 @@ distribution_plot(y_train, title='Train set distribution', class_names=classname
 Parameters:
   * spec, lab = input spectra and labels
   * b_size = split fraction 
- 
-/
-/
-\n
-/n
+
+
 
 ### Database Splitting
-* data_split: Generation of the training, validation and test sets
-* distribution_plot: plot distribution of the different classes in a selected set.
+
+- **data_split**: Generation of the training, validation and test sets.
+- **distribution_plot**: plot distribution of the different classes in a selected set.
 
 ```python
 from specmaster import data_split, distribution_plot
 
 (x_train, x_int, y_train, y_int) = data_split(spectra, lab_enc, b_size=0.4, rdm_ste=3, report_enabled=False)
-```
-Parameters:
-  * spec, lab = input spectra and labels
-  * b_size = split fraction 
 
-```python
 distribution_plot(y_train, title='Train set distribution', class_names=classnames)
 ```
-Parameters:
-  * spec, lab = input spectra and labels
-  * b_size = split fraction 
+
 
 ### Spectral Data Augmentation
 * Spectra mixeup: linear combination of two or three spectra 
