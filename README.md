@@ -7,8 +7,10 @@ Introduces SpecMaster, a complete and ready-to-use python library for the applic
 * [General info](#general-info)
 * [Setup](#Setup)
 * [Usage](#Usage)
-  * [Database Splitting](#Database-Splitting)
   * [Spectrum Visualization](#Spectrum-Visualization)
+  * [Database Splitting](#Database-Splitting)
+  * [Data Augmentation](#Data-Augmentation)
+  * [Spectral Correction](#Spectral-Correction)
   
 * [License](#License)
 
@@ -89,7 +91,7 @@ from.specmaster.useful_features import data_split, distribution_plot
 distribution_plot(lab_train, title='Train set distribution')
 ```
 
-### Spectral Data Augmentation
+### Data Augmentation
 * Spectra mixeup: linear combination of two or three spectra 
 * Simple data augmentation methods: Noise addition, offset , multiplicative factor
 * Visualization feature to check the results of different data augmentation methods
@@ -112,7 +114,7 @@ data_aug_pipeline.aug_mixup(n_spec=2, alpha=0.40, iterations=2)
 spec_aug, lab_aug = data_aug_pipeline.out()
 ```
 
-### Spectral Data Correction
+### Spectral Correction
 * Savitsy-Golay Smoothing
 * ALS baseline correction 
 * Data cut 
