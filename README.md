@@ -79,8 +79,8 @@ Splitting the database spectra into subsets validated by distribution plot.
 ```python
 from.specmaster.useful_features import data_split, distribution_plot
 
-# randomly splits the spectra(spec) and the labels(lab) into test and training subsets. proportion train|test = 0.6|0.4
-(spec_train, spec_test, lab_train, lab_test) = data_split(spec, lab, b_size=0.4)
+# randomly splits the spectra(spec) and the labels(lab) into test and training subsets.
+(spec_train, spec_test, lab_train, lab_test) = data_split(spec, lab, test_size=0.4)  # train|test proportions = 0.6|0.4
 
 # plots the classes distribution within the training set.
 distribution_plot(lab_train, title='Train set distribution')
