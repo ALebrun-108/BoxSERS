@@ -27,13 +27,12 @@ Listed below are the main modules needed to operate the codes:
 
 ## Usage / Description 
 
-SpecMaster package is ready to use and efficient and covers methods for data augmentation, spectral correction, dimensional reduction and data visualization. Some machine training models that offer several options are also included
 
 ### Getting Started 
 
-This repository main components are the modules **Models.py** and **Function_Repository.py** that contain all the features needed to efficiently use machine learning with SERS. It is strongly suggested to start with the Jupyter notebook script which presents the complete procedure and describes each step in detail while adding information to make it easier to understand.  
+SpecMaster package covers methods for data augmentation, spectral correction, dimensional reduction and data visualization. Ready-to-use supervised and unsupervised machine learning models with several options are also included in this package. It is strongly suggested to start with the two Jupyter notebook script which presents the complete procedure and describes each step in detail while adding information to make it easier to understand.  
 
-**Important:** This project doesn't cover database conception and requires user to have completed this step before using this project. As an indication, the rows of the database must correspond to the different spectra and the columns to the different Raman shift. The column(s) with the labels must be appended to the left of the database.
+- **Important:** This project doesn't cover database conception and requires user to have completed this step before using this project. As an indication, the rows of the database must correspond to the different spectra and the columns to the different Raman shift or wavelenght. The column(s) with the labels must be appended to the left of the database.
 
 ### Spectrum Visualization
 
