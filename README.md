@@ -7,7 +7,9 @@ Introduces SpecMaster, a complete and ready-to-use python library for the applic
 * [General info](#general-info)
 * [Setup](#Setup)
 * [Usage](#Usage)
-* [Database Splitting](#Database-Splitting)
+  * [Database Splitting](#Database-Splitting)
+  * [Spectrum Visualization](#Spectrum-Visualization)
+  
 * [License](#License)
 
 ## General info
