@@ -61,7 +61,7 @@ Two functions allows to visualize the spectra as graphs
 - **spectro_plot**: Returns a graph of one or more selected spectra.
 
 ```python
-from specmaster import spectro_plot, random_plot
+from.specmaster.useful_features import  spectro_plot, random_plot
 
 # different methods of plotting spectra(spec) as a function of raman shift(wn)
 random_plot(wn, spec, random_spectra=4)  # plots 4 randomly selected spectra
@@ -77,13 +77,13 @@ Splitting the database spectra into subsets validated by distribution plot.
 - **distribution_plot**: Plots the distribution of the different classes in a selected set.
 
 ```python
-from specmaster import data_split, distribution_plot
+from.specmaster.useful_features import data_split, distribution_plot
 
 # separates the spectra(spec) and the labels(lab) into test and training subsets.
 (spec_train, spec_test, lab_train, lab_test) = data_split(spec, lab, b_size=0.4)
 
 # plots the classes distribution within the training set.
-distribution_plot(lab_train, title='Train set distribution', class_names=classnames)
+distribution_plot(lab_train, title='Train set distribution')
 ```
 
 ### Spectral Data Augmentation
