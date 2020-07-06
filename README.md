@@ -11,7 +11,9 @@ Introduces SpecMaster, a complete and ready-to-use python library for the applic
   * [Database Splitting](#Database-Splitting)
   * [Data Augmentation](#Data-Augmentation)
   * [Spectral Correction](#Spectral-Correction)
-  
+  * [Dimensional Reduction](#Dimensional-Reduction)
+  * [Unsupervised Machine Learning](#Unsupervised-Machine-Learning)
+  * [Supervised Machine Learning](#Supervised-Machine-Learning) 
 * [License](#License)
 
 ## General info
@@ -133,7 +135,7 @@ spec_cor = spectral_normalization(spec)
 spec_cor, wn_cor = spectral_cut(spec, wn, wn_start, wn_end)
 ```
 
-### Dimensional reduction
+### Dimensional Reduction
 * Principal component analysis visualization
 
 ```python
@@ -146,7 +148,7 @@ pca_model.pca_component(Wn, 2)
 x_pca = pca_model.transform_spectra(x_train)
 ```
 
-### Unsupervised Machine Learning Models 
+### Unsupervised Machine Learning 
 ```python
 from specmaster.pca_model import SpectroPCA, SpectroFA, SpectroICA
 
@@ -157,7 +159,7 @@ pca_model.pca_component(Wn, 2)
 x_pca = pca_model.transform_spectra(x_train)
 ```
 
-### Supervised Machine Learning Models 
+### Supervised Machine Learning 
 * Convolutional Neural Networt (3 x Convolutional layer 1D , 2 x Dense layer) 
 ```python
 from specmaster.pca_model import SpectroPCA, SpectroFA, SpectroICA
