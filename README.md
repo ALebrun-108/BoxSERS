@@ -141,11 +141,11 @@ spec_cor, wn_cor = spectral_cut(spec, wn, wn_start, wn_end)
 ```python
 from specmaster.pca_model import SpectroPCA, SpectroFA, SpectroICA
 
-pca_model = SpectroICA(n_comp=50)
-pca_model.fit_model(x_train)
-pca_model.scatter_plot(x_test, y_test, targets=classnames, comp_x=1, comp_y=2)
-pca_model.pca_component(Wn, 2)
-x_pca = pca_model.transform_spectra(x_train)
+pca_model = SpectroPCA(n_comp=50)
+pca_model.fit_model(spec_train)
+pca_model.scatter_plot(spec_test, spec_test, targets=classnames, component_x=1, component_y=2)
+pca_model.component_plot(wn, component = 2)
+spec_pca = pca_model.transform_spectra(spec_test)
 ```
 
 ### Unsupervised Machine Learning 
