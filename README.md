@@ -46,8 +46,11 @@ It is strongly suggested to start with the two Jupyter notebook script which pre
 
 **Important Notices:** 
 - This project doesn't cover database conception and requires user to have completed this step before using this project.
-- The column(s) with the labels must be appended to the left of the database.
+- Labels associated to spectra can either be in the form of integer or binary values.
+
 ```python
+from keras.utils import np_utils
+from sklearn.preprocessing import LabelEncoder
 
 # creating instance of labelencoder
 labelencoder = LabelEncoder()
