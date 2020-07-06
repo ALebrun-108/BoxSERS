@@ -1,9 +1,8 @@
 # SpecMaster
-This repository includes SpecMaster python library for processing and analysis of vibration spectra (SERS, Raman, FTIR, etc.) in order to apply machine learning.
 
-SpecMaster package is ready to use and efficient and covers methods for data augmentation, spectral correction, dimensional reduction and data visualization. Some machine training models that offer several options are also included. This repository also includes a pre-trained machine learning model and a database of SERS spectra of bile acids that were used in the arcticle published by **Lebrun and Boudreau (2020)**.
+## This repository includes SpecMaster python library for processing and analysis of vibration spectra (SERS, Raman, FTIR, etc.) in order to apply machine learning.  This repository also includes two jupyter notebook tutorials for using the package, as well as a pre-formed machine learning model and a database of the SERS spectra of bile acids that were used in the article published by **Lebrun and Boudreau (2020)**.
 
-## Installation
+## SpecMaster Installation
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install specmaster.
 
@@ -11,9 +10,9 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install specmas
 pip install specmaster
 ```
 
-## Requirements to run the code
+## Requirements
 
-Listed below are some of the main modules needed to operate the codes: 
+Listed below are the main modules needed to operate the codes: 
 
 * Keras
 * Sklearn
