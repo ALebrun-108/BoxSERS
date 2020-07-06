@@ -63,8 +63,8 @@ spectra = data.to_numpy(dtype='float64')[0:, 1:]
 
 ### Spectrum Visualization
 
-* Generation of the training, validation and test sets
-* Visualization feature to check the distribution of the different classes in each newly generated set.
+* random_plot: Returns a graph of randomly selected spectra.
+* spectro_plot: Returns a graph of the selected spectrum(s).
 
 ```python
 from specmaster import spectro_plot, random_plot
