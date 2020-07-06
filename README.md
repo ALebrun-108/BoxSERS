@@ -4,6 +4,10 @@ This repository includes SpecMaster, a ready-to-use and efficient python library
 
 Two Jupyter notebooks to help using Specmaster are also included, as well as a pre-trained machine learning model and a database of SERS bile acid spectra that were used in the article published by **Lebrun and Boudreau (2020)**.
 
+## Description
+
+- SpecMaster package covers methods for data augmentation, spectral correction, dimensional reduction and data visualization. Ready-to-use supervised and unsupervised machine learning models with several options are also included in this package.
+- Two Jupyter notebooks to help using Specmaster are also included in this repository, as well as a pre-trained machine learning model and a database of SERS bile acid spectra that were used in the article published by **Lebrun and Boudreau (2020)**.
 
 ## Setup
 
@@ -28,8 +32,6 @@ Listed below are the main modules needed to operate the codes:
 
 
 ## Usage / Description 
-
-SpecMaster package includes methods for data augmentation, spectral correction, dimensional reduction and data visualization. Ready-to-use supervised and unsupervised machine learning models with several options are also included in this package. 
 
 It is strongly suggested to start with the two Jupyter notebook script which presents the complete procedure and describes each step in detail while adding information to make it easier to understand. 
 
