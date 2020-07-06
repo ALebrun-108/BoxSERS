@@ -98,19 +98,15 @@ i = 2  # number of iterations
 
 # creating instance of SpecDA
 data_aug_pipeline = SpecDA(x_train, y_train)
-# each following line corresponds to a data augmentation method which can be omitted by adding a "#" 
-# in front of the line
+# following line corresponds to data augmentation method 
 data_aug_pipeline.aug_noise(param_nse*xtrain_mean, iterations=i)
 data_aug_pipeline.aug_ioffset(param_ioff*xtrain_mean, iterations=i)
 data_aug_pipeline.aug_multiplier(param_mult, iterations=i)
 data_aug_pipeline.aug_linear_slope(param_slp*xtrain_mean, param_inter, iterations=i)
 data_aug_pipeline.aug_wshift(param_wshft, iterations=i)
 data_aug_pipeline.aug_mixup(n_spec=2, alpha=0.40, iterations=3)
-
 # retrieving augmented data
 x_train_aug, y_train_aug = data_aug_pipeline.out()
-print('x_train before/after shapes =', x_train.shape,'/', x_train_aug.shape)
-print('y_train before/after shapes =', y_train.shape,'/', y_train_aug.shape)
 ```
 
 ### Spectral Data Correction
