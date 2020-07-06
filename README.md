@@ -3,9 +3,9 @@
 This repository includes SpecMaster, a ready-to-use and efficient python library for processing and applying machine learning to vibrational spectra. Two Jupyter notebooks to aid in the use of Specmaster are also included, as well as a pre-trained machine learning model and a database of SERS bile acid spectra that were used in the article published by **Lebrun and Boudreau (2020)**.
 
 
+## Setup
 
-
-## SpecMaster Installation
+### SpecMaster Installation
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install specmaster.
 
@@ -13,8 +13,7 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install specmas
 pip install specmaster
 ```
 
-## Requirements
-
+### Requirements
 Listed below are the main modules needed to operate the codes: 
 
 * Keras
