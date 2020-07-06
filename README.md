@@ -10,14 +10,14 @@ Introduces SpecMaster, a ready-to-use and efficient python library for processin
 * [License](#License)
 
 ## General info
+
 This project includes the following elements: 
 - SpecMaster package: Covers methods for data augmentation, spectral correction, dimensional reduction and data visualization. Ready-to-use supervised and unsupervised machine learning models with several options are also included in this package.
 - Two Jupyter notebooks: Detailed examples of use of the specmaster package.
 - A pre-trained machine learning model and a database of SERS bile acid spectra that were used in the article published by **Lebrun and Boudreau (2020)** and that can be used as a starting point to start using the specmaster package.
 
-
-
 ## Setup
+
 ### SpecMaster Installation
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install specmaster.
@@ -78,7 +78,7 @@ spectro_plot(Wn, spectra[0], spectra[2])
 ```
 
 ### Database Splitting
-
+Splitting the database spectra into subsets and visualizing the distribution 
 Functions: 
 - **data_split**: Generates two subsets of spectra from the input database.
 - **distribution_plot**: Plots the distribution of the different classes in a selected set.
