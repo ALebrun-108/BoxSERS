@@ -1,6 +1,5 @@
 # Advanced processing and machine learning for vibrational spectra
-> Introduces SpecMaster, a ready-to-use and efficient python library for processing and applying machine learning to vibrational spectra (Raman,FTIR, SERS, etc.). 
-
+Introduces SpecMaster, a ready-to-use and efficient python library for processing and applying machine learning to vibrational spectra (Raman,FTIR, SERS, etc.). 
 
 ## Repository composition
 
