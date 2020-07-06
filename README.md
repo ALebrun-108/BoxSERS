@@ -48,25 +48,8 @@ It is strongly suggested to start with the two Jupyter notebook script which pre
 
 **Important Notices:** 
 - This project doesn't cover database conception and requires user to have completed this step before using this project.
-- Labels associated to spectra can either be in the form of binary values([1 0 0 0], [0 0 0 1], [0 1 0 0], ... ), integers([0], [4], [1], ...) or text string('class_1, class_2, class_3)
+- Labels associated to spectra can either be in the form of binary values ([1 0 0 0], [0 0 0 1], [0 1 0 0], ... ), integers([0], [4], [1], ...) or text string('class_1, class_2, class_3)
 
-```python
-from keras.utils import np_utils
-from sklearn.preprocessing import LabelEncoder
-
-# creating instance of labelencoder
-labelencoder = LabelEncoder()
-# encodes class names as integer labels: [0] [4] [1] ...
-data['Classes'] = labelencoder.fit_transform(data['Classes'])
-
-# takes the labels from the database and stores them as a numpy array(int).
-lab = data.to_numpy(dtype='int')[0:, 0]
-# converts labels to a binary matrix [1 0 0 0] [0 0 0 4] [0 1 0 0]
-lab_enc = np_utils.to_categorical(lab)
-
-# takes the spectra from the database and stores them as a numpy array(float64).  
-spectra = data.to_numpy(dtype='float64')[0:, 1:]
-```
 
 ### Spectrum Visualization
 
