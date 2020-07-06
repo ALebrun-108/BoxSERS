@@ -8,7 +8,12 @@ Introduces SpecMaster, a ready-to-use and efficient python library for processin
 - A pre-trained machine learning model and a database of SERS bile acid spectra that were used in the article published by **Lebrun and Boudreau (2020)** and that can be used as a starting point to start using the specmaster package.
 
 ## Setup
+## Table of contents
+* [General info](#general-info)
 
+
+## General info
+This project is simple Lorem ipsum dolor generator.
 ### SpecMaster Installation
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install specmaster.
