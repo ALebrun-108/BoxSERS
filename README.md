@@ -53,7 +53,9 @@ Parameters:
 ```python
 distribution_plot(y_train, title='Train set distribution', class_names=classnames)
 ```
-
+Parameters:
+  * spec, lab = input spectra and labels
+  * b_size = split fraction 
 
 ### Database Splitting
 * data_split: Generation of the training, validation and test sets
