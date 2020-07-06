@@ -44,9 +44,11 @@ Listed below are the main modules needed to operate the codes:
 
 It is strongly suggested to start with the two Jupyter notebook script which presents the complete procedure and describes each step in detail while adding information to make it easier to understand. 
 
-**Important:** This project doesn't cover database conception and requires user to have completed this step before using this project. As an indication, the rows of the database must correspond to the different spectra and the columns to the different Raman shift or wavelenght. The column(s) with the labels must be appended to the left of the database.
+**Important Notices:** 
+- This project doesn't cover database conception and requires user to have completed this step before using this project.
+- The column(s) with the labels must be appended to the left of the database.
 ```python
-""" hohoh """
+
 # creating instance of labelencoder
 labelencoder = LabelEncoder()
 # encodes class names as integer labels: [0] [4] [1] ...
