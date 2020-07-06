@@ -14,6 +14,8 @@ Introduces SpecMaster, a ready-to-use and efficient python library for processin
 This project includes the following elements: 
 - SpecMaster package: Covers methods for data augmentation, spectral correction, dimensional reduction and data visualization. Ready-to-use supervised and unsupervised machine learning models with several options are also included in this package.
 - Two Jupyter notebooks: Detailed examples of use of the specmaster package.
+  - Data treatment: 
+  - Machine learning application: 
 - A pre-trained machine learning model and a database of SERS bile acid spectra that were used in the article published by **Lebrun and Boudreau (2020)** and that can be used as a starting point to start using the specmaster package.
 
 ## Setup
