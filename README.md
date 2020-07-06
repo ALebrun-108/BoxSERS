@@ -70,27 +70,28 @@ Two functions allows to visualize the spectra as graphs
 ```python
 from specmaster import spectro_plot, random_plot
 
-# plot of 4 randomly selected spectra
+# plots 4 randomly selected spectra
 random_plot(Wn, spectra, random_spectra=4)
 
-# plot of the first(index=0) and third spectra(index=2) of the spectral database.
+# plots the first(index=0) and third spectra(index=2) of the spectral database.
 spectro_plot(Wn, spectra[0], spectra[2])
 ```
 
 ### Database Splitting
-Splitting the database spectra into subsets and visualizing the distribution 
-Functions: 
+Splitting the database spectra into subsets validated by distribution plot.
+
 - **data_split**: Generates two subsets of spectra from the input database.
 - **distribution_plot**: Plots the distribution of the different classes in a selected set.
 
 ```python
 from specmaster import data_split, distribution_plot
 
-(x_train, x_int, y_train, y_int) = data_split(spectra, lab_enc, b_size=0.4, rdm_ste=3, report_enabled=False)
+# Separates the database spectra into test(database fraction = 0.4)and training(database fraction = 0.6) subsets
+(x_train, x_test, y_train, y_test) = data_split(spectra, lab_enc, b_size=0.4)
 
+# plots the classes distribution within the training set
 distribution_plot(y_train, title='Train set distribution', class_names=classnames)
 ```
-
 
 ### Spectral Data Augmentation
 * Spectra mixeup: linear combination of two or three spectra 
