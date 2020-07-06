@@ -38,6 +38,25 @@ This repository main components are the modules **Models.py** and **Function_Rep
 
 ### Spectrum Visualization
 
+* Generation of the training, validation and test sets
+* Visualization feature to check the distribution of the different classes in each newly generated set.
+
+```python
+from specmaster import data_split, distribution_plot
+
+(x_train, x_int, y_train, y_int) = data_split(spectra, lab_enc, b_size=0.4, rdm_ste=3, report_enabled=False)
+```
+Parameters:
+  * spec, lab = input spectra and labels
+  * b_size = split fraction 
+
+```python
+distribution_plot(y_train, title='Train set distribution', class_names=classnames)
+```
+
+
+
+
 ### Database Splitting
 * Generation of the training, validation and test sets
 * Visualization feature to check the distribution of the different classes in each newly generated set.
@@ -47,8 +66,7 @@ from specmaster import data_split, distribution_plot
 
 (x_train, x_int, y_train, y_int) = data_split(spectra, lab_enc, b_size=0.4, rdm_ste=3, report_enabled=False)
 ```
-data_split
-  Parameters:
+Parameters:
   * spec, lab = input spectra and labels
   * b_size = split fraction 
 
