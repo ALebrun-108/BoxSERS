@@ -76,10 +76,11 @@ Two functions allows to visualize the spectra as graphs
 from specmaster import spectro_plot, random_plot
 
 # plots 4 randomly selected spectra
-random_plot(Wn, spectra, random_spectra='')
+random_plot(Wn, x, random_spectra=4)
 
-# plots the first(index=0) and third spectra(index=2) of the spectral database.
-spectro_plot(Wn, spectra[], spectra[2])
+spectro_plot(Wn, Spec[0])  # plots the first spectrum in Spec
+spectro_plot(Wn, Spec[0], spec[2]) # plots first and third spectra in Spec
+spectro_plot(Wn, Spectra)  # plots all spectra in Spec 
 ```
 
 ### Database Splitting
@@ -91,8 +92,8 @@ Splitting the database spectra into subsets validated by distribution plot.
 ```python
 from specmaster import data_split, distribution_plot
 
-# Separates the database spectra into test(0.4) and training(0.6) subsets.
-(x_train, x_test, y_train, y_test) = data_split(spectra, lab_enc, b_size=0.4)
+# Separates the spectra and the labels into test(0.4) and training(0.6) subsets.
+(x_train, x_test, y_train, y_test) = data_split(spectra, labels, b_size=0.4)
 
 # plots the classes distribution within the training set.
 distribution_plot(y_train, title='Train set distribution', class_names=classnames)
