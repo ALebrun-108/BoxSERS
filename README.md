@@ -41,12 +41,11 @@ It is strongly suggested to start with the two Jupyter notebook script which pre
 * Generation of the training, validation and test sets
 * Visualization feature to check the distribution of the different classes in each newly generated set.
 
-
-
 ### Database Splitting
 
-- **data_split**: Generation of the training, validation and test sets.
-- **distribution_plot**: plot distribution of the different classes in a selected set.
+Functions: 
+- **data_split**: Generates two subsets of spectra from the input database.
+- **distribution_plot**: Plots the distribution of the different classes in a selected set.
 
 ```python
 from specmaster import data_split, distribution_plot
