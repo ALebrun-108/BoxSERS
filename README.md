@@ -47,9 +47,10 @@ from specmaster import data_split, distribution_plot
 
 (x_train, x_int, y_train, y_int) = data_split(spectra, lab_enc, b_size=0.4, rdm_ste=3, report_enabled=False)
 ```
-**Parameters:**
-* spec, lab = input spectra and labels
-* b_size = split fraction 
+data_split
+  Parameters:
+  * spec, lab = input spectra and labels
+  * b_size = split fraction 
 
 ```python
 distribution_plot(y_train, title='Train set distribution', class_names=classnames)
