@@ -125,8 +125,9 @@ from specmaster import baseline_subtraction, savgol_smoothing, spectral_cut, spe
 new_wn = np.linspace(500, 3000, 1000)
 spec_cor = spline_interpolation(spec, wn, new_wn)
 
+# removes the baseline signal measured with the als method 
 (spec_cor, baseline) = baseline_subtraction(spec, lam=1e4, p=0.001, niter=10)
-
+# normalizes each spectrum individually so that the maximum value equals one and the minimum value zero 
 spec_cor = spectral_normalization(spec)
 
 spec_cor = savgol_smoothing(spec, 7, p=3)
