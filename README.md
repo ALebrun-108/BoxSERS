@@ -46,12 +46,12 @@ Listed below are the main modules needed to operate the codes:
 
 It is strongly suggested to start with the two Jupyter notebook script which presents the complete procedure and describes each step in detail while adding information to make it easier to understand. 
 
-**Important Notices**: 
-- This project doesn't cover database conception and requires user to have completed this step before using this project.
-- Labels associated to spectra can be in one of the following three forms:
-  - binary values: [1 0 0 0], [0 0 0 1], [0 1 0 0], ...  (**recommended**)
-  - integers values: [0], [4], [1], ... 
-  - text string: class_1, class_2, class_3, ... 
+This project doesn't cover database conception and requires user to have completed this step before using this project.
+
+Labels associated to spectra can be in one of the following three forms:
+- binary values: [1 0 0 0], [0 0 0 1], [0 1 0 0], ...  
+- integers values: [0], [4], [1], ... 
+- text string: class_1, class_2, class_3, ... 
 
 
 ### Spectrum Visualization
