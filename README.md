@@ -119,13 +119,18 @@ spec_aug, lab_aug = data_aug_pipeline.out()
 * ALS baseline correction 
 * Data cut 
 ```python
+from specmaster.correction import baseline_subtraction, savgol_smoothing, spectral_cut, spectral_normalization, spline_interpolation
 
-new = np.linspace(500, 3000, 1000)
+new_wn = np.linspace(500, 3000, 1000)
+spec_cor = spline_interpolation(spec, wn, new)
 
-spec_cor, _ = spline_interpolation(spec, wn, new)
-spec_cor, baseline = baseline_subtraction(spec, lam=1e4, p=0.001, niter=10)
+(spec_cor, baseline) = baseline_subtraction(spec, lam=1e4, p=0.001, niter=10)
+
 spec_cor = spectral_normalization(spec)
+
 spec_cor = savgol_smoothing(spec, 7, p=3)
+
+spec_cor, wn_cor = spectral_cut(spec, wn, wn_start, wn_end)
 ```
 
 ### Dimensional reduction
