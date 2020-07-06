@@ -43,9 +43,14 @@ This repository main components are the modules **Models.py** and **Function_Rep
 * Visualization feature to check the distribution of the different classes in each newly generated set.
 
 ```python
+from specmaster import data_split, distribution_plot
 
 (x_train, x_int, y_train, y_int) = data_split(spectra, lab_enc, b_size=0.4, rdm_ste=3, report_enabled=False)
 
+distribution_plot(y_train, title='Train set distribution', class_names=classnames)
+```
+* sddfdf
+```python
 distribution_plot(y_train, title='Train set distribution', class_names=classnames)
 ```
 
