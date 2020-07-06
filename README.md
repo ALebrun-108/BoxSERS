@@ -122,7 +122,7 @@ spec_aug, lab_aug = data_aug_pipeline.out()
 from specmaster import baseline_subtraction, savgol_smoothing, spectral_cut, spectral_normalization, spline_interpolation
 
 new_wn = np.linspace(500, 3000, 1000)
-spec_cor = spline_interpolation(spec, wn, new)
+spec_cor = spline_interpolation(spec, wn, new_wn)
 
 (spec_cor, baseline) = baseline_subtraction(spec, lam=1e4, p=0.001, niter=10)
 
