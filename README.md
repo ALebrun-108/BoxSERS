@@ -1,14 +1,7 @@
 # SpecMaster
+This repository includes SpecMaster python library for processing and analysis of vibration spectra (SERS, Raman, FTIR, etc.) in order to apply machine learning.
 
-SpecMaster is a python library for processing and analyzing vibrational spectra (SERS, Raman, FTIR, etc.) in order to apply machine learning. 
-
-This project includes a detailed method to use machine learning with SERS. In addition to being ready to use, fast and efficient, this method stands out through the addition of a number of interesting procedures for the combination of SERS and machine learning.  The project can be divided into two parts:
-
-* **Data Processing:** Contains all the operations applied on the data (spectra) before using the machine learning models. This includes  y, data augmentation, data preprocessing and data visualization.  
-
-* **Machine Learning models application:** Contains all the steps related to the application of machine learning models on the data resulting from the previous step. This includes model definition, training, validation and testing.
-
-This repository contains all the functions and machine learning models used in the **Lebrun and Boudreau (2020)** published paper.  The trained model and database that were used to obtain the results presented in the article are also available. 
+SpecMaster package is ready to use and efficient and covers methods for data augmentation, spectral correction, dimensional reduction and data visualization. Some machine training models that offer several options are also included. This repository also includes a pre-trained machine learning model and a database of SERS spectra of bile acids that were used in the arcticle published by **Lebrun and Boudreau (2020)**.
 
 ## Installation
 
@@ -72,5 +65,8 @@ foobar.singularize('phenomena') # returns 'phenomenon'
 
 
 
+* **Data Processing:** Contains all the operations applied on the data (spectra) before using the machine learning models. This includes  y, data augmentation, data preprocessing and data visualization.  
+
+* **Machine Learning models application:** Contains all the steps related to the application of machine learning models on the data resulting from the previous step. This includes model definition, training, validation and testing.
 
 
