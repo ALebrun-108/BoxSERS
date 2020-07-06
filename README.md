@@ -40,6 +40,13 @@ It is strongly suggested to start with the two Jupyter notebook script which pre
 * Generation of the training, validation and test sets
 * Visualization feature to check the distribution of the different classes in each newly generated set.
 
+```python
+from specmaster import spectro_plot, random_plot
+
+random_plot(Wn, spectra, title='Graph using spectra selected randomly', random_spectra=4)
+spectro_plot(Wn, spectra[0], spectra[670], title='Graph using spectra selected directly')
+```
+
 ### Database Splitting
 
 Functions: 
