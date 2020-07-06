@@ -65,10 +65,10 @@ spectra = data.to_numpy(dtype='float64')[0:, 1:]
 
 The package includes two functions that allow you to visualize the spectra in graphical form 
 
-* random_plot: Returns a graph of a certain number of randomly selected spectra.
+- **random_plot**: Returns a graph of a certain number of randomly selected spectra.
     * random_spectra: number of spectra that are randomly selected
     * dsdsd
-* spectro_plot: Returns a graph of one or more selected spectra.
+- **spectro_plot**: Returns a graph of one or more selected spectra.
 
 
 ```python
