@@ -6,6 +6,8 @@ Introduces SpecMaster, a ready-to-use and efficient python library for processin
 ## Table of contents
 * [General info](#general-info)
 * [Setup](#Setup)
+* [Usage](#Usage)
+* [License](#License)
 
 ## General info
 This project includes the following elements: 
@@ -36,7 +38,7 @@ Listed below are the main modules needed to operate the codes:
 * Tensor flow (GPU or CPU)
 
 
-## Usage / Description 
+## Usage
 
 It is strongly suggested to start with the two Jupyter notebook script which presents the complete procedure and describes each step in detail while adding information to make it easier to understand. 
 
@@ -139,13 +141,5 @@ x_pca = pca_model.transform_spectra(x_train)
 ### Supervised Machine Learning Models 
 * Convolutional Neural Networt (3 x Convolutional layer 1D , 2 x Dense layer)   
 
-
-```python
-import foobar
-
-foobar.pluralize('word') # returns 'words'
-foobar.pluralize('goose') # returns 'geese'
-foobar.singularize('phenomena') # returns 'phenomenon'
-```
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
