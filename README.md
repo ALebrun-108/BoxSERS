@@ -55,8 +55,7 @@ Labels associated to spectra can be in one of the following three forms:
 
 
 ### Spectrum Visualization
-
-Two functions allows to visualize the spectra as graphs 
+Visualization of spectra as graphs
 - **random_plot**: Returns a graph of a certain number of randomly selected spectra.
 - **spectro_plot**: Returns a graph of one or more selected spectra.
 
@@ -93,27 +92,21 @@ distribution_plot(lab_train, title='Train set distribution')
 * Visualization feature to check the results of different data augmentation methods
 
 ```python
-from specmaster import SpecAugPipeline as SpecDA 
+from specmaster.augmentation import SpecAugPipeline 
 
-# determining the average for each spectra contained in the training set
-xtrain_mean = np.mean(x_train, axis=1, keepdims=True)
-
-# number of iterations
-i = 2  
-
-# creating instance of SpecDA
-data_aug_pipeline = SpecDA(x_train, y_train)
+# creating instance of SpecAugPipeline that is applied the spectra(spec) and the labels(lab)
+data_aug_pipeline = SpecAugPipeline(spec, lab)
 
 # following line corresponds to data augmentation method 
-data_aug_pipeline.aug_noise(param_nse*xtrain_mean, iterations=i)
-data_aug_pipeline.aug_ioffset(param_ioff*xtrain_mean, iterations=i)
-data_aug_pipeline.aug_multiplier(param_mult, iterations=i)
-data_aug_pipeline.aug_linear_slope(param_slp*xtrain_mean, param_inter, iterations=i)
-data_aug_pipeline.aug_wshift(param_wshft, iterations=i)
-data_aug_pipeline.aug_mixup(n_spec=2, alpha=0.40, iterations=3)
+data_aug_pipeline.aug_noise(noise_standard_deviation, iterations=2)
+data_aug_pipeline.aug_ioffset(intensity_offset_limits, iterations=2)
+data_aug_pipeline.aug_multiplier(multiplier_factor_limits, iterations=2)
+data_aug_pipeline.aug_linear_slope(slope_limits, intercept_limits, iterations=2)
+data_aug_pipeline.aug_wshift(param_wshft, iterations=2)
+data_aug_pipeline.aug_mixup(n_spec=2, alpha=0.40, iterations=2)
 
 # retrieving augmented data
-x_train_aug, y_train_aug = data_aug_pipeline.out()
+spec_aug, lab_aug = data_aug_pipeline.out()
 ```
 
 ### Spectral Data Correction
