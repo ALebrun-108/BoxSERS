@@ -63,6 +63,7 @@ Two functions allows to visualize the spectra as graphs
 ```python
 from specmaster import spectro_plot, random_plot
 
+# different methods of plotting spectra(spec) as a function of raman shift(wn)
 random_plot(wn, spec, random_spectra=4)  # plots 4 randomly selected spectra
 spectro_plot(wn, spec[0])  # plots the first spectrum
 spectro_plot(wn, spec[0], spec[2]) # plots first and third spectra
@@ -78,11 +79,11 @@ Splitting the database spectra into subsets validated by distribution plot.
 ```python
 from specmaster import data_split, distribution_plot
 
-# Separates the spectra and the labels into test(0.4) and training(0.6) subsets.
-(x_train, x_test, y_train, y_test) = data_split(spectra, labels, b_size=0.4)
+# separates the spectra(spec) and the labels(lab) into test and training subsets.
+(spec_train, spec_test, lab_train, lab_test) = data_split(spec, lab, b_size=0.4)
 
 # plots the classes distribution within the training set.
-distribution_plot(y_train, title='Train set distribution', class_names=classnames)
+distribution_plot(lab_train, title='Train set distribution', class_names=classnames)
 ```
 
 ### Spectral Data Augmentation
