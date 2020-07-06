@@ -42,8 +42,8 @@ This repository main components are the modules **Models.py** and **Function_Rep
 * Generation of the training, validation and test sets
 * Visualization feature to check the distribution of the different classes in each newly generated set.
 
-```bash
-pip install specmaster
+```python
+(x_train, x_int, y_train, y_int) = data_split(spectra, lab_enc, b_size=0.4, rdm_ste=3, report_enabled=False)
 ```
 
 ### Spectral Data Augmentation
