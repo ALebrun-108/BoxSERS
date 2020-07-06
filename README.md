@@ -48,7 +48,7 @@ It is strongly suggested to start with the two Jupyter notebook script which pre
 
 **Important Notices:** 
 - This project doesn't cover database conception and requires user to have completed this step before using this project.
-- Labels associated to spectra can either be in the form of integer or binary values.
+- Labels associated to spectra can either be in the form of binary values([1 0 0 0], [0 0 0 1], [0 1 0 0], ... ), integers([0], [4], [1], ...) or text string('class_1, class_2, class_3)
 
 ```python
 from keras.utils import np_utils
