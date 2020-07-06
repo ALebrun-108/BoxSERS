@@ -136,7 +136,9 @@ spec_cor, wn_cor = spectral_cut(spec, wn, wn_start, wn_end)
 ```
 
 ### Dimensional Reduction
-* Principal component analysis visualization
+- **SpectroPCA**: Principal component analysis model
+- **SpectroFA**: Factor analysis model
+- **SpectroICA**: Independant component analysis model
 
 ```python
 from specmaster.dim_reduction import SpectroPCA, SpectroFA, SpectroICA
