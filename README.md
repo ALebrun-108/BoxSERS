@@ -144,13 +144,30 @@ pca_model.fit_model(x_train)
 pca_model.scatter_plot(x_test, y_test, targets=classnames, comp_x=1, comp_y=2)
 pca_model.pca_component(Wn, 2)
 x_pca = pca_model.transform_spectra(x_train)
-
 ```
 
 ### Unsupervised Machine Learning Models 
+```python
+from specmaster.pca_model import SpectroPCA, SpectroFA, SpectroICA
+
+pca_model = SpectroICA(n_comp=50)
+pca_model.fit_model(x_train)
+pca_model.scatter_plot(x_test, y_test, targets=classnames, comp_x=1, comp_y=2)
+pca_model.pca_component(Wn, 2)
+x_pca = pca_model.transform_spectra(x_train)
+```
 
 ### Supervised Machine Learning Models 
-* Convolutional Neural Networt (3 x Convolutional layer 1D , 2 x Dense layer)   
+* Convolutional Neural Networt (3 x Convolutional layer 1D , 2 x Dense layer) 
+```python
+from specmaster.pca_model import SpectroPCA, SpectroFA, SpectroICA
+
+pca_model = SpectroICA(n_comp=50)
+pca_model.fit_model(x_train)
+pca_model.scatter_plot(x_test, y_test, targets=classnames, comp_x=1, comp_y=2)
+pca_model.pca_component(Wn, 2)
+x_pca = pca_model.transform_spectra(x_train)
+```
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
