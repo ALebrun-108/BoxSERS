@@ -92,12 +92,17 @@ distribution_plot(y_train, title='Train set distribution', class_names=classname
 * Visualization feature to check the results of different data augmentation methods
 
 ```python
+from specmaster import SpecAugPipeline as SpecDA 
+
 # determining the average for each spectra contained in the training set
 xtrain_mean = np.mean(x_train, axis=1, keepdims=True)
-i = 2  # number of iterations
+
+# number of iterations
+i = 2  
 
 # creating instance of SpecDA
 data_aug_pipeline = SpecDA(x_train, y_train)
+
 # following line corresponds to data augmentation method 
 data_aug_pipeline.aug_noise(param_nse*xtrain_mean, iterations=i)
 data_aug_pipeline.aug_ioffset(param_ioff*xtrain_mean, iterations=i)
@@ -105,6 +110,7 @@ data_aug_pipeline.aug_multiplier(param_mult, iterations=i)
 data_aug_pipeline.aug_linear_slope(param_slp*xtrain_mean, param_inter, iterations=i)
 data_aug_pipeline.aug_wshift(param_wshft, iterations=i)
 data_aug_pipeline.aug_mixup(n_spec=2, alpha=0.40, iterations=3)
+
 # retrieving augmented data
 x_train_aug, y_train_aug = data_aug_pipeline.out()
 ```
