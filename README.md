@@ -1,6 +1,8 @@
 # Advanced processing and machine learning for vibrational spectra
 
-This repository includes SpecMaster, a ready-to-use and efficient python library for processing and applying machine learning to vibrational spectra. Two Jupyter notebooks to aid in the use of Specmaster are also included, as well as a pre-trained machine learning model and a database of SERS bile acid spectra that were used in the article published by **Lebrun and Boudreau (2020)**.
+This repository includes SpecMaster, a ready-to-use and efficient python library for processing and applying machine learning to vibrational spectra(Raman,FTIR, SERS, etc.). 
+
+Two Jupyter notebooks to aid in the use of Specmaster are also included, as well as a pre-trained machine learning model and a database of SERS bile acid spectra that were used in the article published by **Lebrun and Boudreau (2020)**.
 
 
 ## Setup
