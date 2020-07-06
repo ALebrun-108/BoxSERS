@@ -10,10 +10,13 @@ Introduces SpecMaster, a ready-to-use and efficient python library for processin
 ## Setup
 ## Table of contents
 * [General info](#general-info)
+* [Setup](#Setup)
 
 
 ## General info
 This project is simple Lorem ipsum dolor generator.
+
+## Setup
 ### SpecMaster Installation
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install specmaster.
