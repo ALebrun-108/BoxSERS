@@ -118,6 +118,12 @@ spec_aug, lab_aug = data_aug_pipeline.out()
 * Savitsy-Golay Smoothing
 * ALS baseline correction 
 * Data cut 
+```python
+x_prep, _ = spline_interpolation(x_prep, Wn, new)
+x_prep, _ = baseline_subtraction(x_prep, lam=BC_lam, p=BC_p, niter=BC_niter)
+x_prep = spectral_normalization(x_prep)
+x_prep = savgol_smoothing(x_prep, 7, p=3)
+```
 
 ### Dimensional reduction
 * Principal component analysis visualization
