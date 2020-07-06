@@ -35,15 +35,19 @@ It is strongly suggested to start with the two Jupyter notebook script which pre
 ### Getting Started 
 **Important:** This project doesn't cover database conception and requires user to have completed this step before using this project. As an indication, the rows of the database must correspond to the different spectra and the columns to the different Raman shift or wavelenght. The column(s) with the labels must be appended to the left of the database.
 ```python
-# load datad
+""" hohoh """
+# creating instance of labelencoder
+labelencoder = LabelEncoder()
+# encodes class names as integer labels: [0] [4] [1] ...
+data['Classes'] = labelencoder.fit_transform(data['Classes'])
 
-# spectra extraction as a floating value np.array
-spectra = data.to_numpy(dtype='float64')[0:, 1:]
-
-# label extraction [1 0 0 0], [0 0 0 4], [0 1 0 0], ...
-lab = data.to_numpy()[0:, 0]
-# converts labels to a binary matrix
+# takes the labels from the database and stores them as a numpy array(int).
+lab = data.to_numpy(dtype='int')[0:, 0]
+# converts labels to a binary matrix [1 0 0 0] [0 0 0 4] [0 1 0 0]
 lab_enc = np_utils.to_categorical(lab)
+
+# takes the spectra from the database and stores them as a numpy array(float64).  
+spectra = data.to_numpy(dtype='float64')[0:, 1:]
 ```
 
 ### Spectrum Visualization
