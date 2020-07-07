@@ -80,7 +80,7 @@ spectro_plot(wn, spec[0])  # plots the first spectrum
 spectro_plot(wn, spec[0], spec[2]) # plots first and third spectra
 spectro_plot(wn, spec)  # plots all spectra
 ```
-
+![alt text](https://github.com/ALebrun-108/Advanced-processing-and-machine-learning-for-vibrational-spectra/blob/master/distribution.png?raw=true)
 ### Database Splitting
 Splitting the database spectra into subsets that can be validated using distribution plot.
 
