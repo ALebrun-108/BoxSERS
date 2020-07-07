@@ -56,9 +56,6 @@ It is strongly suggested to start with the two Jupyter notebook script which pre
 This project doesn't cover database conception and requires user to have completed this step before using this project.
 
 Labels associated to spectra can be in one of the following three forms:
-- binary values: [1 0 0 0], [0 0 0 1], [0 1 0 0], ...  
-- integers values: [0], [4], [1], ... 
-- text string: class_1, class_2, class_3, ... 
 
 | Label Type    | Examples                             |
 | ------------- | ------------------------------------ |
