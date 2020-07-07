@@ -60,11 +60,11 @@ Labels associated to spectra can be in one of the following three forms:
 - integers values: [0], [4], [1], ... 
 - text string: class_1, class_2, class_3, ... 
 
-| First Header  | Second Header |
-| ------------- | ------------- |
-| Binary        | [1 0 0 0], [1 0 0 0], [1 0 0 0], ... |
-| Integer       | [0], [4], [1], ...                   |
-| Integer       | class_1, class_2, class_3, ...       |
+| Label Type    | Examples                             |
+| ------------- | ------------------------------------ |
+| Binary        | [1 0 0 0], [0 0 0 1], [0 1 0 0], ... |
+| Integer       | 0, 3, 1 , ...                        |
+| Text          | sample_0, sample_3, sample_1, ...    |
 
 ### Spectrum Visualization
 
