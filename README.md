@@ -62,11 +62,12 @@ Labels associated to spectra can be in one of the following three forms:
 
 | First Header  | Second Header |
 | ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
+| Content Cell  | [1 0 0 0], [1 0 0 0], [1 0 0 0]  |
+| Content Cell  | [0], [4], [1],  |
 
 ### Spectrum Visualization
-Visualization of spectra as graphs
+
+Fast and simple visualization of spectra as graphs 
 - **random_plot**: Returns a graph of a certain number of randomly selected spectra.
 - **spectro_plot**: Returns a graph of one or more selected spectra.
 
