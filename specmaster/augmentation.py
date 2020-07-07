@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.utils import shuffle
 
 
-class SpectralDataAug:
+class SpecAugPipeline:
 
     def __init__(self, sp, lab):
         """
@@ -30,10 +30,10 @@ class SpectralDataAug:
     def out(self):
         return self.sp_aug, self.lab_aug
 
-    def base_sizes(self):
+    def return_base_sizes(self):
         return self.sp.shape, self.lab.shape
 
-    def aug_sizes(self):
+    def return_aug_sizes(self):
         return self.sp_aug.shape, self.lab_aug.shape
 
     def updtate_base(self, new_sp=None, new_lab=None):
@@ -58,7 +58,7 @@ class SpectralDataAug:
         """
         return np.random.normal(sp, noise_std)
 
-    def aug_noise(self, noise_std, iterations=1, update=False):
+    def aug_noise(self, noise_std, iterations=1, update=False, _debugcheck=False):
         """
         Description
 
@@ -67,6 +67,7 @@ class SpectralDataAug:
             iterations(int):
             noise_std(float or None):
             update(bool):
+            _debugcheck:
 
         Return:
             (ndarray, ndarray): Augmented spectrum and label arrays
@@ -77,8 +78,11 @@ class SpectralDataAug:
             # new spectra & labels are appended to the original ones
             self.sp_aug = np.vstack((self.sp_aug, noise_sp))
             self.lab_aug = np.vstack((self.lab_aug, self.lab))
-        # the spectra and labels are randoml ymixed
+        # spectra and labels are randomly mixed
         self.sp_aug, self.lab_aug = shuffle(self.sp_aug, self.lab_aug)
+
+        if _debugcheck:
+            return noise_sp
         if update:
             # overwrites source data with augmented data
             self.sp = self.sp_aug
@@ -100,7 +104,7 @@ class SpectralDataAug:
         """
         return sp + offset
 
-    def aug_ioffset(self, offset_lim, iterations=1, noise_std=None, update=False):
+    def aug_ioffset(self, offset_lim, iterations=1, noise_std=None, update=False, _debugcheck=False):
         """
         Description
 
@@ -109,6 +113,7 @@ class SpectralDataAug:
             iterations(int):
             noise_std(float or None):
             update(bool):
+            _debugcheck:
 
         Return:
             (ndarray, ndarray): Augmented spectrum and label arrays
@@ -125,10 +130,11 @@ class SpectralDataAug:
             # new spectra & labels are appended to the original ones
             self.sp_aug = np.vstack((self.sp_aug, offset_sp))
             self.lab_aug = np.vstack((self.lab_aug, self.lab))
-
-        # the spectra and labels are randomly mixed
-
+        # spectra and labels are randomly mixed
         self.sp_aug, self.lab_aug = shuffle(self.sp_aug, self.lab_aug)
+
+        if _debugcheck:
+            return offset_sp
         if update:
             # overwrites source data with augmented data
             self.sp = self.sp_aug
@@ -157,6 +163,7 @@ class SpectralDataAug:
             the number of spectra contained in sp.
         """
 
+        # w_shft initialization
         w_shft = np.array(w_shft, ndmin=2)
         # sp_out initialization
         sp = np.array(sp, ndmin=2)
@@ -185,7 +192,7 @@ class SpectralDataAug:
             shft_sp[n, :int(w_shft[n])] = sp[n, -int(w_shft[n]):]
         return shft_sp
 
-    def aug_wshift(self, w_shft_lim, iterations=1, noise_std=None, update=False):
+    def aug_wshift(self, w_shft_lim, iterations=1, noise_std=None, update=False, _debugcheck=False):
         """
         Description
 
@@ -194,6 +201,7 @@ class SpectralDataAug:
             iterations(int):
             noise_std(float or None):
             update(bool):
+            _debugcheck:
 
         Return:
             (ndarray, ndarray): Augmented spectrum and label arrays
@@ -212,12 +220,16 @@ class SpectralDataAug:
             self.sp_aug = np.vstack((self.sp_aug, shift_sp))
             self.lab_aug = np.vstack((self.lab_aug, self.lab))
 
-        # the spectra and labels are randomly mixed
+        # spectra and labels are randomly mixed
         self.sp_aug, self.lab_aug = shuffle(self.sp_aug, self.lab_aug)
+
         if update:
             # overwrites source data with augmented data
             self.sp = self.sp_aug
             self.lab = self.lab_aug
+
+        if _debugcheck:
+            return shift_sp
 
         return self.sp_aug, self.lab_aug
 
@@ -238,7 +250,7 @@ class SpectralDataAug:
         slope_range = np.arange(-(sp.shape[1]) / 2, (sp.shape[1]) / 2)
         return sp + (slope * slope_range + inter)
 
-    def aug_linear_slope(self, slope_lim, inter_lim, iterations=1, noise_std=None, update=False):
+    def aug_linear_slope(self, slope_lim, inter_lim, iterations=1, noise_std=None, update=False, _debugcheck=False):
         """
         Description
 
@@ -248,6 +260,7 @@ class SpectralDataAug:
             iterations(int):
             noise_std(float):
             update(bool):
+            _debugcheck(bool):
 
         Return:
             (ndarray, ndarray): Augmented spectrum and label arrays
@@ -268,10 +281,14 @@ class SpectralDataAug:
 
         # the spectra and labels are randomly mixed
         self.sp_aug, self.lab_aug = shuffle(self.sp_aug, self.lab_aug)
+
         if update:
             # overwrites source data with augmented data
             self.sp = self.sp_aug
             self.lab = self.lab_aug
+
+        if _debugcheck:
+            return slope_sp
 
         return self.sp_aug, self.lab_aug
 
@@ -279,7 +296,7 @@ class SpectralDataAug:
     def multiplier(sp, multiplier):
         return sp * multiplier
 
-    def aug_multiplier(self, mult_lim=0.1, iterations=1, noise_std=None, update=False):
+    def aug_multiplier(self, mult_lim=0.1, iterations=1, noise_std=None, update=False, _debugcheck=False):
         """
         Description
 
@@ -288,6 +305,7 @@ class SpectralDataAug:
             iterations(int):
             noise_std(float):
             update(bool):
+            _debugcheck(bool):
 
         Return:
             (ndarray, ndarray): Augmented spectrum and label arrays
@@ -306,14 +324,18 @@ class SpectralDataAug:
 
         # the spectra and labels are randomly mixed
         self.sp_aug, self.lab_aug = shuffle(self.sp_aug, self.lab_aug)
+
         if update:
             # overwrites source data with augmented data
             self.sp = self.sp_aug
             self.lab = self.lab_aug
 
+        if _debugcheck:
+            return mult_sp
+
         return self.sp_aug, self.lab_aug
 
-    def aug_mixup(self, n_spec=2, alpha=0.5, iterations=1, update=False):
+    def aug_mixup(self, n_spec=2, alpha=0.5, iterations=1, update=False, _debugcheck=False):
         """
         Spectrum linear combinaison process inspired by the Mixup method (Zhang, Hongyi, et al. 2017).
 
@@ -322,6 +344,7 @@ class SpectralDataAug:
             alpha(float): Dirichlet distribution concentration parameter.
             iterations(int): Number of iterations.
             update(bool):
+            _debugcheck(bool):
 
         Returns:
             (ndarray, ndarray): Augmented spectrum and label arrays
@@ -345,13 +368,17 @@ class SpectralDataAug:
 
         # the spectra and labels are randomly mixed
         self.sp_aug, self.lab_aug = shuffle(self.sp_aug, self.lab_aug)
+
         if update:
             # overwrites source data with augmented data
             self.sp = self.sp_aug
             self.lab = self.lab_aug
 
+        if _debugcheck:
+            return sp_sum, lab_sum
+
         return self.sp_aug, self.lab_aug
 
 
 if __name__ == "__main__":
-    print(help(SpectralDataAug))
+    print(help(SpecAugPipeline))

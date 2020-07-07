@@ -27,7 +27,6 @@ def data_split(sp, lab, b_size=0.3, rdm_ste=None, report_enabled=False):
     (sp_a, sp_b, lab_a, lab_b) = train_test_split(sp, lab, test_size=b_size, random_state=rdm_ste)
 
     # Distribution of the different classes within the two sets.
-
     if report_enabled:
 
         if lab.ndim == 2 and lab.shape[1] > 1:  # lab is a binary matrix (one-hot encoded label)
@@ -47,7 +46,7 @@ def data_split(sp, lab, b_size=0.3, rdm_ste=None, report_enabled=False):
     return sp_a, sp_b, lab_a, lab_b
 
 
-def plot_distribution(lab, class_names=None, save_name=None, **plt_opt):
+def distribution_plot(lab, class_names=None, save_name=None, **plt_opt):
     """
     Return a bar plot that represents the class distributions in a set
 
@@ -61,8 +60,6 @@ def plot_distribution(lab, class_names=None, save_name=None, **plt_opt):
         ylabel: Y-axis label.
         line_w: Line width.
         col: Line color(s).
-
-    TODO: ajouter un quality factor relié à l'écart type
     """
 
     if lab.ndim == 2 and lab.shape[1] > 1:  # lab is a binary matrix (one-hot encoded label)
@@ -98,13 +95,13 @@ def plot_distribution(lab, class_names=None, save_name=None, **plt_opt):
         fig.tight_layout()
 
         if save_name is not None:
-            plt.savefig(save_name)
+            plt.savefig(save_name, dpi=300)
     return plt.show()
 
 
 def random_plot(w, sp, random_spectra, save_name=None, **plt_opt):
     """
-    Returns a plot
+    Returns a graph of randomly selected spectra
 
     Parameters:
         w: X-axis values, example(raman shift, wavenumber, wavelength, etc.).
@@ -119,6 +116,7 @@ def random_plot(w, sp, random_spectra, save_name=None, **plt_opt):
         line_w: Line width.
         line_s: Line style.
         col: Line color(s).
+        legend(list or tuple): List or tuple of legend labels.
         grid(bool): Grid On(True, default) or Off(False).
   """
 
@@ -154,13 +152,13 @@ def random_plot(w, sp, random_spectra, save_name=None, **plt_opt):
         ax.legend(legend)
         fig.tight_layout()
         if save_name is not None:
-            plt.savefig(save_name)
+            plt.savefig(save_name, dpi=300)
     return plt.show()
 
 
 def spectro_plot(w, *sp, save_name=None, **plt_opt):
     """
-    Returns a plot
+    Returns a plot of the selected spectrum(s)
 
     Parameters:
         w: X-axis values, example(raman shift, wavenumber, wavelength, etc.).
@@ -174,7 +172,7 @@ def spectro_plot(w, *sp, save_name=None, **plt_opt):
         line_w: Line width.
         line_s: Line style.
         col: Line color(s).
-        legend
+        legend(list or tuple): List or tuple of legend labels.
         grid(bool): Grid On(True, default) or Off(False).
     """
     # .get('key',default): Return the value for key if key is in the dictionary, else default.
@@ -200,7 +198,7 @@ def spectro_plot(w, *sp, save_name=None, **plt_opt):
         ax.legend(legend)
         fig.tight_layout()
         if save_name is not None:
-            plt.savefig(save_name)
+            plt.savefig(save_name, dpi=300)
     return plt.show()
 
 
@@ -237,6 +235,7 @@ def database_creator(files_dir, file_names, class_names=None, nfiles_class=None)
             raise ValueError('class_names and nfiles_class must be the same size')
 
     data = pd.DataFrame()
+    wn = []
 
     for (name, lab) in zip(file_names, labels):
         df = pd.read_csv(files_dir + name, header=None, decimal='.', sep=',')

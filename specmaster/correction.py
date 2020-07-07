@@ -65,7 +65,6 @@ def spline_interpolation(sp, wn, new_wn, multiple_wn=False):
         print('Some spectra raised errors and were removed')
         print('Erroneous spectrum indexes are identified by the second output of this function.')
         print('Delete the corresponding label with this command: new_label = np.delete(label, erroneous_index)')
-
     return new_sp, error_ind
 
 
@@ -80,7 +79,7 @@ def baseline_subtraction(sp, lam=10000, p=0.001, niter=10):
         niter: Maximum number of iterations.
 
     Returns:
-        ndarray:  (baseline array, baseline substracted spectrum or spectra array)
+        two ndarray:  baseline substracted spectrum or spectra array, baseline array
     """
     # sp is forced to be a two-dimensional array
     sp = np.array(sp, ndmin=2)
@@ -113,7 +112,7 @@ def spectral_cut(sp, wn, wn_start, wn_end):
         wn_end: End(with the same unit as wn) of the subtracted spectral region.
 
     Returns:
-        ndarray:  sp_cut, wn_cut
+        two ndarray:  cut spectrum or spectra, new wavelength
     """
     # sp is forced to be a two-dimensional array
     sp = np.array(sp, ndmin=2)
@@ -129,7 +128,6 @@ def spectral_cut(sp, wn, wn_start, wn_end):
     # remaining parts are joined together
     sp_cut = np.concatenate([sp_l, sp_r], axis=1)
     wn_cut = np.concatenate([wn_l, wn_r])
-
     return sp_cut, wn_cut
 
 
@@ -143,8 +141,7 @@ def savgol_smoothing(sp, window_length, p=3, degree=0):
         p(int): Savitzky-Golay polynomial order.
         degree(int): Savitzky-Golay derivative order.
 
-    Returns: sp_svg
+    Returns: smoothed spectrum or spectra
     """
     sp_svg = savgol_filter(sp, window_length, polyorder=p, deriv=degree)
-
     return sp_svg
