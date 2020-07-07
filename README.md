@@ -100,7 +100,7 @@ from specmaster.useful_features import data_split, distribution_plot
 # plots the classes distribution within the training set.
 distribution_plot(lab_train, title='Train set distribution')
 ```
-![alt text](https://github.com/ALebrun-108/Advanced-processing-and-machine-learning-for-vibrational-spectra/blob/master/distribution.png?raw=true)
+![test image size](distribution.png)
 ### Data Augmentation
 * Spectra mixeup: linear combination of two or three spectra 
 * Simple data augmentation methods: Noise addition, offset , multiplicative factor
