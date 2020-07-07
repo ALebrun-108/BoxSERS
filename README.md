@@ -62,8 +62,9 @@ Labels associated to spectra can be in one of the following three forms:
 
 | First Header  | Second Header |
 | ------------- | ------------- |
-| Content Cell  | [1 0 0 0], [1 0 0 0], [1 0 0 0]  |
-| Content Cell  | [0], [4], [1],  |
+| Binary        | [1 0 0 0], [1 0 0 0], [1 0 0 0], ... |
+| Integer       | [0], [4], [1], ...                   |
+| Integer       | class_1, class_2, class_3, ...       |
 
 ### Spectrum Visualization
 
