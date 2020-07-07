@@ -60,6 +60,10 @@ Labels associated to spectra can be in one of the following three forms:
 - integers values: [0], [4], [1], ... 
 - text string: class_1, class_2, class_3, ... 
 
+| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
 
 ### Spectrum Visualization
 Visualization of spectra as graphs
