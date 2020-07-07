@@ -80,7 +80,7 @@ spectro_plot(wn, spec[0])  # plots the first spectrum
 spectro_plot(wn, spec[0], spec[2]) # plots first and third spectra
 spectro_plot(wn, spec)  # plots all spectra
 ```
-![test image size](/img/post-bg-2015.jpg){:height="50%" width="50%"}
+![test image size](random5_plot.png){:height="50%" width="50%"}
 ### Database Splitting
 Splitting the database spectra into subsets that can be validated using distribution plot.
 
