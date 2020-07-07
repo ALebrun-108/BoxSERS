@@ -70,7 +70,7 @@ Fast and simple visualization of spectra as graphs
 - **spectro_plot**: Returns a graph of one or more selected spectra.
 
 ```python
-# Code example----:
+# Code example:
 
 from specmaster.useful_features import  spectro_plot, random_plot
 
@@ -88,7 +88,7 @@ Splitting the database spectra into subsets that can be validated using distribu
 - **distribution_plot**: Plots the distribution of the different classes in a selected set.
 
 ```python
-# Code example----:
+# Code example:
 
 from specmaster.useful_features import data_split, distribution_plot
 
@@ -107,7 +107,7 @@ distribution_plot(lab_train, title='Train set distribution')
 * Visualization feature to check the results of different data augmentation methods
 
 ```python
-# Code example----:
+# Code example:
 
 from specmaster.augmentation import SpecAugPipeline 
 
@@ -131,7 +131,7 @@ spec_aug, lab_aug = data_aug_pipeline.out()
 * ALS baseline correction 
 * Data cut 
 ```python
-# Code example----:
+# Code example:
 
 from specmaster import baseline_subtraction, spectral_cut, spectral_normalization, spline_interpolation
 
@@ -152,7 +152,7 @@ spec_cor, wn_cor = spectral_cut(spec, wn, wn_start, wn_end)
 - **SpectroICA**: Independant component analysis model
 
 ```python
-# Code example----:
+# Code example:
 
 from specmaster.dim_reduction import SpectroPCA, SpectroFA, SpectroICA
 
@@ -165,7 +165,7 @@ spec_pca = pca_model.transform_spectra(spec_test)
 
 ### Unsupervised Machine Learning 
 ```python
-# Code example----:
+# Code example:
 
 from specmaster.machine_learning import SpectroGmixture, SpectroKmeans
 
