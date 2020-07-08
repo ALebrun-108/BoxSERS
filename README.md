@@ -80,7 +80,7 @@ spectro_plot(wn, spec[0])  # plots the first spectrum
 spectro_plot(wn, spec[0], spec[2]) # plots first and third spectra
 spectro_plot(wn, spec)  # plots all spectra
 ```
-![test image size](random5_plot.png)
+![test image size](fig/random5_plot.png)
 ### Database Splitting
 Splitting the database spectra into subsets that can be validated using distribution plot.
 
@@ -100,7 +100,7 @@ from specmaster.useful_features import data_split, distribution_plot
 # plots the classes distribution within the training set.
 distribution_plot(lab_train, title='Train set distribution')
 ```
-![test image size](distribution.png)
+![test image size](fig/distribution.png)
 ### Data Augmentation
 * Spectra mixeup: linear combination of two or three spectra 
 * Simple data augmentation methods: Noise addition, offset , multiplicative factor
