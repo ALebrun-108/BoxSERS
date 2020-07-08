@@ -145,6 +145,7 @@ spec_cor = spectral_normalization(spec)
 # removes part of the spectra delimited by the Raman shift values wn_start and wn_end 
 spec_cor, wn_cor = spectral_cut(spec, wn, wn_start, wn_end)
 ```
+![test image size](fig/correction.png)
 
 ### Dimensional Reduction
 - **SpectroPCA**: Principal component analysis model
