@@ -163,6 +163,8 @@ pca_model.component_plot(wn, component=2)
 spec_pca = pca_model.transform_spectra(spec_test)
 ```
 
+![test image size](fig/data_reduce.png)
+
 ### Unsupervised Machine Learning 
 ```python
 # Code example:
