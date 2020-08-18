@@ -76,9 +76,7 @@ from specmaster.useful_features import  spectro_plot, random_plot
 
 # spectra array = spec, raman shift column = wn
 random_plot(wn, spec, random_spectra=4)  # plots 4 randomly selected spectra
-#spectro_plot(wn, spec[0])  # plots the first spectrum
-#spectro_plot(wn, spec[0], spec[2]) # plots first and third spectra
-#spectro_plot(wn, spec)  # plots all spectra
+spectro_plot(wn, spec[0], spec[2]) # plots first and third spectra
 ```
 ![test image size](fig/random5_plot.png)
 ### Database Splitting
@@ -93,7 +91,6 @@ Splitting the database spectra into subsets that can be validated using distribu
 from specmaster.useful_features import data_split, distribution_plot
 
 # randomly splits the spectra(spec) and the labels(lab) into test and training subsets.
-
 (spec_train, spec_test, lab_train, lab_test) = data_split(spec, lab, test_size=0.4)  
 # resulting train|test set proportions = 0.6|0.4
 
@@ -116,9 +113,9 @@ spec_nse, _  = SpectroDataAug.aug_noise(spec, lab, param_nse, mode='check')
 spec_mult_sup, _ = SpectroDataAug.aug_multiplier(spec, lab, 1+param_mult, mode='check')
 spec_mult_inf, _ = SpectroDataAug.aug_multiplier(spec, lab, 1-param_mult, mode='check')
 
-leg = ['initial', 'noisy', 'multiplier superior', 'multiplier inferior']
-spectro_plot(Wn, spec, spec_nse, spec_mult_sup, spec_mult_inf, legend=leg)
-"""sdssd"""
+legend = ['initial', 'noisy', 'multiplier superior', 'multiplier inferior']
+spectro_plot(wn, spec, spec_nse, spec_mult_sup, spec_mult_inf, legend=legend)
+
 spec_nse, lab_nse = SpectroDataAug.aug_noise(spec, lab, param_nse, quantity=2, mode='random')
 spec_mul, lab_mul = SpectroDataAug.aug_multiplier(spec, lab, mult_lim, quantity=2, mode='random')
 
