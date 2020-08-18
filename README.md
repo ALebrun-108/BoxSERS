@@ -111,14 +111,6 @@ distribution_plot(lab_train, title='Train set distribution')
 
 from specmaster.data_aug import SpectroDataAug
 
-# creating instance of SpecAugPipeline that is applied the spectra(spec) and the labels(lab)
-data_aug_pipeline = SpecAugPipeline(spec, lab)
-
-# following line corresponds to data augmentation method 
-
-param_nse = 0.01
-x_noise, _ = SpDA.aug_noise(x_sample, y_train, param_nse, mode='check')
-spectro_plot(Wn, x_noise, x_sample, title='Noise')
 
 spec_nse, _  = SpectroDataAug.aug_noise(spec, lab, param_nse, mode='check')
 spec_mult_sup, _ = SpectroDataAug.aug_multiplier(spec, lab, 1+param_mult, mode='check')
@@ -126,10 +118,12 @@ spec_mult_inf, _ = SpectroDataAug.aug_multiplier(spec, lab, 1-param_mult, mode='
 spectro_plot(Wn, spec, spec_nse, spec_mult_sup, spec_mult_inf,
              legend=['origninal', 'noisy', 'multiplier sup' , 'multiplier inf'])
 
-spec_nse_aug, lab_nse  = SpectroDataAug.aug_noise(spec, lab, param_nse, quantity=2, mode='random')
+spec_nse, lab_nse = SpectroDataAug.aug_noise(spec, lab, param_nse, quantity=2, mode='random')
+spec_mul, lab_mul = SpectroDataAug.aug_multiplier(spec, lab, mult_lim, quantity=2, mode='random')
+
 # stacks all generated spectra and originals in a single array
-spec_aug = np.vstack((x, spec_nse, spec_mult))
-lab_aug = np.vstack((lab, lab_nse, lab_mult))
+spec_aug = np.vstack((x, spec_nse, spec_mul))
+lab_aug = np.vstack((lab, lab_nse, lab_mul))
 
 # spectra and labels are randomly mixed
 x_aug, y_aug = shuffle(x_aug, y_aug)
