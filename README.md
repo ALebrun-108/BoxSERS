@@ -61,7 +61,7 @@ Labels associated to spectra can be in one of the following three forms:
 | ------------- | ------------------------------------ |
 | Binary        | [1 0 0 0], [0 0 0 1], [0 1 0 0], ... |
 | Integer       | 0, 3, 1 , ...                        |
-| Text          | sample_0, sample_3, sample_1, ...    |
+| Text          | Cholic, Deoxycholic, Lithocholic, ...    |
 
 ### Spectrum Visualization
 
@@ -76,9 +76,9 @@ from specmaster.useful_features import  spectro_plot, random_plot
 
 # spectra array = spec, raman shift column = wn
 random_plot(wn, spec, random_spectra=4)  # plots 4 randomly selected spectra
-spectro_plot(wn, spec[0])  # plots the first spectrum
-spectro_plot(wn, spec[0], spec[2]) # plots first and third spectra
-spectro_plot(wn, spec)  # plots all spectra
+#spectro_plot(wn, spec[0])  # plots the first spectrum
+#spectro_plot(wn, spec[0], spec[2]) # plots first and third spectra
+#spectro_plot(wn, spec)  # plots all spectra
 ```
 ![test image size](fig/random5_plot.png)
 ### Database Splitting
