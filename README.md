@@ -109,21 +109,30 @@ distribution_plot(lab_train, title='Train set distribution')
 ```python
 # Code example:
 
-from specmaster.augmentation import SpecAugPipeline 
+from specmaster.data_aug import SpectroDataAug
 
 # creating instance of SpecAugPipeline that is applied the spectra(spec) and the labels(lab)
 data_aug_pipeline = SpecAugPipeline(spec, lab)
 
 # following line corresponds to data augmentation method 
-data_aug_pipeline.aug_noise(noise_standard_deviation, iterations=2)
-data_aug_pipeline.aug_ioffset(intensity_offset_limits, iterations=2)
-data_aug_pipeline.aug_multiplier(multiplier_factor_limits, iterations=2)
-data_aug_pipeline.aug_linear_slope(slope_limits, intercept_limits, iterations=2)
-data_aug_pipeline.aug_wshift(param_wshft, iterations=2)
-data_aug_pipeline.aug_mixup(n_spec=2, alpha=0.40, iterations=2)
 
-# retrieving augmented data
-spec_aug, lab_aug = data_aug_pipeline.out()
+param_nse = 0.01
+x_noise, _ = SpDA.aug_noise(x_sample, y_train, param_nse, mode='check')
+spectro_plot(Wn, x_noise, x_sample, title='Noise')
+
+spec_nse, _  = SpectroDataAug.aug_noise(spec, lab, param_nse, mode='check')
+spec_mult_sup, _ = SpectroDataAug.aug_multiplier(spec, lab, 1+param_mult, mode='check')
+spec_mult_inf, _ = SpectroDataAug.aug_multiplier(spec, lab, 1-param_mult, mode='check')
+spectro_plot(Wn, spec, spec_nse, spec_mult_sup, spec_mult_inf,
+             legend=['origninal', 'noisy', 'multiplier sup' , 'multiplier inf'])
+
+spec_nse_aug, lab_nse  = SpectroDataAug.aug_noise(spec, lab, param_nse, quantity=2, mode='random')
+# stacks all generated spectra and originals in a single array
+spec_aug = np.vstack((x, spec_nse, spec_mult))
+lab_aug = np.vstack((lab, lab_nse, lab_mult))
+
+# spectra and labels are randomly mixed
+x_aug, y_aug = shuffle(x_aug, y_aug)
 ```
 
 ### Spectral Correction
