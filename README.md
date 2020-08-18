@@ -111,13 +111,13 @@ distribution_plot(lab_train, title='Train set distribution')
 
 from specmaster.data_aug import SpectroDataAug
 
-
 spec_nse, _  = SpectroDataAug.aug_noise(spec, lab, param_nse, mode='check')
 spec_mult_sup, _ = SpectroDataAug.aug_multiplier(spec, lab, 1+param_mult, mode='check')
 spec_mult_inf, _ = SpectroDataAug.aug_multiplier(spec, lab, 1-param_mult, mode='check')
-spectro_plot(Wn, spec, spec_nse, spec_mult_sup, spec_mult_inf,
-             legend=['origninal', 'noisy', 'multiplier sup' , 'multiplier inf'])
 
+leg = ['initial', 'noisy', 'multiplier superior', 'multiplier inferior']
+spectro_plot(Wn, spec, spec_nse, spec_mult_sup, spec_mult_inf, legend=leg)
+"""sdssd"""
 spec_nse, lab_nse = SpectroDataAug.aug_noise(spec, lab, param_nse, quantity=2, mode='random')
 spec_mul, lab_mul = SpectroDataAug.aug_multiplier(spec, lab, mult_lim, quantity=2, mode='random')
 
