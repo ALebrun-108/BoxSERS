@@ -63,11 +63,9 @@ Labels associated to spectra can be in one of the following three forms:
 | Integer       | 0, 3, 1 , ...                        |
 | Text          | Cholic, Deoxycholic, Lithocholic, ...    |
 
-### Spectrum Visualization
 
-Function | MySQL / MariaDB | PostgreSQL | SQLite
-:------------ | :-------------| :-------------| :-------------
-substr | :heavy_check_mark: |  :white_check_mark: | :heavy_check_mark:
+
+### Spectrum Visualization
 
 Fast and simple visualization of spectra as graphs 
 - **random_plot**: Returns a graph of a certain number of randomly selected spectra.
@@ -194,5 +192,11 @@ pca_model.pca_component(Wn, 2)
 x_pca = pca_model.transform_spectra(x_train)
 ```
 
+
+## Label support
+
+Function/Class | Interger Label | Binary label | Continuous Label
+:------------ | :-------------| :-------------| :-------------
+substr | :heavy_check_mark: |  :white_check_mark: | :heavy_check_mark:
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
