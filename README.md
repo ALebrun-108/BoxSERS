@@ -197,6 +197,9 @@ x_pca = pca_model.transform_spectra(x_train)
 
 Function/Class | Interger Label | Binary label | Continuous Label
 :------------ | :-------------| :-------------| :-------------
-substr | :heavy_check_mark: |  :white_check_mark: | :heavy_check_mark:
+substr | :heavy_check_mark: |   | :heavy_check_mark:
+
+
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
