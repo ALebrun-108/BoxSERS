@@ -197,7 +197,8 @@ x_pca = pca_model.transform_spectra(x_train)
 
 Function/Class | Interger Label | Binary label | Continuous Label
 :------------ | :-------------| :-------------| :-------------
-substr | :heavy_check_mark: | <br />  | :heavy_check_mark:
+`data_split` | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
+`distribution_plot` | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
 
 
 
