@@ -65,6 +65,10 @@ Labels associated to spectra can be in one of the following three forms:
 
 ### Spectrum Visualization
 
+Function | MySQL / MariaDB | PostgreSQL | SQLite
+:------------ | :-------------| :-------------| :-------------
+substr | :heavy_check_mark: |  :white_check_mark: | :heavy_check_mark:
+
 Fast and simple visualization of spectra as graphs 
 - **random_plot**: Returns a graph of a certain number of randomly selected spectra.
 - **spectro_plot**: Returns a graph of one or more selected spectra.
