@@ -1,5 +1,5 @@
-# SpecMaster: Advanced processing and machine learning for vibrational spectra
-Introduces **SpecMaster**, a complete and ready-to-use python library for the application of data augmentation, dimensional reduction, spectral correction, machine learning and other methods specially designed and adapted for vibrational spectra(Raman,FTIR, SERS, etc.). 
+# BoxSERS: Advanced processing and machine learning for vibrational spectra
+Introduces **BoxSERS**, a complete and ready-to-use python library for the application of data augmentation, dimensional reduction, spectral correction, machine learning and other methods specially designed and adapted for vibrational spectra(Raman,FTIR, SERS, etc.). 
 
 ![test image size](fig/CNN_RF6.png)
 
@@ -27,12 +27,16 @@ This project includes the following elements:
 
 ## Setup
 
-### SpecMaster Installation
+### BoxSERS Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install specmaster.
+#### Using pip 
 
 ```bash
 pip install specmaster
+```
+#### Using Git install
+```bash
+git install specmaster
 ```
 
 ### Requirements
