@@ -1,7 +1,6 @@
 
-![test image size](fig/Logo_v2.png)
-
-# BoxSERS: Advanced processing and machine learning for vibrational spectra
+![test image size](fig/Logo_V2_github.png)
+----
 Introduces **BoxSERS**, a complete and ready-to-use python library for the application of data augmentation, dimensional reduction, spectral correction, machine learning and other methods specially designed and adapted for vibrational spectra(Raman,FTIR, SERS, etc.). 
 
 ![test image size](fig/CNN_RF6.png)
