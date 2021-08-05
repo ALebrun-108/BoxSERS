@@ -7,15 +7,18 @@ Introduces **BoxSERS**, a complete and ready-to-use python library for the appli
 ## Table of contents
 * [General info](#general-info)
 * [Setup](#setup)
-* [Features](#Features)
-  * [Spectrum Visualization](#Spectrum-Visualization)
-  * [Database Splitting](#Database-Splitting)
-  * [Data Augmentation](#Data-Augmentation)
-  * [Spectral Correction](#Spectral-Correction)
-  * [Dimensional Reduction](#Dimensional-Reduction)
-  * [Unsupervised Machine Learning](#Unsupervised-Machine-Learning)
-  * [Supervised Machine Learning](#Supervised-Machine-Learning) 
-* [License](#License)
+  * [Getting Started](#getting-started)
+  * [BoxSERS Installation](#boxsers-installation)
+  * [Requirements](#requirements)
+* [Included Features](#included-features)
+  * [Spectrum Visualization](#spectrum-visualization)
+  * [Train/Val/Test Split](#trainvaltest-split)
+  * [Data Augmentation](#data-augmentation)
+  * [Spectral Correction](#spectral-correction)
+  * [Dimensional Reduction](#dimensional-reduction)
+  * [Unsupervised Machine Learning](#unsupervised-machine-learning)
+  * [Supervised Machine Learning](#supervised-machine-learning) 
+* [License](#license)
 
 ## General info
 This project includes the following elements: 
@@ -25,16 +28,21 @@ This project includes the following elements:
   - Machine learning application: 
 - A pre-trained machine learning model and a database of SERS bile acid spectra that were used in the article published by **Lebrun and Boudreau (2020)** and that can be used as a starting point to start using the specmaster package.
 
-## setup
+## Setup
 
+### Getting Started 
+
+It is strongly suggested to start with the two Jupyter notebook script which presents the complete procedure and describes each step in detail while adding information to make it easier to understand. 
+
+This project doesn't cover database conception and requires user to have completed this step before using this project.
 ### BoxSERS Installation
 
-#### From PypY
-
+From PypY
 ```bash
 pip install boxsers
 ```
-#### From Github 
+
+From Github 
 ```bash
 pip install git+git://https://github.com/ALebrun-108/BoxSERS.git
 ```
@@ -51,41 +59,44 @@ Listed below are the main modules needed to operate the codes:
 * Tensor flow (GPU or CPU)
 
 
-## Features
+## Included Features
 
-### Getting Started 
+This section includes the detailed description (utility, parameters, ...) for each function and class contained in the BoxSERS package 
 
-It is strongly suggested to start with the two Jupyter notebook script which presents the complete procedure and describes each step in detail while adding information to make it easier to understand. 
-
-This project doesn't cover database conception and requires user to have completed this step before using this project.
+### Label encoding
 
 Labels associated to spectra can be in one of the following three forms:
 
 | Label Type    | Examples                             |
 | ------------- | ------------------------------------ |
-| Binary        | [1 0 0 0], [0 0 0 1], [0 1 0 0], ... |
+| Text          | Cholic, Deoxycholic, Lithocholic, ...|
 | Integer       | 0, 3, 1 , ...                        |
-| Text          | Cholic, Deoxycholic, Lithocholic, ...    |
+| Binary        | [1 0 0 0], [0 0 0 1], [0 1 0 0], ... |
 
-
+Function/Class | Interger Label | Binary label | Continuous Label
+:------------ | :-------------| :-------------| :-------------
+`data_split` | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
+`distribution_plot` | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
 
 ### Spectrum Visualization
 
-Fast and simple visualization of spectra as graphs 
-- **random_plot**: Returns a graph of a certain number of randomly selected spectra.
-- **spectro_plot**: Returns a graph of one or more selected spectra.
+User-friendly functions that allow graphical visualization of spectra in Python.
+
+#### Spectrum_plot
 
 ```python
 # Code example:
 
-from specmaster.useful_features import  spectro_plot, random_plot
+from boxsers.visualtools import  spectro_plot, random_plot
 
 # spectra array = spec, raman shift column = wn
 random_plot(wn, spec, random_spectra=4)  # plots 4 randomly selected spectra
 spectro_plot(wn, spec[0], spec[2]) # plots first and third spectra
 ```
 ![test image size](fig/random5_plot.png)
-### Database Splitting
+
+
+### Train/Val/Test Split
 Splitting the database spectra into subsets that can be validated using distribution plot.
 
 - **data_split**: Generates two subsets of spectra from the input database.
@@ -94,7 +105,7 @@ Splitting the database spectra into subsets that can be validated using distribu
 ```python
 # Code example:
 
-from specmaster.useful_features import data_split, distribution_plot
+from boxsers.usefultools import data_split, distribution_plot
 
 # randomly splits the spectra(spec) and the labels(lab) into test and training subsets.
 (spec_train, spec_test, lab_train, lab_test) = data_split(spec, lab, test_size=0.4)  
@@ -113,7 +124,7 @@ distribution_plot(lab_train, title='Train set distribution')
 ```python
 # Code example:
 
-from specmaster.data_aug import SpectroDataAug
+from boxsers.dataugtools import SpectroDataAug
 
 spec_nse, _  = SpectroDataAug.aug_noise(spec, lab, param_nse, mode='check')
 spec_mult_sup, _ = SpectroDataAug.aug_multiplier(spec, lab, 1+param_mult, mode='check')
@@ -140,7 +151,7 @@ x_aug, y_aug = shuffle(x_aug, y_aug)
 ```python
 # Code example:
 
-from specmaster import baseline_subtraction, spectral_cut, spectral_normalization, spline_interpolation
+from boxsers.preprotools import baseline_subtraction, spectral_cut, spectral_normalization, spline_interpolation
 
 # interpolates with splines the spectra and converts them to a new raman shift range(new_wn)
 new_wn = np.linspace(500, 3000, 1000)
@@ -162,7 +173,7 @@ spec_cor, wn_cor = spectral_cut(spec, wn, wn_start, wn_end)
 ```python
 # Code example:
 
-from specmaster.dim_reduction import SpectroPCA, SpectroFA, SpectroICA
+from boxsers.dimreductools import SpectroPCA, SpectroFA, SpectroICA
 
 pca_model = SpectroPCA(n_comp=50)
 pca_model.fit_model(spec_train)
@@ -177,7 +188,7 @@ spec_pca = pca_model.transform_spectra(spec_test)
 ```python
 # Code example:
 
-from specmaster.machine_learning import SpectroGmixture, SpectroKmeans
+from boxsers.machine_learning import SpectroGmixture, SpectroKmeans
 
 kmeans_model = SpectroKmeans(n_cluster=5)
 kmeans_model.fit_model(spec_train)
@@ -187,7 +198,7 @@ kmeans_model.scatter_plot(spec_test)
 ### Supervised Machine Learning 
 * Convolutional Neural Networt (3 x Convolutional layer 1D , 2 x Dense layer) 
 ```python
-from specmaster.pca_model import SpectroPCA, SpectroFA, SpectroICA
+from boxsers.pca_model import SpectroPCA, SpectroFA, SpectroICA
 
 pca_model = SpectroICA(n_comp=50)
 pca_model.fit_model(x_train)
@@ -195,14 +206,6 @@ pca_model.scatter_plot(x_test, y_test, targets=classnames, comp_x=1, comp_y=2)
 pca_model.pca_component(Wn, 2)
 x_pca = pca_model.transform_spectra(x_train)
 ```
-
-
-## Label support
-
-Function/Class | Interger Label | Binary label | Continuous Label
-:------------ | :-------------| :-------------| :-------------
-`data_split` | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
-`distribution_plot` | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
 
 
 
