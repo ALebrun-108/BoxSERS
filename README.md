@@ -3,9 +3,18 @@
 ----
 Introduces **BoxSERS**, a complete and ready-to-use python library for the application of data augmentation, dimensional reduction, spectral correction, machine learning and other methods specially designed and adapted for vibrational spectra(Raman,FTIR, SERS, etc.). 
 
+## General info on the repository
+This GitHub repository includes the following elements : 
+
+* **BoxSERS package** : Complete and ready-to-use python library includind  for the application of methods designed and adapted for vibrational spectra(RamSERS, etc.)
+
+* **Jupyter notebooks** : Typical examples of BoxSERS package usage.
+  
+* **Raw and preprocessed data** :  Database of SERS bile acid spectra that were used (Raw and Preprocess form) in the article published by *Lebrun and Boudreau (2021)*. Can be used as a starting point to start using the BoxSERS package.
+
+Below, on this page, is also the package's installation guideline and an overview of its main functions.
 
 ## Table of contents
-* [General info](#general-info)
 * [Getting Started](#getting-started)
   * [BoxSERS Installation](#boxsers-installation)
   * [Requirements](#requirements)
@@ -18,17 +27,6 @@ Introduces **BoxSERS**, a complete and ready-to-use python library for the appli
   * [Unsupervised Machine Learning](#unsupervised-machine-learning)
   * [Supervised Machine Learning](#supervised-machine-learning) 
 * [License](#license)
-
-## General info
-This GitHub repository includes the following elements : 
-
-* **BoxSERS package** : Complete and ready-to-use python library includind  for the application of methods designed and adapted for vibrational spectra(RamSERS, etc.)
-
-* **Jupyter notebooks** : Typical examples of BoxSERS package usage.
-  
-* **Raw and preprocessed data** :  Database of SERS bile acid spectra that were used (Raw and Preprocess form) in the article published by *Lebrun and Boudreau (2021)*. Can be used as a starting point to start using the BoxSERS package.
-
-Below, on this page, is also the package's installation guideline and an overview of its main functions.
 
 
 ## Getting Started 
