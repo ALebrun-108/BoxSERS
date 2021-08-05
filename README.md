@@ -6,7 +6,7 @@ Introduces **BoxSERS**, a complete and ready-to-use python library for the appli
 
 ## Table of contents
 * [General info](#general-info)
-* [Setup](#Setup)
+* [Setup](#setup)
 * [Features](#Features)
   * [Spectrum Visualization](#Spectrum-Visualization)
   * [Database Splitting](#Database-Splitting)
@@ -18,7 +18,6 @@ Introduces **BoxSERS**, a complete and ready-to-use python library for the appli
 * [License](#License)
 
 ## General info
-
 This project includes the following elements: 
 - SpecMaster package: Covers methods for data augmentation, spectral correction, dimensional reduction and data visualization. Ready-to-use supervised and unsupervised machine learning models with several options are also included in this package.
 - Two Jupyter notebooks: Detailed examples of use of the specmaster package.
@@ -26,18 +25,18 @@ This project includes the following elements:
   - Machine learning application: 
 - A pre-trained machine learning model and a database of SERS bile acid spectra that were used in the article published by **Lebrun and Boudreau (2020)** and that can be used as a starting point to start using the specmaster package.
 
-## Setup
+## setup
 
 ### BoxSERS Installation
 
-#### Using pip 
+#### From PypY
 
 ```bash
-pip install specmaster
+pip install boxsers
 ```
-#### Using Git install
+#### From Github 
 ```bash
-git install specmaster
+pip install git+git://https://github.com/ALebrun-108/BoxSERS.git
 ```
 
 ### Requirements
