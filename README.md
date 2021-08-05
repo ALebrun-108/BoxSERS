@@ -6,8 +6,7 @@ Introduces **BoxSERS**, a complete and ready-to-use python library for the appli
 
 ## Table of contents
 * [General info](#general-info)
-* [Setup](#setup)
-  * [Getting Started](#getting-started)
+* [Getting Started](#getting-started)
   * [BoxSERS Installation](#boxsers-installation)
   * [Requirements](#requirements)
 * [Included Features](#included-features)
@@ -21,16 +20,18 @@ Introduces **BoxSERS**, a complete and ready-to-use python library for the appli
 * [License](#license)
 
 ## General info
-This project includes the following elements: 
-- SpecMaster package: Covers methods for data augmentation, spectral correction, dimensional reduction and data visualization. Ready-to-use supervised and unsupervised machine learning models with several options are also included in this package.
-- Two Jupyter notebooks: Detailed examples of use of the specmaster package.
-  - Data treatment: 
-  - Machine learning application: 
-- A pre-trained machine learning model and a database of SERS bile acid spectra that were used in the article published by **Lebrun and Boudreau (2020)** and that can be used as a starting point to start using the specmaster package.
+This GitHub repository includes the following elements : 
 
-## Setup
+* **BoxSERS package** : Complete and ready-to-use python library includind  for the application of methods designed and adapted for vibrational spectra(RamSERS, etc.)
 
-### Getting Started 
+* **Jupyter notebooks** : Typical examples of BoxSERS package usage.
+  
+* **Raw and preprocessed data** :  Database of SERS bile acid spectra that were used (Raw and Preprocess form) in the article published by *Lebrun and Boudreau (2021)*. Can be used as a starting point to start using the BoxSERS package.
+
+Below, on this page, is also the package's installation guideline and an overview of its main functions.
+
+
+## Getting Started 
 
 It is strongly suggested to start with the two Jupyter notebook script which presents the complete procedure and describes each step in detail while adding information to make it easier to understand. 
 
