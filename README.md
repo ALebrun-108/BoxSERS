@@ -43,7 +43,7 @@ pip install boxsers
 
 From Github 
 ```bash
-pip install git+git://https://github.com/ALebrun-108/BoxSERS.git
+pip install git+https://github.com/ALebrun-108/BoxSERS.git
 ```
 
 ### Requirements
