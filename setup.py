@@ -10,7 +10,7 @@ setup(
                       'tensorflow'],
     python_requires='>=3',
     # *strongly* suggested for sharing
-    version='0.1.0',
+    version='0.1.1',
     # The license can be anything you like
     license='MIT',
     description='Provides a full range of functionality to process and analyze vibrational spectra.',
