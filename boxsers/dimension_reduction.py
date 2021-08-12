@@ -1,10 +1,10 @@
 """
-Author: Alexis Lebrun (Master's student)
-School: Université Laval
+Author : Alexis Lebrun (PhD student)
 
-The "ramanbox.dimension_reduction" module includes three models for dimensionality reduction
-of vibrational spectra. The three techniques used are Principal Component Analysis, Factor Analysis
-and Independent Component Analysis.
+School : Université Laval (Qc, Canada)
+
+This module provides different techniques to perform dimensionality reduction of
+vibrational spectra.
 """
 import matplotlib.pyplot as plt
 import joblib

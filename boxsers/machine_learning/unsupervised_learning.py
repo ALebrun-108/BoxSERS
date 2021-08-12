@@ -1,8 +1,9 @@
 """
-Author: Alexis Lebrun (Master's student)
-School: Université Laval
+Author : Alexis Lebrun (PhD student)
 
-The "ramanbox.unsupervised_models" module includes ...
+School : Université Laval (Qc, Canada)
+
+This module provides several unsupervised learning models for the classification of vibrational spectra
 """
 import numpy as np
 from sklearn.cluster import KMeans

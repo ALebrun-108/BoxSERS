@@ -86,11 +86,11 @@ User-friendly functions that allow graphical visualization of spectra in Python.
 ```python
 # Code example:
 
-from boxsers.visualtools import  spectro_plot, random_plot
+from boxsers.visual_tools import spectro_plot, random_plot
 
 # spectra array = spec, raman shift column = wn
 random_plot(wn, spec, random_spectra=4)  # plots 4 randomly selected spectra
-spectro_plot(wn, spec[0], spec[2]) # plots first and third spectra
+spectro_plot(wn, spec[0], spec[2])  # plots first and third spectra
 ```
 ![test image size](fig/random5_plot.png)
 

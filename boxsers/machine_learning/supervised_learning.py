@@ -1,8 +1,9 @@
 """
-Author: Alexis Lebrun (Master's student)
-School: Université Laval
+Author : Alexis Lebrun (PhD student)
 
-The "ramanbox.unsupervised_models" module includes ...
+School : Université Laval (Qc, Canada)
+
+This module provides several supervised learning models for the classification of vibrational spectra
 """
 from sklearn.ensemble import RandomForestClassifier as RandF
 from sklearn.svm import SVC
@@ -283,7 +284,6 @@ class SpectroLDA(_MachineLearningClassifier):
     """ Linear Discriminant Analysis model object.
 
     Inherits several methods from the parent class "_MachineLearningClassifier".
-
     """
     def __init__(self):
         lda_model = LinearDiscriminantAnalysis()

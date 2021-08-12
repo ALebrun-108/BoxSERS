@@ -1,8 +1,9 @@
 """
-Author: Alexis Lebrun (Master's student)
-School: Université Laval
+Author : Alexis Lebrun (PhD student)
 
-The "ramanbox.preprocessing" module provides different functions for preprocessing spectra. These features
+School : Université Laval (Qc, Canada)
+
+This module provides different functions for preprocessing spectra. These features
 improve spectrum quality and can improve performance for machine learning applications.
 """
 import numpy as np

@@ -1,3 +1,3 @@
-from boxsers.machine_learning.classifier import SpectroRF, SpectroSVM, SpectroLDA
+from boxsers.machine_learning.supervised_learning import SpectroRF, SpectroSVM, SpectroLDA
 from boxsers.machine_learning.neural_networks import SpectroCNN
-from boxsers.machine_learning.unsupervised_models import SpectroGmixture, SpectroKmeans
+from boxsers.machine_learning.unsupervised_learning import SpectroGmixture, SpectroKmeans

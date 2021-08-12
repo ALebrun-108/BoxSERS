@@ -1,9 +1,10 @@
 """
-Author: Alexis Lebrun (Master's student)
-School: Université Laval
+Author : Alexis Lebrun (PhD student)
 
-The "ramanbox.data_augmentation" module provides various "data augmentation" functions, which generate
-new spectra by adding modifications to existing spectra.
+School : Université Laval (Qc, Canada)
+
+This module provides several data augmentation methods that generate new spectra by adding
+different variations to existing spectra.
 """
 import numpy as np
 from sklearn.utils import shuffle
@@ -45,6 +46,7 @@ def aug_linslope(sp, lab, slope_range, xinter_range, yinter_range=0, quantity=1,
 
     Return:
         (array) New spectra generated.
+
         (array) New labels generated.
     """
     # sp initialization, sp is forced to be a two-dimensional array
@@ -137,6 +139,7 @@ def aug_mixup(sp, lab, n_spec=2, alpha=0.5, quantity=1, mode='default', shuffle_
 
     Return:
         (array) New spectra generated.
+
         (array) New labels generated.
     """
     # sp initialization, sp is forced to be a two-dimensional array
@@ -232,6 +235,7 @@ def aug_multiplier(sp, lab, mult_range, quantity=1, shuffle_enabled=True):
 
     Return:
         (array) New spectra generated.
+
         (array) New labels generated.
     """
     # sp initialization, sp is forced to be a two-dimensional array
@@ -484,6 +488,7 @@ def aug_xshift(sp, lab, xshift_range, quantity=1, fill_mode='edge', fill_value=0
 
     Return:
         (array) New spectra generated.
+
         (array) New labels generated.
     """
     # sp initialization, sp is forced to be a two-dimensional array

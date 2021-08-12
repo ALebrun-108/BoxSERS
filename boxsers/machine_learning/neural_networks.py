@@ -1,9 +1,11 @@
 """
-Author: Alexis Lebrun (PhD's student)
-School: Université Laval
+Author : Alexis Lebrun (PhD student)
 
+School : Université Laval (Qc, Canada)
+
+This module provides a convolutional neural network model specifically designed for the
+classification of vibrational spectra.
 """
-import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
@@ -600,14 +602,6 @@ class SpectroCNN:
         features = keras_function([x_test])
         return features
 
-    def freeze(self, layername):
-        # TODO: à revoir
-        for idx, layer in enumerate(self.model.layers):
-            layer.trainable = False
-            if layer.name == layername:
-                break
-        self.compile_model()
-
     def save_model(self, save_path):
         """ Saves the model with its architecture, the current weight values and the current optimizer. """
         self.model.save(save_path)
@@ -673,7 +667,6 @@ def conv_model(shape_in, shape_out, nf_0=6, ks=5, batchnorm=True, dropout_rate=0
         x = layers.Dropout(dropout_rate)(x)
 
     outputs = layers.Dense(shape_out, activation=output_activation)(x)
-
     model = keras.Model(inputs, outputs)
 
     return model
@@ -681,5 +674,3 @@ def conv_model(shape_in, shape_out, nf_0=6, ks=5, batchnorm=True, dropout_rate=0
 
 if __name__ == '__main__':
     help(__name__)
-
-
