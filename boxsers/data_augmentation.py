@@ -12,7 +12,7 @@ from sklearn.utils import shuffle
 
 def aug_linslope(sp, lab, slope_range, xinter_range, yinter_range=0, quantity=1, shuffle_enabled=True):
     """
-    Generates new spectra by the addition of a linear slopes
+    Generates new spectra by the addition of a linear slopes.
 
     Parameters:
         sp : array
@@ -108,7 +108,7 @@ def aug_linslope(sp, lab, slope_range, xinter_range, yinter_range=0, quantity=1,
 
 def aug_mixup(sp, lab, n_spec=2, alpha=0.5, quantity=1, mode='default', shuffle_enabled=True):
     """
-    Generates new spectra by randomly mixing together several spectra with a Dirichlet
+    Randomly generates new spectra by mixing together several spectra with a Dirichlet
     probability distribution.
 
     This function is inspired by the Mixeup method proposed by zang (Zhang, Hongyi, et al. 2017).
@@ -212,7 +212,7 @@ def aug_mixup(sp, lab, n_spec=2, alpha=0.5, quantity=1, mode='default', shuffle_
 
 def aug_multiplier(sp, lab, mult_range, quantity=1, shuffle_enabled=True):
     """
-    Generates new spectra by adding multiplicative factors
+    Randomly generates new spectra with multiplicative factors applied
 
     Parameters:
         sp : array
@@ -283,7 +283,7 @@ def aug_multiplier(sp, lab, mult_range, quantity=1, shuffle_enabled=True):
 
 def aug_noise(sp, lab, snr=10, quantity=1, noise_type='proportional', shuffle_enabled=True, return_noise=False):
     """
-    Generates new spectra by adding random noise
+    Randomly generates new spectra with Gaussian noise added.
 
     Parameters:
         sp : array
