@@ -1,7 +1,9 @@
 
 ![test image size](fig/Logo_V3_github.png)
 ----
-Introduces **BoxSERS**, a complete and ready-to-use python library for the application of data augmentation, dimensional reduction, spectral correction, machine learning and other methods specially designed and adapted for vibrational spectra(Raman,FTIR, SERS, etc.). 
+**BoxSERS**, a powerful and ready-to-use python library providing several tools for the analysis of 
+vibrational spectra (Raman, FTIR, SERS, etc.), including features for data augmentation, 
+dimensional reduction, spectral correction and both supervised and unsupervised machine learning.
 
 ## General info on the repository
 This GitHub repository includes the following elements : 

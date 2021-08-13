@@ -3,7 +3,7 @@ Author : Alexis Lebrun (PhD student)
 
 School : Université Laval (Qc, Canada)
 
-This module provides a convolutional neural network model specifically designed for the
+This module provides neural network model specifically designed for the
 classification of vibrational spectra.
 """
 from tensorflow import keras
@@ -19,7 +19,7 @@ import numpy as np
 
 
 class SpectroCNN:
-    """ Convolutional Neural Networks(CNN) applied to spectra.
+    """ Convolutional Neural Network (CNN) for vibrational spectra classification.
 
     Parameters:
         shape_in : non-zero positive integer value
@@ -615,9 +615,7 @@ class SpectroCNN:
 
 def conv_model(shape_in, shape_out, nf_0=6, ks=5, batchnorm=True, dropout_rate=0.3,
                hidden_activation='relu', output_activation='softmax'):
-    """ Returns a sequential CNN model with an architecture inspired by the LeNet model.
-
-    Inspired by LeNet (Yann LeCun et al. , 1989)
+    """ Returns a CNN model with an architecture based on AlexNet.
 
     Parameters:
         shape_in : non-zero positive integer value
@@ -668,7 +666,6 @@ def conv_model(shape_in, shape_out, nf_0=6, ks=5, batchnorm=True, dropout_rate=0
 
     outputs = layers.Dense(shape_out, activation=output_activation)(x)
     model = keras.Model(inputs, outputs)
-
     return model
 
 

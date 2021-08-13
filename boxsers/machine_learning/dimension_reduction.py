@@ -394,6 +394,9 @@ class _DimReductionModel:
 class SpectroPCA(_DimReductionModel):
     """ Principal Component Analysis(PCA) model object.
 
+    Uses the class provided by scikit-learn, but adds new functionality, including visual features
+    to improve the analysis.
+
     Inherits several methods from the parent class "_DimReductionModel".
 
     Parameters:
@@ -493,19 +496,7 @@ class SpectroICA(_DimReductionModel):
         super().__init__(ica_model)
 
 
-class SpectroFA(_DimReductionModel):
-    """ Factor Analysis(FA) model object.
 
-    Inherits several methods from the parent class "_DimReductionModel".
-
-    Parameters:
-            n_comp : non-zero positive integer values, default=10
-                Number of model components to use.
-    """
-    def __init__(self, n_comp=10):
-        fa_model = FactorAnalysis(n_comp)  # sklearn FactorAnalysis model
-        # inherits the methods and arguments of the parent class _DimReductionModel
-        super().__init__(fa_model)
 
 
 if __name__ == "__main__":

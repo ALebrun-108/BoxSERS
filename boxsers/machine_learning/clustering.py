@@ -3,7 +3,7 @@ Author : Alexis Lebrun (PhD student)
 
 School : Université Laval (Qc, Canada)
 
-This module provides several unsupervised learning models for the classification of vibrational spectra
+This module provides unsupervised learning models for vibrational spectra cluster analysis.
 """
 import numpy as np
 from sklearn.cluster import KMeans
@@ -139,7 +139,7 @@ class _UnsupervisedModel:
 
 
 class SpectroKmeans(_UnsupervisedModel):
-    """ KMeans unsupervised model object
+    """ K-Means clustering model.
 
     Inherits several methods from the parent class "_UnsupervisedModel".
 
@@ -157,7 +157,7 @@ class SpectroKmeans(_UnsupervisedModel):
 
 
 class SpectroGmixture(_UnsupervisedModel):
-    """ Gaussian mixture unsupervised model object
+    """ Gaussian mixture probability distribution model.
 
     Inherits several methods from the parent class "_UnsupervisedModel".
 

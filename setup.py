@@ -12,7 +12,7 @@ setup(
     version='1.0.0',
     # The license can be anything you like
     license='MIT',
-    description='Provides a full range of functionality to process and analyze vibrational spectra.',
+    description='Provides a full range of features to process and analyze vibrational spectra.',
     # We will also need a readme eventually (there will be a warning)
     long_description=open('README_pypi.md').read(),
     long_description_content_type="text/markdown",

@@ -18,25 +18,6 @@ import tempfile
 logging.basicConfig(format='%(levelname)s:%(message)s')
 
 
-def remove_class(df, label):
-    """ Removes a specific label from a spectrum database.
-
-    Parameters:
-        df : pandas dataframe
-            Database with the spectra and their associated labels.
-
-        label : string(class names) or integer(label)
-            Label of the class to remove from the spectrum database.
-
-    Returns:
-        (pandas dataframe) Database following the subtraction of a specific label.
-    """
-    # removes all spectra associated with the label and resets the indexes
-    df = df[df.Classes != label].reset_index(drop=True)
-
-    return df
-
-
 def data_split(sp, lab, b_size, rdm_ste=None, print_report=False):
     """
     Randomly splits an initial set of spectra into two new subsets named in this
@@ -156,7 +137,7 @@ def load_rruff(directory):
 
 def ramanshift_converter(x, wl):
     """
-    Converts wavelength[nm] to Raman shifts[cm-1].
+    Converts wavelength [nm] to Raman shifts [cm-1].
 
     Parameters:
         x : array
@@ -176,7 +157,7 @@ def ramanshift_converter(x, wl):
 
 def wavelength_converter(x, wl):
     """
-    Convert Raman shifts[cm-1] to wavelengths[nm].
+    Convert Raman shifts [cm-1] to wavelengths [nm].
 
     Parameters:
         x : array
@@ -190,125 +171,7 @@ def wavelength_converter(x, wl):
                 Array shape = (n_pixels, ).
     """
     wavelength = 1/(1/wl-x/1E7)
-
     return wavelength
-
-
-def database_creator(directory, class_names=None, nfiles_class=None, checkorder=False, skiprows=2):
-    """
-    Returns a database (pandas dataframe) containing the spectra and the associated labels, along
-    with the array of x-axis values (Raman shift, wavelength, etc.) associated with the spectra.
-    TODO: changer creator pour generator
-
-    Notes:
-        Intended to be used only on the text files produced by the Raman spectrometer (Dboudreau)
-
-        Parameter nfiles_class is taken into account only if class_names contains more than one class.
-
-        The alphabetical order of the .txt files in the directory must be followed for the lists
-        or tupples class_names and nfiles_class.
-
-        Files in the directory must have the same wavelength calibration.
-
-        Files must follow the following format:
-            -First column = wavelenght or Raman shift
-            -Other columns = one spectra per column
-            -Apart from the files produced during the covid-19 crash, the first two rows at the top
-             correspond to the hyperspectral coordinates in x and y
-
-    Parameters:
-        directory : string
-            Directory (path) of the spectra files(.txt).
-
-        class_names : string, integer, list or tupple, default=None
-            Names associated to the classes present in the database.
-
-        nfiles_class : list or tupple, default=None
-            Number of (.txt) files in "directory" for each class contained in "class_names".
-
-        checkorder : boolean, default=False
-            If true, print the file names in the order used to build the database
-
-        skiprows : integer, default=2
-            Number of rows in .txt files to skip. With some exceptions (covid 19 crash), the
-            text files exported from the spectroRamanX always include two rows for hyperspectral
-            coordinates that need to be removed, which explains the default value of 2.
-
-    Returns:
-        (pandas dataframe) Database with the spectra and their associated labels.
-
-        (array) X-axis(wavenumber, wavelenght, Raman shift, etc.) used for the spectra.
-                Array shape = (n_pixels, ).
-    """
-    # labels list space allocation
-    labels = []
-    # retrieves all text files in the given directory
-    filenames = [f for f in os.listdir(directory) if f.endswith(".txt")]
-    filenames.sort()  # sort files in alphabetical order
-
-    if checkorder is True:
-        print(filenames)
-
-    if class_names is None:
-        # no class name is given, labels are set to "unknown" for all spectra
-        labels = ['unknown'] * len(filenames)
-    elif isinstance(class_names, (str, int)):
-        # all spectra belong to the same class, the same label is used for all spectra.
-        labels = [class_names] * len(filenames)
-    elif isinstance(class_names, (list, tuple)):
-        # different classes are used, different labels are given to spectra files
-        if len(class_names) == len(nfiles_class):
-            for i in range(len(class_names)):
-                x = [class_names[i]] * nfiles_class[i]
-                labels = labels + x
-        else:
-            raise ValueError('if class_names is a list or a tupple, its number of elements must correspond'
-                             'to the number of elements in nfiles_classes')
-    # space allocation for
-    dataframe = pd.DataFrame()
-    wn = []
-
-    for (name, lab) in zip(filenames, labels):
-        df = pd.read_csv(directory + name, header=None, decimal='.', sep=',', skiprows=skiprows, comment='#')
-        df = df.T
-        wn = df.to_numpy(dtype='float64')[0, 0:]
-        df.drop(df.index[0], inplace=True)  # Retire les index et les nombres d'ondes
-        df.insert(0, 'Classes', lab)  # Spécifie les labels pour chaques échantillons
-        dataframe = pd.concat([dataframe, df], ignore_index=True)
-    return dataframe, wn
-
-
-def import_sp(directory, skiprows=2):
-    """
-    Returns a database (pandas dataframe) containing the spectra and the associated labels, along
-    with the array of x-axis values (Raman shift, wavelength, etc.) associated with the spectra.
-
-    Notes:
-        Intended to be used only on the text files produced by the Raman spectrometer (Dboudreau)
-
-    Parameters:
-        directory : string
-            Directory of the folder that contains the spectra files(.txt).
-
-        skiprows : integer, default=2
-            Number of rows in .txt files to skip. With some exceptions (covid 19 crash), the
-            text files exported from the spectroRamanX always include two rows for hyperspectral
-            coordinates that need to be removed, which explains the default value of 2.
-
-    Returns:
-        (array) Extracted spectrum(s). Array shape = (n_spectra, n_pixels) for multiple spectra and (n_pixels,)
-                for a single spectrum.
-
-        (array) X-axis(wavenumber, wavelenght, Raman shift, etc.) used for the spectra.
-                Array shape = (n_pixels, ).
-    """
-
-    #  First column corresponds to the Raman shift or wavelength.
-    wn = np.loadtxt(directory, delimiter=',', skiprows=skiprows)[:, 0]
-    #  Other columns contain the intensity values of the spectra
-    sp = np.loadtxt(directory, delimiter=',', skiprows=skiprows)[:, 1:]
-
-    return sp, wn
 
 
 if __name__ == "__main__":

@@ -3,8 +3,8 @@ Author : Alexis Lebrun (PhD student)
 
 School : Université Laval (Qc, Canada)
 
-This module provides different functions for preprocessing spectra. These features
-improve spectrum quality and can improve performance for machine learning applications.
+This module provides functions to preprocess vibrational spectra. These features
+improve spectrum quality and can improve performance for machine learning applications
 """
 import numpy as np
 from scipy import interpolate, sparse
@@ -13,7 +13,7 @@ from scipy.signal import savgol_filter, medfilt
 from sklearn.preprocessing import normalize
 
 
-def baseline_subtraction(sp: object, lam: object = 1e4, p: object = 0.001, niter: object = 10, return_baseline: object = False) -> object:
+def als_baseline_cor(sp, lam=1e4, p=0.001, niter=10, return_baseline=False):
     """
     Subtracts the baseline signal from the spectrum(s) using Asymmetric Least Squares estimation.
     (Updated April 2020: improved computing speed)
@@ -65,9 +65,9 @@ def baseline_subtraction(sp: object, lam: object = 1e4, p: object = 0.001, niter
         return sp-baseline
 
 
-def median_filter(sp, ks=3):
+def cosmic_filter(sp, ks=3):
     """
-    Applies a median filter to the spectrum(s). Useful to remove cosmic rays
+    Apply a median filter to the spectrum(s) to remove cosmic rays.
 
     Parameters:
         sp : array
@@ -81,8 +81,7 @@ def median_filter(sp, ks=3):
         (array) Filtered spectrum(s). Array shape = (n_spectra, n_pixels) for multiple spectra and (n_pixels,)
                 for a single spectrum.
     """
-    # sp is forced to be a two-dimensional array
-    sp = np.array(sp, ndmin=2)
+    sp = np.array(sp, ndmin=2)  # sp is forced to be a two-dimensional array
     ks_1d = (1, ks)
     sp_med = medfilt(sp, ks_1d)  # from scipy
     return sp_med

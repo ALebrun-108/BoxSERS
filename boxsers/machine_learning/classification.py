@@ -3,7 +3,7 @@ Author : Alexis Lebrun (PhD student)
 
 School : Université Laval (Qc, Canada)
 
-This module provides several supervised learning models for the classification of vibrational spectra
+This module provides supervised learning models for vibrational spectra classification.
 """
 from sklearn.ensemble import RandomForestClassifier as RandF
 from sklearn.svm import SVC
@@ -244,7 +244,7 @@ class _MachineLearningClassifier:
 
 
 class SpectroRF(_MachineLearningClassifier):
-    """ Random Forest classifier model object.
+    """ Random forest classification model.
 
     Inherits several methods from the parent class "_MachineLearningClassifier".
 
@@ -266,7 +266,7 @@ class SpectroRF(_MachineLearningClassifier):
 
 
 class SpectroSVM(_MachineLearningClassifier):
-    """ Support Vector Machine classifier model object.
+    """ Support Vector Machine classification model.
 
     Inherits several methods from the parent class "_MachineLearningClassifier".
 

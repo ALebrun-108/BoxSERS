@@ -3,115 +3,19 @@ Author : Alexis Lebrun (PhD student)
 
 School : Université Laval (Qc, Canada)
 
-This module provides several data augmentation methods that generate new spectra by adding
-different variations to existing spectra.
+This module provides funtions to generate new spectra by adding different variations to
+existing spectra.
 """
 import numpy as np
 from sklearn.utils import shuffle
 
 
-def aug_linslope(sp, lab, slope_range, xinter_range, yinter_range=0, quantity=1, shuffle_enabled=True):
-    """
-    Generates new spectra by the addition of a linear slopes.
-
-    Parameters:
-        sp : array
-            Input Spectrum(s), array shape = (n_spectra, n_pixels) for multiple spectra and (n_pixels,)
-            for a single spectrum.
-
-        lab : array
-            Labels assigned the "sp" spectra, array shape = (n_spectra,) for integer labels
-            and (n_spectra, n_classes) for binary labels.
-
-        slope_range : integer, list or tuple
-            Values delimiting the range of possible values for random slope. These values can be
-            specified as follows:
-                - slope_range = (a, b) or [a, b] --> a is the left limit value and b is the right limit value.
-                - slope_range = a --> -a is the left limit value and +a is the right limit value.
-
-        xinter_range : integer, list or tuple
-            Values delimiting the possible random values for the x-intersept. These values are specified the
-            same way as "slope_range".
-
-        yinter_range : integer, list or tuple
-            Values delimiting the possible random values for the y-intersept. Same effect as adding an offset
-            with the function "aug_ioffset". These values are specified the same way as "slope_range".
-
-        quantity : integer, default=1
-            Quantity of new spectra generated for one spectrum. If less than or equal to zero, no new
-            spectrum is generated.
-
-        shuffle_enabled : boolean, default=True
-            If True, shuffles the new spectra.
-
-    Return:
-        (array) New spectra generated.
-
-        (array) New labels generated.
-    """
-    # sp initialization, sp is forced to be a two-dimensional array
-    sp = np.array(sp, ndmin=2)
-    # lab initialization, lab is forced to be a two-dimensional array
-    lab = np.array(lab, ndmin=2)
-
-    sp_len = sp.shape[1]   # spectrum length
-    lab_len = lab.shape[1]  # label length
-    # defining empty arrays to contain the newly generated data
-    sp_aug = np.empty(shape=(1, sp_len))
-    lab_aug = np.empty(shape=(1, lab_len))
-    pixels = np.arange(0, sp_len)
-    # average intensity is calculated for each spectra
-    sp_mean = np.mean(sp, axis=1, keepdims=True)
-
-    if isinstance(slope_range, list):
-        slope_range_inf = slope_range[0]
-        slope_range_sup = slope_range[1]
-    elif isinstance(slope_range, (float, int)):
-        slope_range_inf = -slope_range
-        slope_range_sup = slope_range
-
-    if isinstance(xinter_range, list):
-        xinter_range_inf = xinter_range[0]
-        xinter_range_sup = xinter_range[1]
-    elif isinstance(xinter_range, (float, int)):
-        xinter_range_inf = -xinter_range
-        xinter_range_sup = xinter_range
-
-    if isinstance(yinter_range, list):
-        yinter_range_inf = yinter_range[0]
-        yinter_range_sup = yinter_range[1]
-    elif isinstance(yinter_range, (float, int)):
-        yinter_range_inf = -yinter_range
-        yinter_range_sup = +yinter_range
-
-    for i in range(quantity):
-        # random slope and intercept(s) generation using uniform distribution
-        slope = np.random.uniform(slope_range_inf, slope_range_sup, (sp.shape[0], 1)) * sp_mean
-        xinter = -np.random.uniform(xinter_range_inf, xinter_range_sup, (sp.shape[0], 1)) * sp_len
-        yinter = np.random.uniform(yinter_range_inf, yinter_range_sup, (sp.shape[0], 1)) * sp_mean
-        # generation of new spectra
-        sp_slope = sp + ((pixels+xinter)*slope/sp_len + yinter)
-        # new spectra & labels are appended together
-        sp_aug = np.vstack((sp_aug, sp_slope))
-        lab_aug = np.vstack((lab_aug, lab))
-
-    # removal of the first empty sample
-    sp_aug = np.delete(sp_aug, 0, 0)
-    lab_aug = np.delete(lab_aug, 0, 0)
-
-    if shuffle_enabled:
-        # spectra and labels are randomly mixed
-        sp_aug, lab_aug = shuffle(sp_aug, lab_aug)
-
-    return sp_aug, lab_aug
-
-
 def aug_mixup(sp, lab, n_spec=2, alpha=0.5, quantity=1, mode='default', shuffle_enabled=True):
     """
-    Randomly generates new spectra by mixing together several spectra with a Dirichlet
-    probability distribution.
+    Randomly generates new spectra by mixing together several spectra with
+    a Dirichlet probability distribution.
 
-    This function is inspired by the Mixeup method proposed by zang (Zhang, Hongyi, et al. 2017).
+    This function is inspired of the Mixeup method proposed by zang (Zhang, Hongyi, et al. 2017).
 
     Parameters:
         sp : array
@@ -385,7 +289,7 @@ def aug_noise(sp, lab, snr=10, quantity=1, noise_type='proportional', shuffle_en
 
 def aug_offset(sp, lab, offset_range, quantity=1, shuffle_enabled=True):
     """
-    Generates new spectra by adding an intensity offset
+    Randomly generates new spectra shifted in intensity.
 
     Parameters:
         sp : array
@@ -457,7 +361,7 @@ def aug_offset(sp, lab, offset_range, quantity=1, shuffle_enabled=True):
 
 def aug_xshift(sp, lab, xshift_range, quantity=1, fill_mode='edge', fill_value=0, shuffle_enabled=True):
     """
-    Generates new spectra with pixel shifts
+    Randomly generates new spectra shifted in wavelength.
 
     Parameters:
         sp : array
@@ -539,7 +443,7 @@ def aug_xshift(sp, lab, xshift_range, quantity=1, fill_mode='edge', fill_value=0
 
 def _xshift(sp, x_shft, fill_mode, fill_value):
     """
-    Moves spectrum/spectra along the pixel axis. Uses the same parameters as the aug_pixelshift function
+    Moves spectrum/spectra along the pixel axis. Uses the same parameters as the aug_xshift function.
     """
 
     # initialization and space allocation for shft_sp and fill_value
@@ -566,6 +470,102 @@ def _xshift(sp, x_shft, fill_mode, fill_value):
         shft_sp[n, int(x_shft[n]):] = fill_value_right[n]
         shft_sp[n, :int(x_shft[n])] = sp[n, -int(x_shft[n]):]
     return shft_sp
+
+
+def aug_linslope(sp, lab, slope_range, xinter_range, yinter_range=0, quantity=1, shuffle_enabled=True):
+    """
+    Randomly generates new spectra with additional linear slopes.
+
+    Parameters:
+        sp : array
+            Input Spectrum(s), array shape = (n_spectra, n_pixels) for multiple spectra and (n_pixels,)
+            for a single spectrum.
+
+        lab : array
+            Labels assigned the "sp" spectra, array shape = (n_spectra,) for integer labels
+            and (n_spectra, n_classes) for binary labels.
+
+        slope_range : integer, list or tuple
+            Values delimiting the range of possible values for random slope. These values can be
+            specified as follows:
+                - slope_range = (a, b) or [a, b] --> a is the left limit value and b is the right limit value.
+                - slope_range = a --> -a is the left limit value and +a is the right limit value.
+
+        xinter_range : integer, list or tuple
+            Values delimiting the possible random values for the x-intersept. These values are specified the
+            same way as "slope_range".
+
+        yinter_range : integer, list or tuple
+            Values delimiting the possible random values for the y-intersept. Same effect as adding an offset
+            with the function "aug_ioffset". These values are specified the same way as "slope_range".
+
+        quantity : integer, default=1
+            Quantity of new spectra generated for one spectrum. If less than or equal to zero, no new
+            spectrum is generated.
+
+        shuffle_enabled : boolean, default=True
+            If True, shuffles the new spectra.
+
+    Return:
+        (array) New spectra generated.
+
+        (array) New labels generated.
+    """
+    # sp initialization, sp is forced to be a two-dimensional array
+    sp = np.array(sp, ndmin=2)
+    # lab initialization, lab is forced to be a two-dimensional array
+    lab = np.array(lab, ndmin=2)
+
+    sp_len = sp.shape[1]   # spectrum length
+    lab_len = lab.shape[1]  # label length
+    # defining empty arrays to contain the newly generated data
+    sp_aug = np.empty(shape=(1, sp_len))
+    lab_aug = np.empty(shape=(1, lab_len))
+    pixels = np.arange(0, sp_len)
+    # average intensity is calculated for each spectra
+    sp_mean = np.mean(sp, axis=1, keepdims=True)
+
+    if isinstance(slope_range, list):
+        slope_range_inf = slope_range[0]
+        slope_range_sup = slope_range[1]
+    elif isinstance(slope_range, (float, int)):
+        slope_range_inf = -slope_range
+        slope_range_sup = slope_range
+
+    if isinstance(xinter_range, list):
+        xinter_range_inf = xinter_range[0]
+        xinter_range_sup = xinter_range[1]
+    elif isinstance(xinter_range, (float, int)):
+        xinter_range_inf = -xinter_range
+        xinter_range_sup = xinter_range
+
+    if isinstance(yinter_range, list):
+        yinter_range_inf = yinter_range[0]
+        yinter_range_sup = yinter_range[1]
+    elif isinstance(yinter_range, (float, int)):
+        yinter_range_inf = -yinter_range
+        yinter_range_sup = +yinter_range
+
+    for i in range(quantity):
+        # random slope and intercept(s) generation using uniform distribution
+        slope = np.random.uniform(slope_range_inf, slope_range_sup, (sp.shape[0], 1)) * sp_mean
+        xinter = -np.random.uniform(xinter_range_inf, xinter_range_sup, (sp.shape[0], 1)) * sp_len
+        yinter = np.random.uniform(yinter_range_inf, yinter_range_sup, (sp.shape[0], 1)) * sp_mean
+        # generation of new spectra
+        sp_slope = sp + ((pixels+xinter)*slope/sp_len + yinter)
+        # new spectra & labels are appended together
+        sp_aug = np.vstack((sp_aug, sp_slope))
+        lab_aug = np.vstack((lab_aug, lab))
+
+    # removal of the first empty sample
+    sp_aug = np.delete(sp_aug, 0, 0)
+    lab_aug = np.delete(lab_aug, 0, 0)
+
+    if shuffle_enabled:
+        # spectra and labels are randomly mixed
+        sp_aug, lab_aug = shuffle(sp_aug, lab_aug)
+
+    return sp_aug, lab_aug
 
 
 if __name__ == "__main__":
