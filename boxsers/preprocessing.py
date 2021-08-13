@@ -88,7 +88,7 @@ def median_filter(sp, ks=3):
     return sp_med
 
 
-def spectral_normalization(sp, norm='l2'):
+def intensity_normalization(sp, norm='l2'):
     """
     Normalizes the spectrum(s) using one of the available norms in this function.
 
@@ -152,7 +152,7 @@ def savgol_smoothing(sp, window_length=9, p=3, degree=0):
 
 def spectral_cut(sp, wn, wn_start, wn_end, sub_mode='zero'):
     """
-    Subtracts a delimited part of the spectrum(s)
+    Subtracts or sets to zero a delimited spectral region of the spectrum(s)
 
     Parameters:
         sp : array

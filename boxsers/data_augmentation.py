@@ -108,7 +108,10 @@ def aug_linslope(sp, lab, slope_range, xinter_range, yinter_range=0, quantity=1,
 
 def aug_mixup(sp, lab, n_spec=2, alpha=0.5, quantity=1, mode='default', shuffle_enabled=True):
     """
-    Generates new spectra using a linear combinaison process inspired by (Zhang, Hongyi, et al. 2017).
+    Generates new spectra by randomly mixing together several spectra with a Dirichlet
+    probability distribution.
+
+    This function is inspired by the Mixeup method proposed by zang (Zhang, Hongyi, et al. 2017).
 
     Parameters:
         sp : array
