@@ -278,7 +278,7 @@ def aug_multiplier(sp, lab, mult_range, quantity=1, shuffle_enabled=True):
     return sp_aug, lab_aug
 
 
-def aug_noise(sp, lab, snr, quantity=1, noise_type='proportional', shuffle_enabled=True, return_noise=False):
+def aug_noise(sp, lab, snr=10, quantity=1, noise_type='proportional', shuffle_enabled=True, return_noise=False):
     """
     Generates new spectra by adding random noise
 

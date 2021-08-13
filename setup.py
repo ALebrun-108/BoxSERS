@@ -1,7 +1,7 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(
-    name='boxsers',
+    name='boxsers_7',
     url='https://github.com/ALebrun-108/BoxSERS',
     author='Alexis Lebrun',
     author_email='alexis.lebrun.1@ulaval.ca',
