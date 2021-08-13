@@ -209,4 +209,4 @@ x_pca = pca_model.transform_spectra(x_train)
 
 
 ## License
-[MIT](https://choosealicense.com/licenses/mit/)
+[MIT](LICENCE.txt)
