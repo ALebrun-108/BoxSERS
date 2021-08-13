@@ -7,3 +7,6 @@ from boxsers.preprocessing import spectral_normalization, spline_interpolation, 
 from boxsers.misc_tools import data_split, database_creator, load_rruff, ramanshift_converter,\
     wavelength_converter, import_sp
 from boxsers.visual_tools import random_plot, spectro_plot, class_plot, distribution_plot
+
+# Version of the boxsers package
+__version__ = "1.0.0"

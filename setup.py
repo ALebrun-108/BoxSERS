@@ -6,11 +6,10 @@ setup(
     author='Alexis Lebrun',
     author_email='alexis.lebrun.1@ulaval.ca',
     # dependencies
-    install_requires=['joblib', 'numpy', 'pandas', 'scikit-learn', 'matplotlib', 'scipy', 'seaborn', 'keras',
-                      'tensorflow'],
-    python_requires='>=3',
+    install_requires=[],
+    python_requires='>=3.6',
     # *strongly* suggested for sharing
-    version='0.1.1',
+    version='1.0.0',
     # The license can be anything you like
     license='MIT',
     description='Provides a full range of functionality to process and analyze vibrational spectra.',
@@ -22,5 +21,5 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    packages=find_packages(),
+    packages=["boxsers", "boxsers.machine_learning"],
 )
