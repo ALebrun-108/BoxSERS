@@ -205,8 +205,3 @@ pca_model.scatter_plot(x_test, y_test, targets=classnames, comp_x=1, comp_y=2)
 pca_model.pca_component(Wn, 2)
 x_pca = pca_model.transform_spectra(x_train)
 ```
-
-
-
-## License
-[MIT](Lhttps://github.com/ALebrun-108/BoxSERS/blob/master/LICENSE.txt)
