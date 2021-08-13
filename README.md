@@ -209,4 +209,4 @@ x_pca = pca_model.transform_spectra(x_train)
 
 
 ## License
-[MIT](LICENCE.txt)
+[MIT](Lhttps://github.com/ALebrun-108/BoxSERS/blob/master/LICENSE.txt)
