@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='boxsers_7',
+    name='boxsers_8',
     url='https://github.com/ALebrun-108/BoxSERS',
     author='Alexis Lebrun',
     author_email='alexis.lebrun.1@ulaval.ca',
@@ -12,7 +12,8 @@ setup(
     version='1.0.0',
     # The license can be anything you like
     license='MIT',
-    description='Provides a full range of features to process and analyze vibrational spectra.',
+    description='Python package that provides a full range of functionality to process and analyze vibrational'
+                ' spectra (Raman, SERS, FTIR, etc.).',
     # We will also need a readme eventually (there will be a warning)
     long_description=open('README_pypi.md').read(),
     long_description_content_type="text/markdown",
