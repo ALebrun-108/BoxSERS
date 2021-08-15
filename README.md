@@ -68,7 +68,7 @@ Listed below are the main modules needed to operate the codes:
 The labels associated with the spectra can be either integer values (single column) or binary values (multiple columns).
 
 
-####Example of labels for three classes that correspond to three bile acids:
+#### Example of labels for three classes that correspond to three bile acids:
 
 | Bile acid  	| Integer label (1 column) 	| Binary label (3 columns) 	|
 |------------------	|:-------------:	|:------------:	|
