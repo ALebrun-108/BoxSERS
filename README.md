@@ -10,8 +10,10 @@ This GitHub repository includes the following elements :
 
 * **BoxSERS package** : Complete and ready-to-use python library includind  for the application of methods designed and adapted for vibrational spectra(RamSERS, etc.)
 
+
 * **Jupyter notebooks** : Typical examples of BoxSERS package usage.
   
+
 * **Raw and preprocessed data** :  Database of SERS bile acid spectra that were used (Raw and Preprocess form) in the article published by *Lebrun and Boudreau (2021)*. Can be used as a starting point to start using the BoxSERS package.
 
 Below, on this page, is also the package's installation guideline and an overview of its main functions.
@@ -20,6 +22,7 @@ Below, on this page, is also the package's installation guideline and an overvie
 * [Getting Started](#getting-started)
   * [BoxSERS Installation](#boxsers-installation)
   * [Requirements](#requirements)
+  * [Label Information](#label-information)
 * [Included Features](#included-features)
   * [Module misc_tools](#module-misc_tools)
   * [Module visual_tools](#module-visual_tools)
@@ -28,7 +31,7 @@ Below, on this page, is also the package's installation guideline and an overvie
   * [Module dimension reduction](#module-dimension_reduction)
   * [Module clustering](#module-clustering)
   * [Module classification](#module-classification)
-* [Label Information](#label-information)
+
 
 
 ## Getting Started 
@@ -61,6 +64,18 @@ Listed below are the main modules needed to operate the codes:
 * Matplotlib
 * Tensor flow (GPU or CPU)
 
+### Label information
+
+The labels associated with the spectra can be either integer values (single column) or binary values (multiple columns).
+
+
+####Example of labels for three classes that correspond to three bile acids:
+
+| Bile acid  	| Integer label (1 column) 	| Binary label (3 columns) 	|
+|------------------	|:-------------:	|:------------:	|
+| Cholic acid          	|       0       	|    [1 0 0]   	|
+| Lithocholic acid        	|       1       	|    [0 1 0]   	|
+| Deoxycholic acid        	|       2       	|    [0 0 1]   	|
 
 ## Included Features
 This section includes the detailed description (utility, parameters, ...) for each function and
@@ -97,33 +112,7 @@ This module provides different tools to visualize vibrational spectra quickly.
 * **distribution_plot :** Return a bar plot that represents the distributions of spectra for each classes in
   a given set of spectra
 
-```python
-# Code example:
-
-from boxsers.usefultools import data_split, distribution_plot
-
-# randomly splits the spectra(spec) and the labels(lab) into test and training subsets.
-(spec_train, spec_test, lab_train, lab_test) = data_split(spec, lab, test_size=0.4)  
-# resulting train|test set proportions = 0.6|0.4
-
-
-# plots the classes distribution within the training set.
-distribution_plot(lab_train, title='Train set distribution')
-```
-![test image size](fig/distribution.png)
-
-```python
-# Code example:
-
-from boxsers.visual_tools import spectro_plot, random_plot
-
-# spectra array = spec, raman shift column = wn
-random_plot(wn, spec, random_spectra=4)  # plots 4 randomly selected spectra
-spectro_plot(wn, spec[0], spec[2])  # plots first and third spectra
-```
-![test image size](fig/random5_plot.png)
-
-
+  
 ### Module ``preprocessing``
 This module provides functions to preprocess vibrational spectra. These features
 improve spectrum quality and can improve performance for machine learning applications.
@@ -150,17 +139,7 @@ improve spectrum quality and can improve performance for machine learning applic
 ```python
 # Code example:
 
-from boxsers.preprotools import baseline_subtraction, spectral_cut, spectral_normalization, spline_interpolation
-
-# interpolates with splines the spectra and converts them to a new raman shift range(new_wn)
-new_wn = np.linspace(500, 3000, 1000)
-spec_cor = spline_interpolation(spec, wn, new_wn)
-# removes the baseline signal measured with the als method 
-(spec_cor, baseline) = baseline_subtraction(spec, lam=1e4, p=0.001, niter=10)
-# normalizes each spectrum individually so that the maximum value equals one and the minimum value zero 
-spec_cor = spectral_normalization(spec)
-# removes part of the spectra delimited by the Raman shift values wn_start and wn_end 
-spec_cor, wn_cor = spectral_cut(spec, wn, wn_start, wn_end)
+from boxsers.preprocessing import als_baseline_cor, spectral_cut, intensity_normalization,spline_interpolation
 ```
 ![test image size](fig/correction.png)
 
@@ -190,24 +169,7 @@ existing spectra.
 ```python
 # Code example:
 
-from boxsers.dataugtools import SpectroDataAug
-
-spec_nse, _  = SpectroDataAug.aug_noise(spec, lab, param_nse, mode='check')
-spec_mult_sup, _ = SpectroDataAug.aug_multiplier(spec, lab, 1+param_mult, mode='check')
-spec_mult_inf, _ = SpectroDataAug.aug_multiplier(spec, lab, 1-param_mult, mode='check')
-
-legend = ['initial', 'noisy', 'multiplier superior', 'multiplier inferior']
-spectro_plot(wn, spec, spec_nse, spec_mult_sup, spec_mult_inf, legend=legend)
-
-spec_nse, lab_nse = SpectroDataAug.aug_noise(spec, lab, param_nse, quantity=2, mode='random')
-spec_mul, lab_mul = SpectroDataAug.aug_multiplier(spec, lab, mult_lim, quantity=2, mode='random')
-
-# stacks all generated spectra and originals in a single array
-spec_aug = np.vstack((x, spec_nse, spec_mul))
-lab_aug = np.vstack((lab, lab_nse, lab_mul))
-
-# spectra and labels are randomly mixed
-x_aug, y_aug = shuffle(x_aug, y_aug)
+from boxsers.data_augmentation import aug_noise
 ```
 
 ### Module ``dimension_reduction``
@@ -217,13 +179,7 @@ vibrational spectra.
 * **SpectroPCA** : Principal Component Analysis (PCA) model object.
 
 ```python
-from boxsers.pca_model import SpectroPCA, SpectroFA, SpectroICA
-
-pca_model = SpectroICA(n_comp=50)
-pca_model.fit_model(x_train)
-pca_model.scatter_plot(x_test, y_test, targets=classnames, comp_x=1, comp_y=2)
-pca_model.pca_component(Wn, 2)
-x_pca = pca_model.transform_spectra(x_train)
+from boxsers.machine_learning import SpectroPCA
 ```
 ![test image size](fig/data_reduce.png)
 
@@ -239,11 +195,7 @@ This module provides unsupervised learning models for vibrational spectra cluste
 ```python
 # Code example:
 
-from boxsers.machine_learning import SpectroGmixture, SpectroKmeans
-
-kmeans_model = SpectroKmeans(n_cluster=5)
-kmeans_model.fit_model(spec_train)
-kmeans_model.scatter_plot(spec_test)
+from boxsers.machine_learning import SpectroKmeans, SpectroGmixture
 ```
 
 ### Module ``classification``
@@ -263,18 +215,3 @@ This module provides neural network model specifically designed for the
 classification of vibrational spectra.
 
 * **SpectroCNN** : Convolutional Neural Network (CNN) for vibrational spectra classification.
-
-## Label information
-
-Labels associated to spectra can be in one of the following three forms:
-
-| Label Type    | Examples                             |
-| ------------- | ------------------------------------ |
-| Text          | Cholic, Deoxycholic, Lithocholic, ...|
-| Integer       | 0, 3, 1 , ...                        |
-| Binary        | [1 0 0 0], [0 0 0 1], [0 1 0 0], ... |
-
-Function/Class | Interger Label | Binary label | Continuous Label
-:------------ | :-------------| :-------------| :-------------
-`data_split` | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:
-`distribution_plot` | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark:

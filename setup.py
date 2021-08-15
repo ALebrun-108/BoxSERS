@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='boxsers_8',
+    name='boxsers',
     url='https://github.com/ALebrun-108/BoxSERS',
     author='Alexis Lebrun',
     author_email='alexis.lebrun.1@ulaval.ca',
