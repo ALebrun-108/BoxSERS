@@ -36,8 +36,7 @@ Below, on this page, is also the package's installation guideline and an overvie
 
 ## Getting Started 
 
-It is strongly suggested to start with the two Jupyter notebook script which presents the complete 
-procedure and describes each step in detail while adding information to make it easier to understand. 
+It is advisable to start with the Jupyter notebook  that present the complete procedure and describe each step in detail while adding information to facilitate understanding. 
 
 This project doesn't cover database conception and requires user to have
 completed this step before using this project.
