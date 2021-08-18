@@ -11,7 +11,7 @@ This GitHub repository includes the following elements :
 * **BoxSERS package** : Complete and ready-to-use python library includind  for the application of methods designed and adapted for vibrational spectra(RamSERS, etc.)
 
 
-* **Jupyter notebooks (soon to be published )** : Typical examples of BoxSERS package usage.
+* **Jupyter notebooks ** : Typical examples of BoxSERS package usage.
   
 
 * **Raw and preprocessed data (soon to be published)** :  Database of SERS bile acid spectra that were used (Raw and Preprocess form) in the article submitted by *Lebrun and Boudreau (2021)*. Can be used as a starting point to start using the BoxSERS package.
