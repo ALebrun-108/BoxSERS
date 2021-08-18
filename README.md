@@ -226,21 +226,12 @@ existing spectra.
 
 * **aug_linslope** : Randomly generates new spectra with additional linear slopes
 
-```python
-# Code example:
-
-from boxsers.data_augmentation import aug_noise
-```
 
 ### Module ``dimension_reduction``
 This module provides different techniques to perform dimensionality reduction of
 vibrational spectra.
 
 * **SpectroPCA** : Principal Component Analysis (PCA) model object.
-
-```python
-from boxsers.machine_learning import SpectroPCA
-```
 
 
 ### Module ``clustering``
@@ -251,11 +242,6 @@ This module provides unsupervised learning models for vibrational spectra cluste
 
 * **SpectroGmixture** : Gaussian mixture probability distribution model.
 
-```python
-# Code example:
-
-from boxsers.machine_learning import SpectroKmeans, SpectroGmixture
-```
 
 ### Module ``classification``
 This module provides supervised learning models for vibrational spectra classification.
