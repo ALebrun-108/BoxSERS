@@ -14,9 +14,9 @@ This GitHub repository includes the following elements :
 * **Jupyter notebooks (soon to be published )** : Typical examples of BoxSERS package usage.
   
 
-* **Raw and preprocessed data (soon to be published)** :  Database of SERS bile acid spectra that were used (Raw and Preprocess form) in the article published by *Lebrun and Boudreau (2021)*. Can be used as a starting point to start using the BoxSERS package.
+* **Raw and preprocessed data (soon to be published)** :  Database of SERS bile acid spectra that were used (Raw and Preprocess form) in the article submitted by *Lebrun and Boudreau (2021)*. Can be used as a starting point to start using the BoxSERS package.
 
-Below, on this page, is also the package's installation guideline and an overview of its main functions.
+Below, on this page, there is also the package's installation guideline and an overview of its main functions.
 
 ## Table of contents
 * [Getting Started](#getting-started)
@@ -151,7 +151,9 @@ distribution_plot(lab_train, class_names=classnames, avg_line=True, title='Train
 distribution_plot(lab_val, class_names=classnames, avg_line=True, title='Validation set distribution')
 distribution_plot(lab_test, class_names=classnames, avg_line=True, title='Test set distribution')
 ```
-![test image size](fig/distribution_plots.png)
+![test image size](fig/distribution_plots_2.png)
+
+
 ### Module ``preprocessing``
 This module provides functions to preprocess vibrational spectra. These features
 improve spectrum quality and can improve performance for machine learning applications.
@@ -177,10 +179,29 @@ improve spectrum quality and can improve performance for machine learning applic
 
 ```python
 # Code example:
+import numpy as np
+from boxsers.preprocessing import savgol_smoothing, als_baseline_cor, intensity_normalization
+from boxsers.visual_tools import spectro_plot
 
-from boxsers.preprocessing import als_baseline_cor, spectral_cut, intensity_normalization,spline_interpolation
+# Two spectrum are selected randomly 
+random_index = np.random.randint(0, sp.shape[0]-1, 2)
+sp_sample = sp[random_index]  # selected spectra
+label_a = label[random_index[0]]  # class corresponding to the first spectrum
+label_b = label[random_index[1]]  # class corresponding to the second spectrum
+
+# 1) Subtracts the baseline signal from the spectra
+sp_bc = als_baseline_cor(sp_sample, lam=1e4, p=0.001, niter=10, return_baseline=False)
+# 2) Smoothes the spectra
+sp_bc_svg = savgol_smoothing(sp_bc, window_length=15, p=3, degree=0)
+# 3) Normalizes the spectra 
+sp_bc_svg_norm = intensity_normalization(sp_bc_svg, norm='maxmin')
+
+# Graphs visualization : 
+legend=(label_a, label_b)
+spectro_plot(wn, sp_sample, title='Raw spectra', legend=legend, save_path='raw_spectra.pdf')
+spectro_plot(wn, sp_bc_svg_norm[0], sp_bc_svg_norm[1], y_space=1, title='BC. + Svg. + Norm. spectra', legend=legend, save_path='prepro_spectra.pdf')
 ```
-![test image size](fig/correction.png)
+![test image size](fig/preprocessing_plots.png)
 
 
 ### Module ``data_augmentation``
