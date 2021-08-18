@@ -198,8 +198,8 @@ sp_bc_svg_norm = intensity_normalization(sp_bc_svg, norm='maxmin')
 
 # Graphs visualization : 
 legend=(label_a, label_b)
-spectro_plot(wn, sp_sample, title='Raw spectra', legend=legend, save_path='raw_spectra.pdf')
-spectro_plot(wn, sp_bc_svg_norm[0], sp_bc_svg_norm[1], y_space=1, title='BC. + Svg. + Norm. spectra', legend=legend, save_path='prepro_spectra.pdf')
+spectro_plot(wn, sp_sample, title='Raw spectra', legend=legend')
+spectro_plot(wn, sp_bc_svg_norm[0], sp_bc_svg_norm[1], y_space=1, title='BC. + Svg. + Norm. spectra', legend=legend)
 ```
 ![test image size](fig/preprocessing_plots.png)
 
