@@ -1,5 +1,5 @@
 
-![test image size](fig/Logo_V5_github.png)
+![test image size](fig/Logo_V6_github.png)
 ----
 **BoxSERS**, a powerful and ready-to-use python package providing several tools for the analysis of 
 vibrational spectra (Raman, FTIR, SERS, etc.), including features for data augmentation, 
