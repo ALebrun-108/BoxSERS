@@ -111,7 +111,47 @@ This module provides different tools to visualize vibrational spectra quickly.
 * **distribution_plot :** Return a bar plot that represents the distributions of spectra for each classes in
   a given set of spectra
 
-  
+```python
+# Code example:
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler, LabelEncoder, LabelBinarizer
+
+from boxsers.misc_tools import data_split
+from boxsers.visual_tools import distribution_plot
+
+
+df = pd.read_hdf('Bile_acids_27_07_2020.h5', key='df')  # Load bile acids dataframe
+wn = np.load('Raman_shift_27_07_2020.npy')  # Load Wavenumber (Raman shift)
+classnames = df['Classes'].unique()  
+
+display(df)  # Prints a detailed overview of the imported dataframe "df"
+
+# Features extraction: Exports dataframe spectra as a numpy array (value type = float64).
+sp = df.iloc[:, 1:].to_numpy()
+# Labels extraction: Export dataframe classes into a numpy array of string values.
+label = df.loc[:, 'Classes'].values
+
+
+# String to integer labels conversion: 
+labelencoder = LabelEncoder()  # Creating instance of LabelEncoder
+lab_int = labelencoder.fit_transform(label)  # 0, 3, 2, ...
+
+# String to binary labels conversion: 
+labelbinarizer = LabelBinarizer()  # Creating instance of LabelBinarizer
+lab_binary = labelbinarizer.fit_transform(label)  # [1 0 0 0] [0 0 0 1] [0 1 0 0], ...
+
+
+# Train/Validation/Test sets splitting 
+(sp_train, sp_b, lab_train, lab_b) = data_split(sp, label, b_size=0.30, rdm_ste=None, print_report=False)
+(sp_val, sp_test, lab_val, lab_test) = data_split(sp_b, lab_b, b_size=0.50, rdm_ste=None, print_report=False)
+
+# Visualization of spectrum distributions
+distribution_plot(lab_train, class_names=classnames, avg_line=True, title='Train set distribution')
+distribution_plot(lab_val, class_names=classnames, avg_line=True, title='Validation set distribution')
+distribution_plot(lab_test, class_names=classnames, avg_line=True, title='Test set distribution')
+```
+![test image size](fig/distribution_plots.png)
 ### Module ``preprocessing``
 This module provides functions to preprocess vibrational spectra. These features
 improve spectrum quality and can improve performance for machine learning applications.
