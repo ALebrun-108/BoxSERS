@@ -306,7 +306,7 @@ def class_plot(wn, sp, lab, y_space=0, std_color='grey', std_alpha=0.6,
 
 
 def distribution_plot(lab, bar_width=0.8, avg_line=False, class_names=None,  title=None,  ylabel='Number of samples',
-                      xlabel=None, color='orange', fontsize=10, fig_width=6.08, fig_height=3.8,
+                      xlabel=None, color='orange', fontsize=10, fig_width=5.168, fig_height=3.23,
                       save_path=None):
     """
     Return a bar plot that represents the distributions of spectra for each classes in
