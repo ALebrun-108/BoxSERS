@@ -1,6 +1,12 @@
 
+
 ![test image size](fig/Logo_BoxSERS.png)
 ----
+[![DOI](https://zenodo.org/badge/273074387.svg)](https://zenodo.org/badge/latestdoi/273074387)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
+
 **BoxSERS**, a powerful and ready-to-use python package providing several tools for the analysis of 
 vibrational spectra (Raman, FTIR, SERS, etc.), including features for data augmentation, 
 dimensional reduction, spectral correction and both supervised and unsupervised machine learning.
