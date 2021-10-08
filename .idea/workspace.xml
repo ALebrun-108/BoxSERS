@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="94856563-fcd4-402f-871b-a5d5ca6e74c9" name="Default Changelist" comment="visual tool modif" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1wJGyS9ejCl6tvfvRhuyscWLPb0" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Alexis\PycharmProjects\BoxSERS" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="94856563-fcd4-402f-871b-a5d5ca6e74c9" name="Default Changelist" comment="" />
+      <created>1628169531437</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1628169531437</updated>
+      <workItem from="1628169533614" duration="1458000" />
+      <workItem from="1628176587896" duration="11000" />
+      <workItem from="1628280801621" duration="66000" />
+      <workItem from="1628280904617" duration="308000" />
+      <workItem from="1628538371059" duration="93000" />
+      <workItem from="1628539009348" duration="327000" />
+      <workItem from="1628708596080" duration="1717000" />
+      <workItem from="1628712934378" duration="644000" />
+      <workItem from="1628781161834" duration="20000" />
+      <workItem from="1628792801422" duration="7528000" />
+      <workItem from="1628801834071" duration="2972000" />
+      <workItem from="1628869976412" duration="2322000" />
+      <workItem from="1628872576569" duration="4826000" />
+      <workItem from="1628878724240" duration="3375000" />
+      <workItem from="1628885277910" duration="1116000" />
+      <workItem from="1628999739706" duration="277000" />
+      <workItem from="1629000055400" duration="545000" />
+      <workItem from="1629057663522" duration="643000" />
+      <workItem from="1629304445860" duration="1440000" />
+      <workItem from="1631021659657" duration="407000" />
+    </task>
+    <task id="LOCAL-00001" summary="Logo added">
+      <created>1628170914245</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1628170914245</updated>
+    </task>
+    <task id="LOCAL-00002" summary="BoxSERS and setup added">
+      <created>1628281034975</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1628281034975</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Issue with _init_.py files fixed.">
+      <created>1628539200543</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1628539200543</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Issue with _init_.py files fixed.">
+      <created>1628797899888</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1628797899888</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Issue with _init_.py files fixed.">
+      <created>1628870015642</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1628870015642</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Issue with _init_.py files fixed.">
+      <created>1628872096741</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1628872096741</updated>
+    </task>
+    <task id="LOCAL-00007" summary="gitignore added">
+      <created>1628872190273</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1628872190273</updated>
+    </task>
+    <task id="LOCAL-00008" summary="gitignore added&#10;Licence.txt added&#10;setup modified">
+      <created>1628876416455</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1628876416457</updated>
+    </task>
+    <task id="LOCAL-00009" summary="name and docstring changes">
+      <created>1628883459243</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1628883459243</updated>
+    </task>
+    <task id="LOCAL-00010" summary="name and docstring changes">
+      <created>1628887362283</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1628887362283</updated>
+    </task>
+    <task id="LOCAL-00011" summary="new logo">
+      <created>1629000004311</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1629000004311</updated>
+    </task>
+    <task id="LOCAL-00012" summary="new logo">
+      <created>1629000063427</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1629000063427</updated>
+    </task>
+    <task id="LOCAL-00013" summary="visual tool modif">
+      <created>1631021720978</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1631021720978</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Logo added" />
+    <MESSAGE value="BoxSERS and setup added" />
+    <MESSAGE value="Issue with _init_.py files fixed." />
+    <MESSAGE value="gitignore added" />
+    <MESSAGE value="gitignore added&#10;Licence.txt added&#10;setup modified" />
+    <MESSAGE value="name and docstring changes" />
+    <MESSAGE value="new logo" />
+    <MESSAGE value="visual tool modif" />
+    <option name="LAST_COMMIT_MESSAGE" value="visual tool modif" />
+  </component>
+</project>
