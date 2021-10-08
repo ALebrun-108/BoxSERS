@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: Lebrun
+  given-names: Alexis
+  orcid: "https://orcid.org/0000-0002-7616-2087"
+title: "BoxSERS"
+version: 1.0.2
+doi: 10.5281/zenodo.5557906
+date-released: 2021-10-08
+url: "https://github.com/ALebrun-108/BoxSERS"
