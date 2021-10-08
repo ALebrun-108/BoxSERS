@@ -4,7 +4,7 @@ Author : Alexis Lebrun (PhD student)
 School : Université Laval (Qc, Canada)
 
 This module provides funtions to generate new spectra by adding different variations to
-existing spectra.
+existing spectra...
 """
 import numpy as np
 from sklearn.utils import shuffle
