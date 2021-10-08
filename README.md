@@ -3,7 +3,7 @@
 ![test image size](fig/Logo_BoxSERS.png)
 ----
 [![DOI](https://zenodo.org/badge/273074387.svg)](https://zenodo.org/badge/latestdoi/273074387)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/ALebrun-108/BoxSERS/blob/master/LICENSE.txt)
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/ALebrun-108/BoxSERS/graphs/commit-activity)
 
