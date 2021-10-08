@@ -1,5 +1,5 @@
 
-![test image size](fig/Logo_V6_github.png)
+![test image size](fig/Logo_BoxSERS.png)
 ----
 **BoxSERS**, a powerful and ready-to-use python package providing several tools for the analysis of 
 vibrational spectra (Raman, FTIR, SERS, etc.), including features for data augmentation, 
@@ -151,7 +151,7 @@ distribution_plot(lab_train, class_names=classnames, avg_line=True, title='Train
 distribution_plot(lab_val, class_names=classnames, avg_line=True, title='Validation set distribution')
 distribution_plot(lab_test, class_names=classnames, avg_line=True, title='Test set distribution')
 ```
-![test image size](fig/distribution_plots_2.png)
+![test image size](fig/distribution_plots.png)
 
 
 ### Module ``preprocessing``
