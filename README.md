@@ -20,7 +20,8 @@ This GitHub repository includes the following elements :
 * **Jupyter notebooks** : Typical examples of BoxSERS package usage.
   
 
-* **Raw data** :  Database of SERS bile acid spectra that were used (Raw and Preprocess form) in the article submitted by *Lebrun and Boudreau (2021)*. Can be used as a starting point to start using the BoxSERS package.
+* **Raw data** :  Database of SERS bile acid spectra that were used (Raw and Preprocess form) in the article submitted by *Lebrun and Boudreau (2021)*(doi: 10.1177/00037028221077119) can be used as a starting point to start using the BoxSERS package.
+
 
 Below, on this page, there is also the package's installation guideline and an overview of its main functions.
 
