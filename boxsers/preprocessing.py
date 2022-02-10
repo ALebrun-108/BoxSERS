@@ -61,8 +61,8 @@ def als_baseline_cor(sp, lam=1e4, p=0.001, niter=10, return_baseline=False):
 
     if return_baseline:
         return sp-baseline, baseline
-    else:
-        return sp-baseline
+
+    return sp-baseline
 
 
 def cosmic_filter(sp, ks=3):
@@ -87,21 +87,24 @@ def cosmic_filter(sp, ks=3):
     return sp_med
 
 
-def intensity_normalization(sp, norm='l2'):
-    """
-    Normalizes the spectrum(s) using one of the available norms in this function.
+def spectral_normalization(sp, norm='l2'):
+    """ Normalizes the spectrum(s) using one of the available norms in this function.
+
+    Notes:
+        The snv norm corresponds to 'Standard Normal Variate' method.
 
     Parameters:
         sp : array
             Input Spectrum(s). Array shape = (n_spectra, n_pixels) for multiple spectra and (n_pixels,)
              for a single spectrum.
 
-        norm : {'l2', 'l1', 'max', 'maxmin'}, default = 'l2'
-            Norm used to normalize each spectrum.
-                - 'l2': The norm is the square root of the sum of the squared intensity values of the spectrum.
-                - 'l1': The norm is the sum of the absolute intensity values of the spectrum.
-                - 'max': The norm is the maximum absolute intensity value of the spectrum.
-                - 'maxmin': Norm max with the minimum intensity value of the spectrum set to zero.
+        norm : {'l2', 'l1', 'max', 'maxmin', 'snv'}, default = 'max'
+            Procedure used to normalize/scale each spectrum.
+                - 'l2': The sum of the squared values of the spectrum is equal to 1.
+                - 'l1': The sum of the absolute values of the spectrum is equal to 1.
+                - 'max': The maximum value of the spectrum is equal to 1.
+                - 'minmax': The values of the spectrum are scaled between 0 and 1.
+                - 'snv': The mean and the standard deviation of the spectrum are respectively equal to 0 and 1.
 
     Returns:
         (array) Normalized spectrum(s). Array shape = (n_spectra, n_pixels) for multiple spectra and (n_pixels,)
@@ -109,17 +112,22 @@ def intensity_normalization(sp, norm='l2'):
     """
     # sp is forced to be a two-dimensional array
     sp = np.array(sp, ndmin=2)
+
+    # max, min, mean, std calculation for each spectrum
+    sp_max = np.max(sp, axis=1, keepdims=True)
+    sp_min = np.min(sp, axis=1, keepdims=True)
+    sp_mean = np.mean(sp, axis=1, keepdims=True)
+    sp_std = np.std(sp, axis=1, keepdims=True)
+
     # normalization operations
-    if norm == 'maxmin':
-        # max/min calculation for each spectrum
-        sp_max = np.max(sp, axis=1, keepdims=True)
-        sp_min = np.min(sp, axis=1, keepdims=True)
-        sp_norm = (sp-sp_min)/(sp_max-sp_min)
-    elif norm in {'l2', 'l1', 'max'}:
-        sp_norm = normalize(sp, norm=norm)  # from sklearn
-    else:
-        raise ValueError(norm, 'is not among the following valid choices:\'l2\', \'l1\', \'max\', \'maxmin\'')
-    return sp_norm
+    if norm in {'l2', 'l1', 'max'}:
+        return normalize(sp, norm=norm)  # from sklearn
+    if norm == 'minmax':
+        return (sp-sp_min)/(sp_max-sp_min)
+    if norm == 'snv':
+        return (sp-sp_mean)/sp_std
+
+    raise ValueError(norm, 'is not among the following valid choices:\'l2\', \'l1\', \'max\', \'minmax\', \'snv\'')
 
 
 def savgol_smoothing(sp, window_length=9, p=3, degree=0):
@@ -200,8 +208,8 @@ def spectral_cut(sp, wn, wn_start, wn_end, sub_mode='zero'):
         sp_cut = np.concatenate([sp_l, sp_r], axis=1)
         wn_cut = np.concatenate([wn_l, wn_r])
         return sp_cut, wn_cut
-    else:
-        raise ValueError('invalid sub_mode among \'zero\' and \'remove\'')
+
+    raise ValueError('invalid sub_mode among \'zero\' and \'remove\'')
 
 
 def spline_interpolation(sp, wn, new_wn, degree=1, same_w=False):
