@@ -1,5 +1,5 @@
 """
-Author : Alexis Lebrun (PhD student)
+Author : Alexis Lebrun (PhD. student)
 
 School : Université Laval (Qc, Canada)
 
@@ -28,17 +28,20 @@ class _UnsupervisedModel:
         """ Returns the model current status """
         return self.status
 
-    def train_model(self, sp):
+    def train_model(self, sp, y=None):
         """ Fits the model on a given set of spectra.
 
         Parameters:
             sp : array
                 Input Spectra, array shape = (n_spectra, n_pixels).
+
+            y : Ignored, default=None
+                Not used, present here for API consistency by convention
         """
         self.model.fit(sp)
         self.status = 'trained'
 
-    def predict_spectra(self, sp):
+    def predict_spectra(self, sp, y=None):
         """ Associates each spectrum with the closest model clusters
 
         Notes:
@@ -48,6 +51,9 @@ class _UnsupervisedModel:
             sp : array
                 Input Spectrum(s). Array shape = (n_spectra, n_pixels) for multiple spectra and
                  (n_pixels,) for a single spectrum.
+
+            y : Ignored, default=None
+                Not used, present here for API consistency by convention
         Return:
             (array) Predicted clusters for each spectrum . Array shape = (n_spectra,)
         """

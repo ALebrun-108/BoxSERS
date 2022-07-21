@@ -210,7 +210,7 @@ class _MachineLearningClassifier:
         # creates a figure object
         fig = plt.figure(figsize=(fig_width, fig_height))
         # add an axes object
-        ax = fig.add_subplot(1, 1, 1)
+        ax = fig.add_subplot(1, 1, 1)  # nrows, ncols, index
         # plot a Seaborn heatmap with the confusion matrix
         sns.heatmap(conf_matrix, annot=True, cmap=color_map, fmt=fmt, cbar=False, annot_kws={"fontsize": fontsize},
                     square=True)

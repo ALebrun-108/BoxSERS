@@ -197,7 +197,7 @@ class SpectroCNN:
                 Spectra used to train the model. Array shape = (n_spectra, n_pixels).
 
             y_train : array
-                Labels assigned the "x_train" spectra. Array shape = (n_spectra,) for integer labels and
+                Labels assigned to "x_train" spectra. Array shape = (n_spectra,) for integer labels and
                 (n_spectra, n_classes) for binary labels.
 
             val_data : list or tuple of two numpy arrays, default=None
@@ -407,7 +407,7 @@ class SpectroCNN:
                 (n_pixels,) for a single spectrum.
 
             y_test : array
-                Labels assigned the "x_test" spectra. Array shape = (n_spectra,) for integer labels
+                Labels assigned to "x_test" spectra. Array shape = (n_spectra,) for integer labels
                 and (n_spectra, n_classes) for binary labels.
 
         Returns:
@@ -435,7 +435,7 @@ class SpectroCNN:
                 (n_pixels,) for a single spectrum.
 
             y_test : array
-                Labels assigned the "x_test" spectra. Array shape = (n_spectra,) for integer labels
+                Labels assigned to "x_test" spectra. Array shape = (n_spectra,) for integer labels
                 and (n_spectra, n_classes) for binary labels.
 
         Returns:
@@ -473,7 +473,7 @@ class SpectroCNN:
                 Input Spectra. Array shape = (n_spectra, n_pixels).
 
             y_test : array
-                Labels assigned the "x_test" spectra. Array shape = (n_spectra,) for integer labels
+                Labels assigned to "x_test" spectra. Array shape = (n_spectra,) for integer labels
                 and(n_spectra, n_classes) for binary labels.
 
             digits : non-zero positive integer values, default=3
@@ -517,7 +517,7 @@ class SpectroCNN:
                 Input Spectra. Array shape = (n_spectra, n_pixels).
 
             y_test : array
-                Labels assigned the "x_test" spectra. Array shape = (n_spectra,) for integer labels
+                Labels assigned to "x_test" spectra. Array shape = (n_spectra,) for integer labels
                 and(n_spectra, n_classes) for binary labels.
 
             normalize : {'true', 'pred', None}, default=None
@@ -594,7 +594,7 @@ class SpectroCNN:
         return conf_matrix
 
     def features_extractor(self, x_test, layer_name):
-        # TODO: à revoir
+        # TODO: To be revised
         x_test = np.array(x_test, ndmin=2)
         x_test = x_test.reshape((x_test.shape[0], x_test.shape[1], 1))
         layer = self.model.get_layer(name=layer_name)

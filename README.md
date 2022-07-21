@@ -38,6 +38,7 @@ Below, on this page, there is also the package's installation guideline and an o
   * [Module dimension reduction](#module-dimension_reduction)
   * [Module clustering](#module-clustering)
   * [Module classification](#module-classification)
+  * [Module validation_metrics](#module-validation_metrics)
 
 
 
@@ -267,3 +268,12 @@ This module provides neural network model specifically designed for the
 classification of vibrational spectra.
 
 * **SpectroCNN** : Convolutional Neural Network (CNN) for vibrational spectra classification.
+
+
+### Module ``validation_metrics``
+
+* **cf_matrix** :  
+
+
+* **clf_report** : 
+

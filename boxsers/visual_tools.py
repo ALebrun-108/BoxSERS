@@ -7,11 +7,12 @@ This module provides different tools to visualize vibrational spectra quickly.
 """
 import matplotlib.pyplot as plt
 import numpy as np
+from boxsers._boxsers_utils import _lightdark_switch
 
 
 def random_plot(wn, sp, random_spectra, y_space=0, title=None, xlabel='Raman Shift (cm$^{-1}$)',
-                ylabel='Intensity (a.u.)', line_width=1.5, line_style='solid', grid=True,
-                fontsize=10, fig_width=6.08, fig_height=3.8, save_path=None):
+                ylabel='Intensity (a.u.)', line_width=1.5, line_style='solid', darktheme=False,
+                grid=True, fontsize=10, fig_width=6.08, fig_height=3.8, save_path=None):
     """
     Plot a number of randomly selected spectra from a set of spectra.
 
@@ -44,6 +45,9 @@ def random_plot(wn, sp, random_spectra, y_space=0, title=None, xlabel='Raman Shi
         line_style : string, default='solid'
             Plot line style(s).
 
+        darktheme : boolean, default=False
+            If True, returns a plot with a dark background.
+
         grid : boolean, default=True
             If True, a grid is displayed.
 
@@ -59,7 +63,6 @@ def random_plot(wn, sp, random_spectra, y_space=0, title=None, xlabel='Raman Shi
         save_path : string, default=None
             Path where the figure is saved. If None, saving does not occur.
             Recommended format : .png, .pdf
-
     """
     if random_spectra > 0:
         if sp.ndim > 1:  # when this condition is not true, the parameter random_spectra is not taken into account
@@ -73,26 +76,42 @@ def random_plot(wn, sp, random_spectra, y_space=0, title=None, xlabel='Raman Shi
     else:
         raise ValueError('random_spectra must be an integer greater than zero')
 
+    # update theme related parameters
+    frame_color, bg_color, alpha_value = _lightdark_switch(darktheme)
     # creates a figure object
     fig = plt.figure(figsize=(fig_width, fig_height))
     # add an axes object
-    ax = fig.add_subplot(1, 1, 1)
+    ax = fig.add_subplot(1, 1, 1)  # nrows, ncols, index
     y_space_sum = 0  # the y_space starts at zero
     for s in sp:
         # plots random spectra
         ax.plot(wn, s + y_space_sum, lw=line_width, ls=line_style)
         y_space_sum += y_space  # adds an offset for the next spectrum
+    ax = plt.gca()  # get the current Axes instance
+
     # titles settings
-    ax.set_title(title, fontsize=fontsize+1.2)  # sets the plot title, 1.2 points larger font size
-    ax.set_xlabel(xlabel, fontsize=fontsize)  # sets the x-axis label
-    ax.set_ylabel(ylabel, fontsize=fontsize)  # sets the y-axis label
+    ax.set_title(title, fontsize=fontsize+1.2, color=frame_color)  # sets the plot title, 1.2 points larger font size
+    ax.set_xlabel(xlabel, fontsize=fontsize, color=frame_color)  # sets the X-axis label
+    ax.set_ylabel(ylabel, fontsize=fontsize, color=frame_color)  # sets the Y-axis label
+
     # tick settings
     ax.minorticks_on()
-    ax.tick_params(axis='both', which='major', labelsize=fontsize-2)  # 2.0 points smaller font size
-    ax.tick_params(axis='both', which='minor')
+    ax.tick_params(axis='both', which='major',
+                   labelsize=fontsize-2,  # 2.0 points smaller font size
+                   color=frame_color)
+    ax.tick_params(axis='both', which='minor', color=frame_color)
+    ax.tick_params(axis='x', colors=frame_color)  # setting up X-axis values color
+    ax.tick_params(axis='y', colors=frame_color)  # setting up Y-axis values color
+    for spine in ['top', 'bottom', 'left', 'right']:
+        ax.spines[spine].set_color(frame_color)  # setting up spines color
+
     if grid is True:
         # adds a grid
-        ax.grid(alpha=0.4)
+        ax.grid(alpha=alpha_value)
+
+    # set figure and axes facecolor
+    fig.set_facecolor(bg_color)
+    ax.set_facecolor(bg_color)
     # adjusts subplot params so that the subplot(s) fits in to the figure area
     fig.tight_layout()
     # save figure
@@ -102,7 +121,7 @@ def random_plot(wn, sp, random_spectra, y_space=0, title=None, xlabel='Raman Shi
 
 
 def spectro_plot(wn, *sp, y_space=0, title=None, xlabel='Raman Shift (cm$^{-1}$)', ylabel='Intensity (a.u.)',
-                 legend=None, line_width=1.5, line_style='solid', color=None, grid=True,
+                 legend=None, line_width=1.5, line_style='solid', color=None, darktheme=False, grid=True,
                  fontsize=10, fig_width=6.08, fig_height=3.8, save_path=None):
     """
     Returns a plot with the selected spectrum(s)
@@ -140,6 +159,9 @@ def spectro_plot(wn, *sp, y_space=0, title=None, xlabel='Raman Shift (cm$^{-1}$)
         color : string, default=None
             Plot line color(s).
 
+        darktheme : boolean, default=False
+            If True, returns a plot with a dark background.
+
         grid : boolean, default=False
             If True, a grid is displayed.
 
@@ -156,34 +178,51 @@ def spectro_plot(wn, *sp, y_space=0, title=None, xlabel='Raman Shift (cm$^{-1}$)
             Path where the figure is saved. If None, saving does not occur.
             Recommended format : .png, .pdf
     """
+    # update theme related parameters
+    frame_color, bg_color, alpha_value = _lightdark_switch(darktheme)
 
     # creates a figure object
     fig = plt.figure(figsize=(fig_width, fig_height))
     # add an axes object
-    ax = fig.add_subplot(1, 1, 1)
+    ax = fig.add_subplot(1, 1, 1)  # nrows, ncols, index
     y_space_sum = 0  # the y_space starts at zero
-
     if color is not None:
         ax.set_prop_cycle(color=color)
     for s in sp:
         # plots all the input spectra
-        ax.plot(wn, s.T + y_space_sum, linewidth=line_width, linestyle=line_style, label='a')
+        ax.plot(wn, s.T + y_space_sum, lw=line_width, ls=line_style, label='a')
         y_space_sum += y_space  # adds an offset for the next spectrum
+    ax = plt.gca()  # get the current Axes instance
+
     # titles settings
-    ax.set_title(title, fontsize=fontsize+1.2)  # sets the plot title, 1.2 points larger font size
-    ax.set_xlabel(xlabel, fontsize=fontsize)  # sets the x-axis title
-    ax.set_ylabel(ylabel, fontsize=fontsize)  # sets the y-axis title
+    ax.set_title(title, fontsize=fontsize + 1.2, color=frame_color)  # sets the plot title, 1.2 points larger font size
+    ax.set_xlabel(xlabel, fontsize=fontsize, color=frame_color)  # sets the X-axis label
+    ax.set_ylabel(ylabel, fontsize=fontsize, color=frame_color)  # sets the Y-axis label
+
     # tick settings
     ax.minorticks_on()
-    ax.tick_params(axis='both', which='major', labelsize=fontsize-2)  # 2.0 points smaller font size
-    ax.tick_params(axis='both', which='minor')
+    ax.tick_params(axis='both', which='major',
+                   labelsize=fontsize - 2,  # 2.0 points smaller font size
+                   color=frame_color)
+    ax.tick_params(axis='both', which='minor', color=frame_color)
+    ax.tick_params(axis='x', colors=frame_color)  # setting up X-axis values color
+    ax.tick_params(axis='y', colors=frame_color)  # setting up Y-axis values color
+    for spine in ['top', 'bottom', 'left', 'right']:
+        ax.spines[spine].set_color(frame_color)  # setting up spines color
+
     if grid is True:
         # adds a grid
-        ax.grid(alpha=0.4)
+        ax.grid(alpha=alpha_value)
+
     # adds a legend
     if legend is not None:
         handles, labels = ax.get_legend_handles_labels()
-        ax.legend(reversed(handles), reversed(legend), fontsize=fontsize-2)
+        ax.legend(reversed(handles), reversed(legend), fontsize=fontsize-2,
+                  facecolor=bg_color, labelcolor=frame_color)
+
+    # set figure and axes facecolor
+    fig.set_facecolor(bg_color)
+    ax.set_facecolor(bg_color)
     # adjusts subplot params so that the subplot(s) fits in to the figure area
     fig.tight_layout()
     # save figure
@@ -198,6 +237,7 @@ def class_plot(wn, sp, lab, y_space=0, std_color='grey', std_alpha=0.6,
                fontsize=10, fig_width=6.08, fig_height=3.8,
                save_path=None):
     """
+    (beta: work in progress)
     Computes the mean and standard deviation of the spectra for each class and plots the averaged spectra
     with the areas covered by the standard deviations.
 
@@ -268,7 +308,7 @@ def class_plot(wn, sp, lab, y_space=0, std_color='grey', std_alpha=0.6,
     # creates a figure object
     fig = plt.figure(figsize=(fig_width, fig_height))
     # add an axes object
-    ax = fig.add_subplot(1, 1, 1)
+    ax = fig.add_subplot(1, 1, 1)  # nrows, ncols, index
     y_space_sum = 0  # the y_space starts at zero
     for i, u in enumerate(unique):
         # "i" does nothing
@@ -365,7 +405,7 @@ def distribution_plot(lab, bar_width=0.8, avg_line=False, class_names=None,  tit
     # creates a figure object
     fig = plt.figure(figsize=(fig_width, fig_height))
     # add an axes object
-    ax = fig.add_subplot(1, 1, 1)
+    ax = fig.add_subplot(1, 1, 1)  # nrows, ncols, index
     # plots the distribution barplot
     ax.bar(y_pos, distribution, bar_width, color=color, edgecolor='black')
     if avg_line is True:
