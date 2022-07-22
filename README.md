@@ -271,9 +271,9 @@ classification of vibrational spectra.
 
 
 ### Module ``validation_metrics``
+This module provides different tools to evaluate the quality of a model’s predictions.
 
-* **cf_matrix** :  
+* **cf_matrix** :  Returns a confusion matrix (built with scikit-learn) generated on a given set of spectra.
+    
 
-
-* **clf_report** : 
-
+* **clf_report** : Returns a classification report generated from a given set of spectra

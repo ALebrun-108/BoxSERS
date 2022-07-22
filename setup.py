@@ -9,7 +9,7 @@ setup(
     install_requires=['numpy', 'pandas', 'matplotlib', 'seaborn', 'scipy', 'scikit-learn', 'tensorflow'],
     python_requires='>=3.6',
     # *strongly* suggested for sharing
-    version='1.1.1',
+    version='1.1.2',
     # The license can be anything you like
     license='MIT',
     description='Python package that provides a full range of functionality to process and analyze vibrational'
