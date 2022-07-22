@@ -211,6 +211,13 @@ spectro_plot(wn, sp_bc_svg_norm[0], sp_bc_svg_norm[1], y_space=1, title='Preproc
 ```
 ![test image size](fig/preprocessing_plots.png)
 
+```python
+# darktheme = True/False enables two different display options!
+spectro_plot(wn, sp, title='Raman spectrum of L-Tyrosine', darktheme=False)
+spectro_plot(wn, sp, title='Raman spectrum of L-Tyrosine', darktheme=True)  
+```
+<img src="fig/white_dark_plot.gif" alt="drawing" width="500"/>
+
 
 ### Module ``data_augmentation``
 This module provides funtions to generate new spectra by adding different variations to
