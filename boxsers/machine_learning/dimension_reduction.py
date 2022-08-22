@@ -219,7 +219,7 @@ class _DimReductionModel:
         fig = plt.figure(figsize=(fig_width, fig_height))
         # add an axes object
         ax = fig.add_subplot(1, 1, 1)  # nrows, ncols, index
-        sns.scatterplot(x=sp_red[:, c0], y=sp_red[:, c1], hue=lab, s=s, syle=lab, edgecolor=frame_color,
+        sns.scatterplot(x=sp_red[:, c0], y=sp_red[:, c1], hue=lab, s=s, style=lab, edgecolor=frame_color,
                         palette='tab10')  # Todo: change color palette for numerical labels
 
         # title settings

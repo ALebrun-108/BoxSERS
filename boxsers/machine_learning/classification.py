@@ -14,6 +14,8 @@ import joblib
 import time
 import seaborn as sns
 import matplotlib.pyplot as plt
+from boxsers._boxsers_utils import _lightdark_switch
+from sklearn.inspection import permutation_importance
 
 
 class _MachineLearningClassifier:
@@ -260,9 +262,112 @@ class SpectroRF(_MachineLearningClassifier):
         # inherits the methods and arguments of the parent class _MachineLearningClassifier
         super().__init__(rf_model)
 
-    def get_feature_importances(self):
-        """ TODO: à retravailler, ne marche pas pour l'instant """
-        return self.model.feature_importances_
+    def plot_feat_importance(self, wn, sp, n_repeats=10, rdm_ste=None, title=None,
+                             xlabel='Raman Shift (cm$^{-1}$)', ylabel='Features importance',
+                             eline_width=1.5, marker_style='o', color=None, darktheme=False,
+                             grid=True, fontsize=10, fig_width=6.08, fig_height=3.8, save_path=None):
+        """ Plot feature importance based on permutation importance
+
+        Inspired by : L. Breiman, “Random Forests”, Machine Learning, 45(1), 5-32, 2001.
+
+        Parameters:
+            wn : array or list
+                X-axis(wavenumber, wavelenght, Raman shift, etc.), array shape = (n_pixels, ).
+
+            sp : array
+                Input Spectrum(s), array shape = (n_spectra, n_pixels) for multiple spectra and (n_pixels,)
+                for a single spectrum.
+
+            n_repeats : int, default=10
+                Number of times to permute a feature.
+
+            rdm_ste : integer, default=None
+                Random seed of the split. Using the same seed results in the same subsets
+                each time.
+
+            title : string, default=None
+                Font size(pts) used for the different elements of the graph. The title's font
+                 is two points larger than "fonctsize".
+
+            xlabel : string, default='Raman Shift (cm$^{-1}$)'
+                X-axis title. If None, there is no title displayed.
+
+            ylabel : string, default='Intensity (a.u.)'
+                Y-axis title. If None, there is no title displayed.
+
+            eline_width : positive float, default= 1.5
+                Plot errorbar line width(s).
+
+            marker_style : string, default='o'
+                Marker style.
+
+            color : string, default=None
+                Plot line color(s).
+
+            darktheme : boolean, default=False
+                If True, returns a plot with a dark background.
+
+            grid : boolean, default=False
+                If True, a grid is displayed.
+
+            fontsize : positive float, default=10
+                Font size(pts) used for the different elements of the graph.
+
+            fig_width : positive float or int, default=6.08
+                Figure width in inches.
+
+            fig_height : positive float or int, default=3.8
+                Figure height in inches.
+
+            save_path : string, default=None
+                Path where the figure is saved. If None, saving does not occur.
+                Recommended format : .png, .pdf
+        """
+        # update theme related parameters
+        frame_color, bg_color, alpha_value = _lightdark_switch(darktheme)
+
+        perm_imp = permutation_importance(self.model, wn, sp, n_repeats=n_repeats, random_state=rdm_ste)
+        imp_mean = perm_imp.importances_mean
+        imp_std = perm_imp.importances_std
+
+        # creates a figure object
+        fig = plt.figure(figsize=(fig_width, fig_height))
+        # add an axes object
+        ax = fig.add_subplot(1, 1, 1)  # nrows, ncols, index
+
+        ax.errorbar(range(50), imp_mean, yerr=imp_std, fmt='none', ecolor=frame_color, elinewidth=eline_width,
+                    capsize=5, alpha=0.85)
+        ax.plot(range(50), imp_mean, marker_style, color=color)
+
+        # titles settings
+        ax.set_title(title, fontsize=fontsize + 1.2,
+                     color=frame_color)  # sets the plot title, 1.2 points larger font size
+        ax.set_xlabel(xlabel, fontsize=fontsize, color=frame_color)  # sets the X-axis label
+        ax.set_ylabel(ylabel, fontsize=fontsize, color=frame_color)  # sets the Y-axis label
+
+        # tick settings
+        ax.minorticks_on()
+        ax.tick_params(axis='both', which='major',
+                       labelsize=fontsize - 2,  # 2.0 points smaller font size
+                       color=frame_color)
+        ax.tick_params(axis='both', which='minor', color=frame_color)
+        ax.tick_params(axis='x', colors=frame_color)  # setting up X-axis values color
+        ax.tick_params(axis='y', colors=frame_color)  # setting up Y-axis values color
+        for spine in ['top', 'bottom', 'left', 'right']:
+            ax.spines[spine].set_color(frame_color)  # setting up spines color
+        if grid is True:
+            # adds a grid
+            ax.grid(alpha=alpha_value)
+
+        # set figure and axes facecolor
+        fig.set_facecolor(bg_color)
+        ax.set_facecolor(bg_color)
+        # adjusts subplot params so that the subplot(s) fits in to the figure area
+        fig.tight_layout()
+        # save figure
+        if save_path is not None:
+            plt.savefig(save_path, dpi=300, bbox_inches='tight')
+        plt.show()
 
 
 class SpectroSVM(_MachineLearningClassifier):
