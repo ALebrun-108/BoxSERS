@@ -6,6 +6,10 @@ School : Université Laval (Qc, Canada)
 This module provides neural network model specifically designed for the
 classification of vibrational spectra.
 """
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+import warnings
+import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
@@ -16,6 +20,7 @@ import time
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+from boxsers._boxsers_utils import _lightdark_switch
 
 
 class SpectroCNN:
@@ -53,18 +58,15 @@ class SpectroCNN:
         else:
             raise ValueError('Invalid mode, valid choices: {\'multiclass\', \'multilabel\'}')
 
-        # model definition
-        if architecture == 'a':
-            self.model = conv_model(shape_in, shape_out, nf_0=6, ks=ks, batchnorm=True, dropout_rate=dropout_rate,
-                                    hidden_activation=hidden_activation, output_activation=self.output_activation)
-        elif architecture == 'b':
+        # model architecture definition Todo: add sup. architecture
+        if architecture == 'ConvModel':
             self.model = conv_model(shape_in, shape_out, nf_0=6, ks=ks, batchnorm=True, dropout_rate=dropout_rate,
                                     hidden_activation=hidden_activation, output_activation=self.output_activation)
         else:
             raise ValueError('Invalid model architecture')
 
-        self.optimizer = 'adam'  # model optimizer
-        self.learning_rate = 0.0001  # learning rate
+        self.optimizer = 'adam'  # model optimizer, default = 'adam'
+        self.learning_rate = 0.0001  # learning rate, default = 1E-4
 
         self.callbacks = []  # callbacks for the training (earlystopping and/or modelcheckpoint)
         self.history = None  # model last training history
@@ -222,13 +224,15 @@ class SpectroCNN:
             Model training history.
         """
         # Features modifications for CNN model: shape_initial = (a,b) --> shape_final = (a,b,1)
-        x_train = x_train.reshape((x_train.shape[0], x_train.shape[1], 1))
+        # Also converts X-data np.array to tf.tensor
+        x_train = tf.expand_dims(x_train, -1)
 
         if val_data is not None:
             x_val = val_data[0]
             y_val = val_data[1]
             # Features modifications for CNN model: shape_initial = (a,b) --> shape_final = (a,b,1)
-            x_val = x_val.reshape((x_val.shape[0], x_val.shape[1], 1))
+            # Also converts X-data np.array to tf.tensor
+            x_val = tf.expand_dims(x_val, -1)
             val_data = (x_val, y_val)
 
         start_time = time.time()
@@ -257,8 +261,8 @@ class SpectroCNN:
         self.hyperparameter_dict["Validation sample"] = val_data[0].shape[0]
         return self.history
 
-    def plot_history(self, title='Training History', line_width=1.5, line_style='solid', grid=True,
-                     fontsize=10, fig_width=6.08, fig_height=3.8, save_path=None):
+    def plot_history(self, title='Training History', line_width=1.5, line_style='solid', darktheme=False,
+                     grid=True, fontsize=10, fig_width=6.08, fig_height=3.8, save_path=None):
         """ Plot the history of the last model training for some performance metrics.
 
         Notes:
@@ -273,6 +277,9 @@ class SpectroCNN:
 
             line_style : string, default='solid' or '-'
                 Plot line style(s).
+
+            darktheme : boolean, default=False
+                If True, returns a plot with a dark background
 
             grid : boolean, default=False
                 If True, grids are displayed.
@@ -291,26 +298,47 @@ class SpectroCNN:
                 Path where the figure is saved. If None, saving does not occur.
         """
 
+        # update theme related parameters
+        frame_color, bg_color, alpha_value = _lightdark_switch(darktheme)
+
         # creates a figure object and add two axes objects
         fig, (ax1, ax2) = plt.subplots(nrows=2, sharex=True)
         fig.set_size_inches(fig_width, fig_height)
 
         ax1.plot(self.history.history['acc'], linewidth=line_width, linestyle=line_style)
         ax1.plot(self.history.history['val_acc'], linewidth=line_width, linestyle=line_style)
-        ax1.set_title(title, fontsize=fontsize+2)
-        ax1.set_ylabel('Accuracy', fontsize=fontsize)
-        # adds legend 1
-        ax1.legend(['Train Acc', 'Val Acc'], loc='best', fontsize=fontsize)
+        ax1.set_title(title, fontsize=fontsize+2,  color=frame_color)
+        ax1.set_ylabel('Accuracy', fontsize=fontsize,  color=frame_color)
+
         ax2.plot(self.history.history['loss'], linewidth=line_width, linestyle=line_style)
         ax2.plot(self.history.history['val_loss'], linewidth=line_width, linestyle=line_style)
-        ax2.set_xlabel('Epoch #', fontsize=fontsize)
-        ax2.set_ylabel('Loss', fontsize=fontsize)
-        # adds legend 2
-        ax2.legend(['Train loss', 'Val Loss'], loc='best', fontsize=fontsize)
-        # adds grids
-        if grid is True:
-            ax1.grid(alpha=0.4)
-            ax2.grid(alpha=0.4)
+        ax2.set_xlabel('Epoch #', fontsize=fontsize,  color=frame_color)
+        ax2.set_ylabel('Loss', fontsize=fontsize, color=frame_color)
+
+        # adds legends
+        ax1.legend(['Train Acc', 'Val Acc'], loc='best', fontsize=fontsize,
+                   facecolor=bg_color, labelcolor=frame_color)
+        ax2.legend(['Train loss', 'Val Loss'], loc='best', fontsize=fontsize,
+                   facecolor=bg_color, labelcolor=frame_color)
+        for ax in [ax1, ax2]:
+            # tick settings
+            ax.minorticks_on()
+            ax.tick_params(axis='both', which='major',
+                           labelsize=fontsize - 2,  # 2.0 points smaller font size
+                           color=frame_color)
+            ax.tick_params(axis='both', which='minor', color=frame_color)
+            ax.tick_params(axis='x', colors=frame_color)  # setting up X-axis values color
+            ax.tick_params(axis='y', colors=frame_color)  # setting up Y-axis values color
+            for spine in ['top', 'bottom', 'left', 'right']:
+                ax.spines[spine].set_color(frame_color)  # setting up spines color
+            # adds grids
+            if grid is True:
+                ax.grid(alpha=alpha_value)
+
+        # set figure and axes facecolor
+        fig.set_facecolor(bg_color)
+        ax1.set_facecolor(bg_color)
+        ax2.set_facecolor(bg_color)
         # adjusts subplot params so that the subplot(s) fits in to the figure area
         fig.tight_layout()
         # save figure
@@ -350,8 +378,10 @@ class SpectroCNN:
         """
         # x_test initialization, x_test is forced to be a two-dimensional array
         x_test = np.array(x_test, ndmin=2)
-        # features modifications for CNN model: shape_initial = (a,b) --> shape_final = (a,b,1)
-        x_test = x_test.reshape((x_test.shape[0], x_test.shape[1], 1))
+        # Features modifications for CNN model: shape_initial = (a,b) --> shape_final = (a,b,1)
+        # Also converts X-data np.array to tf.tensor
+        x_test = tf.expand_dims(x_test, -1)
+        # x_test = x_test.reshape((x_test.shape[0], x_test.shape[1], 1))
 
         y_pred = self.model.predict(x_test)  # model application
 
@@ -388,7 +418,9 @@ class SpectroCNN:
         """
         # x_test initialization, x_test is forced to be a two-dimensional array
         x_test = np.array(x_test, ndmin=2)
-        x_test = x_test.reshape((x_test.shape[0], x_test.shape[1], 1))
+        # Features modifications for CNN model: shape_initial = (a,b) --> shape_final = (a,b,1)
+        # Also converts X-data np.array to tf.tensor
+        x_test = tf.expand_dims(x_test, -1)
         y_pred = self.model.predict(x_test)
 
         if averaged:
@@ -417,8 +449,9 @@ class SpectroCNN:
         """
         # x_test initialization, x_test is forced to be a two-dimensional array
         x_test = np.array(x_test, ndmin=2)
-        # features modifications for CNN model: shape_initial = (a,b) --> shape_final = (a,b,1)
-        x_test = x_test.reshape((x_test.shape[0], x_test.shape[1], 1))
+        # Features modifications for CNN model: shape_initial = (a,b) --> shape_final = (a,b,1)
+        # Also converts X-data np.array to tf.tensor
+        x_test = tf.expand_dims(x_test, -1)
         # loss evaluation
         loss, acc = self.model.evaluate(x_test, y_test)
         return loss, acc
@@ -448,7 +481,8 @@ class SpectroCNN:
         # x_test initialization, x_test is forced to be a two-dimensional array
         x_test = np.array(x_test, ndmin=2)
         # Features modifications for CNN model: shape_initial = (a,b) --> shape_final = (a,b,1)
-        x_test = x_test.reshape((x_test.shape[0], x_test.shape[1], 1))
+        # Also converts X-data np.array to tf.tensor
+        x_test = tf.expand_dims(x_test, -1)
 
         # Converts binary labels to integer labels. Does nothing if they are already integer labels.
         if y_test.ndim == 2 and y_test.shape[1] > 1:
@@ -488,6 +522,9 @@ class SpectroCNN:
         Returns:
             Scikit Learn classification report
         """
+        warnings.warn('\'get_classif_report\' instance method is no longer supported, use instead'
+                      ' the standalone \'clf_report\' method found in boxsers.validation_metrics module.',
+                      DeprecationWarning)
         # Features modifications for CNN model: shape_initial = (a,b) --> shape_final = (a,b,1)
         x_test = x_test.reshape((x_test.shape[0], x_test.shape[1], 1))
         # Converts binary labels to integer labels. Does nothing if they are already integer labels.
@@ -554,6 +591,9 @@ class SpectroCNN:
         Return:
             Scikit Learn confusion matrix
         """
+        warnings.warn('\'get_conf_matrix\' instance method is no longer supported, use instead'
+                      ' the standalone \'cf_matrix\' method found in boxsers.validation_metrics module.',
+                      DeprecationWarning)
         # features modifications for CNN model: shape_initial = (a,b) --> shape_final = (a,b,1)
         x_test = x_test.reshape((x_test.shape[0], x_test.shape[1], 1))
         # Converts binary labels to integer labels. Does nothing if they are already integer labels.
@@ -593,7 +633,63 @@ class SpectroCNN:
         plt.show()  # display the confusion matrix image
         return conf_matrix
 
-    def features_extractor(self, x_test, layer_name):
+    def gradcam_heatmap(self, x_test, layer_name, normalize=True):
+        """ Returns the class activation heatmap of a model layer for a given input spectrum.
+
+        Adapted from https://github.com/keras-team/keras-io/blob/master/examples/vision/grad_cam.py
+
+        Parameters:
+            x_test : array
+                Input Spectrum. Array shape = (n_pixels,), or (1, n_pixels).
+
+            layer_name :  string, default='conv_2'
+                Name of the model layer.
+
+            normalize : bool, default=True
+                If True, normalize the heatmap.
+        Return:
+            (array) Class activation heat map
+
+        """
+        # x_test initialization, x_test is forced to be a two-dimensional array
+        x_test = np.array(x_test, ndmin=2)
+        # Features modifications for CNN model: shape_initial = (a,b) --> shape_final = (a,b,1)
+        # Also converts X-data np.array to tf.tensor
+        x_test = tf.expand_dims(x_test, -1)
+
+        grad_model = tf.keras.models.Model(
+            [self.model.inputs], [self.model.get_layer(layer_name).output, self.model.output]
+        )
+
+        with tf.GradientTape() as tape:
+            # forward propagate the image through the gradient model, and grab the loss
+            last_conv_layer_output, preds = grad_model(x_test)
+            pred_index = tf.argmax(preds[0])
+            class_channel = preds[:, pred_index]
+
+        # This is the gradient of the output neuron (top predicted or chosen)
+        # with regard to the output feature map of the last conv layer
+        grads = tape.gradient(class_channel, last_conv_layer_output)
+
+        # This is a vector where each entry is the mean intensity of the gradient
+        # over a specific feature map channel
+        pooled_grads = tf.reduce_mean(grads, axis=0)
+
+        # Multiply each channel in the feature map array
+        # by "how important this channel is" with regard to the top predicted class
+        # then sum all the channels to obtain the heatmap class activation
+        last_conv_layer_output = last_conv_layer_output[0]
+
+        heatmap = last_conv_layer_output * pooled_grads
+        heatmap = tf.reduce_mean(heatmap, axis=1)
+        heatmap = np.expand_dims(heatmap, 0)
+
+        if normalize:
+            # normalize the heatmap between 0 & 1
+            heatmap = tf.maximum(heatmap, 0) / tf.math.reduce_max(heatmap)
+        return heatmap.numpy()
+
+    def _features_extractor(self, x_test, layer_name):
         # TODO: To be revised
         x_test = np.array(x_test, ndmin=2)
         x_test = x_test.reshape((x_test.shape[0], x_test.shape[1], 1))
@@ -616,6 +712,9 @@ class SpectroCNN:
 def conv_model(shape_in, shape_out, nf_0=6, ks=5, batchnorm=True, dropout_rate=0.3,
                hidden_activation='relu', output_activation='softmax'):
     """ Returns a CNN model with an architecture based on AlexNet.
+        Fixed hyperparameters:
+            - 3 conv layer, kernel filters number doubles from one conv layer to the next.
+            - 2 dense layer (1000, 500) neurons fixed
 
     Parameters:
         shape_in : non-zero positive integer value
@@ -648,12 +747,14 @@ def conv_model(shape_in, shape_out, nf_0=6, ks=5, batchnorm=True, dropout_rate=0
     inputs = keras.Input(shape=(shape_in, 1))
     x = inputs
 
+    cnt = 0
     for filters in [nf_0, nf_0*2, nf_0*4]:
-        x = layers.Conv1D(filters, ks, strides=1, padding="same")(x)
+        x = layers.Conv1D(filters, ks, strides=1, padding="same", name='conv_'+str(cnt))(x)
         if batchnorm is True:
             x = layers.BatchNormalization()(x)
         x = layers.Activation(hidden_activation)(x)
         x = layers.MaxPooling1D(pool_size=2)(x)
+        cnt += 1
 
     x = layers.Flatten()(x)
 
@@ -664,7 +765,7 @@ def conv_model(shape_in, shape_out, nf_0=6, ks=5, batchnorm=True, dropout_rate=0
         x = layers.Activation("relu")(x)
         x = layers.Dropout(dropout_rate)(x)
 
-    outputs = layers.Dense(shape_out, activation=output_activation)(x)
+    outputs = layers.Dense(shape_out, activation=output_activation, name='output_layer')(x)
     model = keras.Model(inputs, outputs)
     return model
 

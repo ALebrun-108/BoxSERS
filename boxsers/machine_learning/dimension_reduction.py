@@ -125,8 +125,8 @@ class _DimReductionModel:
 
         # title settings
         ax.set_title(title, fontsize=fontsize + 1.2, color=frame_color)  # 1.2 points larger font size
-        ax.set_xlabel(fontsize=fontsize, color=frame_color)  # sets the x-axis title
-        ax.set_ylabel(fontsize=fontsize, color=frame_color)  # sets the y-axis title
+        # ax.set_xlabel(fontsize=fontsize, color=frame_color)  # sets the x-axis title
+        # ax.set_ylabel(fontsize=fontsize, color=frame_color)  # sets the y-axis title
 
         # tick settings
         ax.minorticks_on()
