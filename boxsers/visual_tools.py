@@ -237,7 +237,7 @@ def class_plot(wn, sp, lab, y_space=0, std_color='grey', std_alpha=0.6,
                fontsize=10, fig_width=6.08, fig_height=3.8,
                save_path=None):
     """
-    (beta: work in progress)
+    todo beta: work in progress
     Computes the mean and standard deviation of the spectra for each class and plots the averaged spectra
     with the areas covered by the standard deviations.
 

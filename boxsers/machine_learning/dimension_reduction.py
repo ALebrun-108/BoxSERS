@@ -61,13 +61,13 @@ class _DimReductionModel:
 
         return sp_red
 
-    def pair_plot(self, sp, lab, n_components=1,  class_names=None, title=None,
-                  darktheme=False, fontsize=10, fig_width=6.08, fig_height=3.8, save_path=None):
-        """ Returns a scatter plot of the spectra as a function of two new components produced by the model
+    def pair_plot(self, sp, lab, n_components=3, save_path=None):
+        """
+        todo beta: work in progress
+        Returns a seaborn pairplot to visualize the reduced dimmension
 
         Notes:
             - This function must be preceded by the "fit_model()" function in order to properly work.
-            - 'component_x' and 'component_y' must be less than or equal to the number of components in the model.
 
         Parameters:
             sp : array
@@ -79,24 +79,6 @@ class _DimReductionModel:
 
             n_components: non-zero positive integer values, default=3
                 Number of components used to make the pair plot.
-
-            class_names : list or tupple of string, default=None
-                Names or labels associated to the class. If None, the legend is not displayed.
-
-            title : string, default=None
-                Plot title. If None, there is no title displayed.
-
-            darktheme : boolean, default=False,
-                If True, returns a plot with a dark background.
-
-            fontsize : positive float, default=10
-                Font size(pts) used for the different elements of the graph.
-
-            fig_width : positive float or int, default=6.08
-                Figure width in inches.
-
-            fig_height : positive float or int, default=3.8
-                Figure height in inches.
 
             save_path: string, default=None
                 Path where the figure is saved. If None, saving does not occur.
@@ -114,36 +96,8 @@ class _DimReductionModel:
 
         pca_df = pd.concat([sp_red, pd.DataFrame({'Classes': lab})], axis=1)
 
-        # update theme related parameters
-        frame_color, bg_color, alpha_value = _lightdark_switch(darktheme)
+        sns.pairplot(pca_df, palette='tab10', hue='Classes', aspect=1.6, plot_kws={'edgecolor': 'k'})
 
-        # creates a figure object
-        fig = plt.figure(figsize=(fig_width, fig_height))
-        # add an axes object
-        ax = fig.add_subplot(1, 1, 1)  # nrows, ncols, index
-        sns.pairplot(pca_df,  hue='Classes', aspect=1.6, plot_kws={'edgecolor': 'k'})
-
-        # title settings
-        ax.set_title(title, fontsize=fontsize + 1.2, color=frame_color)  # 1.2 points larger font size
-        # ax.set_xlabel(fontsize=fontsize, color=frame_color)  # sets the x-axis title
-        # ax.set_ylabel(fontsize=fontsize, color=frame_color)  # sets the y-axis title
-
-        # tick settings
-        ax.minorticks_on()
-        ax.tick_params(axis='both', which='major',
-                       labelsize=fontsize - 2,  # 2.0 points smaller font size
-                       color=frame_color)
-        ax.tick_params(axis='both', which='minor', color=frame_color)
-        ax.tick_params(axis='x', colors=frame_color)  # setting up X-axis values color
-        ax.tick_params(axis='y', colors=frame_color)  # setting up Y-axis values
-        for spine in ['top', 'bottom', 'left', 'right']:
-            ax.spines[spine].set_color(frame_color)  # setting up spines color
-
-        # set figure and axes facecolor
-        fig.set_facecolor(bg_color)
-        ax.set_facecolor(bg_color)
-        # adjusts subplot params so that the subplot(s) fits in to the figure area
-        fig.tight_layout()
         # save figure
         if save_path is not None:
             plt.savefig(save_path, dpi=300, bbox_inches='tight')

@@ -633,10 +633,11 @@ class SpectroCNN:
         plt.show()  # display the confusion matrix image
         return conf_matrix
 
-    def gradcam_heatmap(self, x_test, layer_name, normalize=True):
-        """ Returns the class activation heatmap of a model layer for a given input spectrum.
+    def gradcam_heatmap(self, x_test, layer_name):
+        """
+        Returns the class activation heatmap of a model layer for a given input spectrum.
 
-        Adapted from https://github.com/keras-team/keras-io/blob/master/examples/vision/grad_cam.py
+        Adapted from https://github.com/ismailuddin/gradcam-tensorflow-2
 
         Parameters:
             x_test : array
@@ -645,18 +646,17 @@ class SpectroCNN:
             layer_name :  string, default='conv_2'
                 Name of the model layer.
 
-            normalize : bool, default=True
-                If True, normalize the heatmap.
         Return:
             (array) Class activation heat map
 
         """
         # x_test initialization, x_test is forced to be a two-dimensional array
         x_test = np.array(x_test, ndmin=2)
-        # Features modifications for CNN model: shape_initial = (a,b) --> shape_final = (a,b,1)
-        # Also converts X-data np.array to tf.tensor
+        # features modifications for CNN model: shape_initial = (a,b) --> shape_final = (a,b,1)
         x_test = tf.expand_dims(x_test, -1)
 
+        # grad_model maps the input spectrum to the activations of the last conv layer
+        # as well as the output predictions
         grad_model = tf.keras.models.Model(
             [self.model.inputs], [self.model.get_layer(layer_name).output, self.model.output]
         )
@@ -665,29 +665,22 @@ class SpectroCNN:
             # forward propagate the image through the gradient model, and grab the loss
             last_conv_layer_output, preds = grad_model(x_test)
             pred_index = tf.argmax(preds[0])
-            class_channel = preds[:, pred_index]
+            loss = preds[:, pred_index]
 
-        # This is the gradient of the output neuron (top predicted or chosen)
-        # with regard to the output feature map of the last conv layer
-        grads = tape.gradient(class_channel, last_conv_layer_output)
+        # Compute the gradients of the output neuron (top predicted)
+        # with regard to the output feature map of the conv layer selected
+        grads = tape.gradient(loss, last_conv_layer_output)  # shape=(1, len_conv_filter, n_filters)
 
-        # This is a vector where each entry is the mean intensity of the gradient
-        # over a specific feature map channel
-        pooled_grads = tf.reduce_mean(grads, axis=0)
+        # Global average pooling 1D layer, return a vector of lenght = (n_filter,)
+        pooled_grads = tf.reduce_mean(grads, axis=(0, 1))
 
-        # Multiply each channel in the feature map array
-        # by "how important this channel is" with regard to the top predicted class
-        # then sum all the channels to obtain the heatmap class activation
-        last_conv_layer_output = last_conv_layer_output[0]
+        last_conv_layer_output = last_conv_layer_output[0]  # discard the batch
 
-        heatmap = last_conv_layer_output * pooled_grads
-        heatmap = tf.reduce_mean(heatmap, axis=1)
-        heatmap = np.expand_dims(heatmap, 0)
+        heatmap = tf.reduce_sum(tf.multiply(last_conv_layer_output, pooled_grads), axis=-1)
 
-        if normalize:
-            # normalize the heatmap between 0 & 1
-            heatmap = tf.maximum(heatmap, 0) / tf.math.reduce_max(heatmap)
-        return heatmap.numpy()
+        # Apply ReLu (all negative values are set to zero): tf.maximum(heatmap, 0)
+        heatmap_norm = tf.maximum(heatmap, 0) / tf.math.reduce_max(heatmap)
+        return heatmap_norm.numpy()
 
     def _features_extractor(self, x_test, layer_name):
         # TODO: To be revised
@@ -695,6 +688,7 @@ class SpectroCNN:
         x_test = x_test.reshape((x_test.shape[0], x_test.shape[1], 1))
         layer = self.model.get_layer(name=layer_name)
         keras_function = keras.backend.function(self.model.input, layer.output)
+        model = tf.keras.models.Model(inputs=self.model.inputs, outputs=self.model.layers[1].output)
         features = keras_function([x_test])
         return features
 
