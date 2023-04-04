@@ -69,7 +69,9 @@ Listed below are the main modules needed to operate the codes:
 * Numpy
 * Pandas
 * Matplotlib
-* Tensor flow (GPU or CPU)
+* Tensor flow 
+
+To use GPU computing units, it may be necessary to import  `cudnn` and `cudatoolkit` packages using conda or pip.
 
 ### Label information
 

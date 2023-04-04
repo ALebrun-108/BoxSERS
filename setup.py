@@ -6,7 +6,8 @@ setup(
     author='Alexis Lebrun',
     author_email='alexis.lebrun.1@ulaval.ca',
     # dependencies
-    install_requires=['numpy', 'pandas', 'matplotlib', 'seaborn', 'scipy', 'scikit-learn', 'tensorflow'],
+    install_requires=['numpy', 'pandas', 'matplotlib', 'seaborn', 'scipy', 'scikit-learn', 'tensorflow',
+                      'tables'],
     python_requires='>=3.6',
     # *strongly* suggested for sharing
     version='1.1.6',

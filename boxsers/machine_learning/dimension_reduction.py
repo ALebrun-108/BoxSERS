@@ -57,11 +57,11 @@ class _DimReductionModel:
             for multiple spectra and (n_pixels,) for a single spectrum.
         """
         sp = np.array(sp, ndmin=2)  # sp is forced to be a two-dimensional array
-        sp_red = self.model.transform(sp)
+        sp_redu = self.model.transform(sp)  # transforms and reduces the dimensions
 
-        return sp_red
+        return sp_redu
 
-    def pair_plot(self, sp, lab, n_components=3, save_path=None):
+    def pair_plot(self, sp, lab, n_components=3, title=None, save_path=None):
         """
         todo beta: work in progress
         Returns a seaborn pairplot to visualize the reduced dimmension
@@ -80,6 +80,9 @@ class _DimReductionModel:
             n_components: non-zero positive integer values, default=3
                 Number of components used to make the pair plot.
 
+            title : string, default=None
+                Plot title. If None, there is no title displayed.
+
             save_path: string, default=None
                 Path where the figure is saved. If None, saving does not occur.
 
@@ -92,11 +95,14 @@ class _DimReductionModel:
 
         component_labels = ['Component '+str(i) for i in range(1, n_components+1)]
 
-        sp_red = pd.DataFrame(self.model.transform(sp)[:, 0:n_components], columns=component_labels)
+        # transforms and reduces the dimensions
+        sp_redu = pd.DataFrame(self.model.transform(sp)[:, 0:n_components], columns=component_labels)
 
-        pca_df = pd.concat([sp_red, pd.DataFrame({'Classes': lab})], axis=1)
+        pca_df = pd.concat([sp_redu, pd.DataFrame({'Classes': lab})], axis=1)
 
-        sns.pairplot(pca_df, palette='tab10', hue='Classes', aspect=1.6, plot_kws={'edgecolor': 'k'})
+        pair_plot = sns.pairplot(pca_df, palette='tab10', hue='Classes', aspect=1.6, plot_kws={'edgecolor': 'k'})
+        # title settings (extra spacing of 1.1 inch is added)
+        pair_plot.fig.suptitle(title, y=1.1)
 
         # save figure
         if save_path is not None:
@@ -104,7 +110,8 @@ class _DimReductionModel:
         plt.show()
 
     def scatter_plot(self, sp, lab, component_x=1, component_y=2, class_names=None, title=None, s=50,
-                     darktheme=False, grid=False, fontsize=10, fig_width=5.06, fig_height=3.8, save_path=None):
+                     palette='tab10', darktheme=False, grid=False, fontsize=10,
+                     fig_width=5.06, fig_height=3.8, save_path=None):
         """ Returns a scatter plot of the spectra as a function of two new components produced by the model
 
         Notes:
@@ -134,6 +141,9 @@ class _DimReductionModel:
             s : non-zero positive float values, default=50
                 The marker size in points**2.
 
+            palette : string, default = 'tab10'
+                Palette used for the scatter plot.
+
             darktheme : boolean, default=False
                 If True, returns a plot with a dark background.
 
@@ -162,7 +172,7 @@ class _DimReductionModel:
         if class_names is None:
             class_names = np.unique(lab)
 
-        sp_red = self.model.transform(sp)  # transforms and reduces the dimensions
+        sp_redu = self.model.transform(sp)  # transforms and reduces the dimensions
         c0 = component_x - 1  # -1 since the indexes start at zero
         c1 = component_y - 1
 
@@ -173,8 +183,8 @@ class _DimReductionModel:
         fig = plt.figure(figsize=(fig_width, fig_height))
         # add an axes object
         ax = fig.add_subplot(1, 1, 1)  # nrows, ncols, index
-        sns.scatterplot(x=sp_red[:, c0], y=sp_red[:, c1], hue=lab, s=s, style=lab, edgecolor=frame_color,
-                        palette='tab10')  # Todo: change color palette for numerical labels
+        sns.scatterplot(x=sp_redu[:, c0], y=sp_redu[:, c1], hue=lab, s=s, palette=palette,
+                        style=lab, edgecolor=frame_color)
 
         # title settings
         ax.set_title(title, fontsize=fontsize+1.2, color=frame_color)  # 1.2 points larger font size
@@ -215,7 +225,7 @@ class _DimReductionModel:
         plt.show()
 
     def scatter_plot_3d(self, sp, lab, component_x=1, component_y=2, component_z=3, class_names=None, title=None,
-                        darkstyle=False, fontsize=10, fig_width=6.08, fig_height=3.8, save_path=None):
+                        darktheme=False, fontsize=10, fig_width=6.08, fig_height=3.8, save_path=None):
         """ Returns a scatter plot of the spectra as a function of two new components produced by the model
 
         Notes:
@@ -245,7 +255,7 @@ class _DimReductionModel:
             title : string, default=None
                 Plot title. If None, there is no title displayed.
 
-            darkstyle : boolean, default=False,
+            darktheme : boolean, default=False,
                 If True, returns a plot with a dark background.
 
             fontsize : positive float, default=10
@@ -268,7 +278,7 @@ class _DimReductionModel:
         if lab.ndim == 2:  # lab is a binary matrix (one-hot encoded label)
             lab = np.argmax(lab, axis=1)
 
-        sp_red = self.model.transform(sp)
+        sp_redu = self.model.transform(sp)  # transforms and reduces the dimensions
 
         unique = list(set(lab))
         c0 = component_x - 1
@@ -277,7 +287,7 @@ class _DimReductionModel:
 
         # basic plot on a white background setting
         mpl_style = 'default'
-        if darkstyle is True:
+        if darktheme is True:
             # changes to a dark background plot
             mpl_style = 'dark_background'
 
@@ -290,9 +300,9 @@ class _DimReductionModel:
                 # "i" does nothing
                 # "u" corresponds to different class labels
                 # "j" give the position of each class
-                xi = [sp_red[j, c0] for j in range(len(sp_red[:, c0])) if lab[j] == u]
-                yi = [sp_red[j, c1] for j in range(len(sp_red[:, c1])) if lab[j] == u]
-                zi = [sp_red[j, c2] for j in range(len(sp_red[:, c2])) if lab[j] == u]
+                xi = [sp_redu[j, c0] for j in range(len(sp_redu[:, c0])) if lab[j] == u]
+                yi = [sp_redu[j, c1] for j in range(len(sp_redu[:, c1])) if lab[j] == u]
+                zi = [sp_redu[j, c2] for j in range(len(sp_redu[:, c2])) if lab[j] == u]
                 ax.scatter(xi, yi, zi, s=30, edgecolors='k')
             # title settings
             ax.set_title(title, fontsize=fontsize + 1.2)  # sets the plot title, 1.2 points larger font size
@@ -444,7 +454,7 @@ class SpectroPCA(_DimReductionModel):
         super().__init__(pca_model)
 
     def explained_var_plot(self, title=None, xlabel='Number of PCA components',
-                           ylabel='Cumulative explained variance (%)', line_width=1.5,
+                           ylabel='Cumulative explained variance (%)', color=None, line_width=1.5,
                            line_style='solid', darktheme=False, grid=True, fontsize=10,
                            fig_width=6.08, fig_height=3.8, save_path=None):
         """ Plot the cumulative explained variance(%) as a function of the number of principal components(PC)
@@ -461,6 +471,9 @@ class SpectroPCA(_DimReductionModel):
 
             ylabel : string, default='Component score (a.u.)'
                 Y-axis title. If None, there is no title displayed.
+
+            color : string, default=None
+                Plot line color(s).
 
             line_width : positive float, default= 1.5
                 Plot line width(s).
@@ -495,7 +508,7 @@ class SpectroPCA(_DimReductionModel):
         # add an axes object
         ax = fig.add_subplot(1, 1, 1)  # nrows, ncols, index
         # plot the graph
-        ax.plot(np.cumsum(expl_var) * 100, lw=line_width, ls=line_style)
+        ax.plot(np.cumsum(expl_var) * 100, color=color, lw=line_width, ls=line_style)
 
         # title settings
         ax.set_title(title, fontsize=fontsize + 1.2, color=frame_color)  # 1.2 points larger font size

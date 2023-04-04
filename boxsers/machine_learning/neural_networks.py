@@ -44,7 +44,12 @@ class SpectroCNN:
 
         architecture : string, default='ConvModel'
 
-        mode : string, defaul='multiclass'
+
+        mode : {'multiclass', 'binary or multilabel'}, defaul='multiclass'
+            Application mode for the model CNN that defines some of its hyperparameters. The loss function
+            can be modified when compiling the model.
+                - 'multiclass' : Output activation function = 'softmax', loss function = 'categorical'.
+                - 'binary' or 'multilabel' :  Output activation function = 'sigmoid', loss function = 'binary'.
     """
     def __init__(self, shape_in, shape_out, ks=5, dropout_rate=0.3, hidden_activation='relu', architecture='ConvModel',
                  mode='multiclass'):
@@ -52,7 +57,7 @@ class SpectroCNN:
         if mode == 'multiclass':
             self.output_activation = 'softmax'
             self.loss_function = 'categorical'
-        elif mode == 'multilabel':
+        elif mode == 'binaryclass' or 'multilabel':
             self.output_activation = 'sigmoid'
             self.loss_function = 'binary'
         else:
@@ -650,6 +655,7 @@ class SpectroCNN:
             (array) Class activation heat map
 
         """
+        # TODO: to be updated
         # x_test initialization, x_test is forced to be a two-dimensional array
         x_test = np.array(x_test, ndmin=2)
         # features modifications for CNN model: shape_initial = (a,b) --> shape_final = (a,b,1)
@@ -688,7 +694,6 @@ class SpectroCNN:
         x_test = x_test.reshape((x_test.shape[0], x_test.shape[1], 1))
         layer = self.model.get_layer(name=layer_name)
         keras_function = keras.backend.function(self.model.input, layer.output)
-        model = tf.keras.models.Model(inputs=self.model.inputs, outputs=self.model.layers[1].output)
         features = keras_function([x_test])
         return features
 
