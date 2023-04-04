@@ -10,7 +10,7 @@ setup(
                       'tables'],
     python_requires='>=3.6',
     # *strongly* suggested for sharing
-    version='1.1.6',
+    version='1.2.0',
     # The license can be anything you like
     license='MIT',
     description='Python package that provides a full range of functionality to process and analyze vibrational'
