@@ -250,7 +250,12 @@ vibrational spectra.
 
 * **SpectroPCA** : Principal Component Analysis (PCA) model object.
 
-
+```python
+pca_model = SpectroPCA(n_comp=10)
+pca_model.fit_model(sp)
+pca_model.scatter_plot(sp, label, component_x=1, component_y=2, fontsize=13, class_names=['Mol. A', 'Mol. B', 'Mol. C']) 
+```
+![test image size](fig/PCA_scatterplot.png)
 ### Module ``clustering``
 This module provides unsupervised learning models for vibrational spectra cluster analysis.
 
