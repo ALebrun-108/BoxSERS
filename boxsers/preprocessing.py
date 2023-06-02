@@ -10,6 +10,7 @@ import numpy as np
 from scipy import interpolate, sparse
 from scipy.sparse.linalg import spsolve
 from scipy.signal import savgol_filter, medfilt
+from scipy.spatial import ConvexHull
 from sklearn.preprocessing import normalize
 
 
@@ -61,8 +62,54 @@ def als_baseline_cor(sp, lam=1e4, p=0.001, niter=10, return_baseline=False):
 
     if return_baseline:
         return sp-baseline, baseline
-
     return sp-baseline
+
+
+def rubberband_baseline_cor(sp, return_baseline=False):
+    """
+    Notes:
+        - code mainly coming from:
+        https://dsp.stackexchange.com/questions/2725/how-to-perform-a-rubberband-correction-on-spectroscopic-data
+        - Compared with the als_baseline_cor method, this technique is faster
+          to run, but has no parameters to adjust to optimize the correction.
+
+    Parameters:
+        sp : array
+            Input Spectrum(s). Array shape = (n_spectra, n_pixels) for multiple spectra and (n_pixels,)
+            for a single spectrum.
+
+        return_baseline : Boolean, default=False
+            If True, the function also returns the baseline array.
+
+    Returns:
+        (array) Baseline substracted spectrum(s). Array shape = (n_spectra, n_pixels) for multiple spectra
+                and = (n_pixels,) for a single spectrum.
+
+        (array)(OPTIONAL) Baseline signal(s). Array shape = (n_spectra, n_pixels) for multiple spectra
+                and = (n_pixels,) for a single spectrum.
+    """
+    # sp is forced to be a two-dimensional array
+    sp = np.array(sp, ndmin=2)
+    n_spectra, sp_length = sp.shape  # number of spectra, spectrum length
+
+    # initialization and space allocation
+    baseline = np.zeros(sp.shape)  # baseline signal array
+    indexes = np.arange(sp_length)
+
+    for i in range(n_spectra):
+        # find the convex hull vertices
+        convex_v = ConvexHull(np.array(list(zip(indexes, sp[i])))).vertices
+        # rotate convex hull vertices until they start from the lowest one
+        convex_v = np.roll(convex_v, -convex_v.argmin())
+        # leave only the ascending part
+        convex_v = convex_v[:convex_v.argmax()]
+
+        # create baseline using linear interpolation between vertices
+        baseline[i] = np.interp(indexes, indexes[convex_v], sp[i, convex_v])
+
+    if return_baseline:
+        return sp - baseline, baseline
+    return sp - baseline
 
 
 def cosmic_filter(sp, ks=3):

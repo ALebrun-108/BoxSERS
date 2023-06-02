@@ -76,6 +76,39 @@ def data_split(sp, lab, b_size, rdm_ste=None, print_report=False):
     return sp_a, sp_b, lab_a, lab_b
 
 
+def spectro_subsampling(sp, lab=None, batch_size=0.5):
+    """
+    Subsamples a given fraction or number of spectra from an initial spectra array.
+
+    Parameters:
+        sp : array
+            Input spectra, array shape = (n_spectra, n_pixels)
+
+        lab : array, default=None
+            Labels assigned the "sp" spectra, array shape = (n_spectra,) for integer labels
+            and (n_spectra, n_classes) for binary labels.
+
+        batch_size : float or integer positive value, default=0.5
+             Fraction or number of spectra to sample from the initial spectra array.
+
+    Returns:
+        (array) Sampled subset of spectra.
+
+        (array) Sampled subset of labels.
+    """
+    if 0 < batch_size < 1:
+        batch_size = int(batch_size * sp.shape[0])
+    else:
+        batch_size = batch_size
+
+    random_row = np.random.choice(sp.shape[0], size=batch_size, replace=False)
+    sp_sample = sp[random_row, :]
+    if lab is not None:
+        lab_sample = lab[random_row, :]
+        return sp_sample, lab_sample
+    return sp_sample
+
+
 def load_rruff(directory):
     """
     Export a subset of Raman spectra from the RRUFF database in the form of three related lists
@@ -85,12 +118,12 @@ def load_rruff(directory):
         directory : String
             Online directory that leads to a zip file containing the desired set of RRUFF spectra. Here are
             the possible directories for RRUFF Raman spectra:
-                - 'http://rruff.info/zipped_data_files/raman/excellent_oriented.zip'
-                - 'http://rruff.info/zipped_data_files/raman/excellent_unoriented.zip'
-                - 'http://rruff.info/zipped_data_files/raman/fair_oriented.zip'
-                - 'http://rruff.info/zipped_data_files/raman/fair_unoriented.zip'
-                - 'http://rruff.info/zipped_data_files/raman/poor_oriented.zip'
-                - 'http://rruff.info/zipped_data_files/raman/poor_unoriented.zip'
+                - 'https://rruff.info/zipped_data_files/raman/excellent_oriented.zip'
+                - 'https://rruff.info/zipped_data_files/raman/excellent_unoriented.zip'
+                - 'https://rruff.info/zipped_data_files/raman/fair_oriented.zip'
+                - 'https://rruff.info/zipped_data_files/raman/fair_unoriented.zip'
+                - 'https://rruff.info/zipped_data_files/raman/poor_oriented.zip'
+                - 'https://rruff.info/zipped_data_files/raman/poor_unoriented.zip'
 
     Return:
         (List of numpy array) List that contains Raman shift arrays.
