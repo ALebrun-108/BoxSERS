@@ -190,7 +190,7 @@ improve spectrum quality and can improve performance for machine learning applic
 ```python
 # Code example:
 import numpy as np
-from boxsers.preprocessing import savgol_smoothing, als_baseline_cor, intensity_normalization
+from boxsers.preprocessing import savgol_smoothing, als_baseline_cor, spectral_normalization
 from boxsers.visual_tools import spectro_plot
 
 # Two spectrum are selected randomly 
@@ -204,7 +204,7 @@ sp_bc = als_baseline_cor(sp_sample, lam=1e4, p=0.001, niter=10, return_baseline=
 # 2) Smoothes the spectra
 sp_bc_svg = savgol_smoothing(sp_bc, window_length=15, p=3, degree=0)
 # 3) Normalizes the spectra 
-sp_bc_svg_norm = intensity_normalization(sp_bc_svg, norm='maxmin')
+sp_bc_svg_norm = spectral_normalization(sp_bc_svg, norm='minmax')
 
 # Graphs visualization : 
 legend=(label_a, label_b)
