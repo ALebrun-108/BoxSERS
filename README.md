@@ -172,7 +172,7 @@ improve spectrum quality and can improve performance for machine learning applic
   Asymmetric Least Squares estimation.
 
 
-* **intensity_normalization** : Normalizes the spectrum(s) using one of the available norms in this function.
+* **spectral_normalization** : Normalizes the spectrum(s) using one of the available norms in this function.
 
 
 * **savgol_smoothing** : Smoothes the spectrum(s) using a Savitzky-Golay polynomial filter.
