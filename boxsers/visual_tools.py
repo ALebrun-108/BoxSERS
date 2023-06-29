@@ -10,9 +10,10 @@ import numpy as np
 from boxsers._boxsers_utils import _lightdark_switch
 
 
-def random_plot(wn, sp, random_spectra, y_space=0, title=None, xlabel='Raman Shift (cm$^{-1}$)',
-                ylabel='Intensity (a.u.)', line_width=1.5, line_style='solid', darktheme=False,
-                grid=True, fontsize=10, fig_width=6.08, fig_height=3.8, save_path=None):
+def random_plot(wn, sp, random_spectra, y_space=0, xlim=None, ylim=None, title=None,
+                xlabel='Raman Shift (cm$^{-1}$)', ylabel='Intensity (a.u.)', line_width=1.5,
+                line_style='solid', darktheme=False, grid=True, fontsize=10, fig_width=6.08,
+                fig_height=3.8, save_path=None):
     """
     Plot a number of randomly selected spectra from a set of spectra.
 
@@ -28,6 +29,12 @@ def random_plot(wn, sp, random_spectra, y_space=0, title=None, xlabel='Raman Shi
 
         y_space : int or float, default=0
             Extra space on the y-axis between the spectra to allow a better visualization of the spectra.
+
+        xlim : list or tupple of float/int values, default=None
+            X-axis view limits.
+
+        ylim : list or tupple of float/int values, default=None
+            Y-axis view limits.
 
         title : string, default=None
             Font size(pts) used for the different elements of the graph. The title's font
@@ -89,6 +96,10 @@ def random_plot(wn, sp, random_spectra, y_space=0, title=None, xlabel='Raman Shi
         y_space_sum += y_space  # adds an offset for the next spectrum
     ax = plt.gca()  # get the current Axes instance
 
+    # axis view settings
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
+
     # titles settings
     ax.set_title(title, fontsize=fontsize+1.2, color=frame_color)  # sets the plot title, 1.2 points larger font size
     ax.set_xlabel(xlabel, fontsize=fontsize, color=frame_color)  # sets the X-axis label
@@ -120,9 +131,9 @@ def random_plot(wn, sp, random_spectra, y_space=0, title=None, xlabel='Raman Shi
     plt.show()
 
 
-def spectro_plot(wn, *sp, y_space=0, title=None, xlabel='Raman Shift (cm$^{-1}$)', ylabel='Intensity (a.u.)',
-                 legend=None, line_width=1.5, line_style='solid', color=None, darktheme=False, grid=True,
-                 fontsize=10, fig_width=6.08, fig_height=3.8, save_path=None):
+def spectro_plot(wn, *sp, y_space=0, xlim=None, ylim=None, title=None, xlabel='Raman Shift (cm$^{-1}$)',
+                 ylabel='Intensity (a.u.)', legend=None, line_width=1.5, line_style='solid', color=None,
+                 darktheme=False, grid=True, fontsize=10, fig_width=6.08, fig_height=3.8, save_path=None):
     """
     Returns a plot with the selected spectrum(s)
 
@@ -136,6 +147,12 @@ def spectro_plot(wn, *sp, y_space=0, title=None, xlabel='Raman Shift (cm$^{-1}$)
 
         y_space : int or float, default=0
             Extra space on the y-axis between the spectra to allow a better visualization of the spectra.
+
+        xlim : list or tupple of float/int values, default=None
+            X-axis view limits.
+
+        ylim : list or tupple of float/int values, default=None
+            Y-axis view limits.
 
         title : string, default=None
             Font size(pts) used for the different elements of the graph. The title's font
@@ -193,6 +210,10 @@ def spectro_plot(wn, *sp, y_space=0, title=None, xlabel='Raman Shift (cm$^{-1}$)
         ax.plot(wn, s.T + y_space_sum, lw=line_width, ls=line_style, label='a')
         y_space_sum += y_space  # adds an offset for the next spectrum
     ax = plt.gca()  # get the current Axes instance
+
+    # axis view settings
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
 
     # titles settings
     ax.set_title(title, fontsize=fontsize + 1.2, color=frame_color)  # sets the plot title, 1.2 points larger font size

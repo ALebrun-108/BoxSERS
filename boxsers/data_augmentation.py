@@ -161,7 +161,7 @@ def aug_mixup(sp, lab, n_spec=2, alpha=0.5, quantity=1, shuffle_enabled=True, re
     return sp_aug, lab_aug
 
 
-def aug_newband(sp, lab, inv_p=None, inv_p_degree=4, intensity_range=(0.05, 0.95), width_range=(2, 5),
+def aug_newband(sp, lab, inv_p=None, inv_p_degree=1, intensity_range=(0.05, 0.95), width_range=(2, 5),
                 quantity=1, shuffle_enabled=True, return_band=False):
     """
     Randomly generates new spectra with additionnal Gaussian peak added.
@@ -186,10 +186,10 @@ def aug_newband(sp, lab, inv_p=None, inv_p_degree=4, intensity_range=(0.05, 0.95
                 - = 0 : randomly postioned.
                 - < 0 : positioned close to input spectrum bands.
 
-        intensity_range : float or integer, list or tuple, default = (0.02, 0.98)
+        intensity_range : float or integer, list or tuple, default = (0.05, 0.95)
             Values delimiting the range of possible values for the Raman band intensity..
 
-        width_range : list or tuple, default = (1, 5)
+        width_range : list or tuple, default = (2, 5)
             Values delimiting the range of possible values for the Raman band width (in pixels).
 
         quantity : integer, default=1
@@ -224,7 +224,7 @@ def aug_newband(sp, lab, inv_p=None, inv_p_degree=4, intensity_range=(0.05, 0.95
 
     if inv_p is None:
         # spectra values are used as the input for the inverse probability density
-        inv_p = sp
+        inv_p = np.abs(sp)  # np.abs() used to remove negatives values
     else:
         # inverse probability density function is given
         inv_p = np.array(inv_p, ndmin=2)
