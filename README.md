@@ -49,8 +49,8 @@ It is advisable to start with the Jupyter notebook  that present the complete pr
 **This project doesn't cover database conception yet and requires user to have
 completed this step before using this project**. Please take a look at the following Python modules from other users, which allow you to import spectra in various formats:
 
-- ``spe2py`` Princeton Instruments LightField (SPE 3.x) file
-- ``pyspectra``  .spc and .dx file format 
+- [spe2py](https://github.com/ashirsch/spe2py) Princeton Instruments LightField (SPE 3.x) file
+- [pyspectra](https://github.com/OEUM/PySpectra)  .spc and .dx file format 
 
 ### BoxSERS Installation
 
