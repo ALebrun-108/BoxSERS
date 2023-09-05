@@ -46,8 +46,11 @@ Below, on this page, there is also the package's installation guideline and an o
 
 It is advisable to start with the Jupyter notebook  that present the complete procedure and describe each step in detail while adding information to facilitate understanding. 
 
-This project doesn't cover database conception and requires user to have
-completed this step before using this project.
+**This project doesn't cover database conception yet and requires user to have
+completed this step before using this project**. Please take a look at the following Python modules from other users, which allow you to import spectra in various formats:
+
+- ``spe2py`` Princeton Instruments LightField (SPE 3.x) file
+- ``pyspectra``  .spc and .dx file format 
 
 ### BoxSERS Installation
 
