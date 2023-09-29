@@ -109,6 +109,98 @@ def spectro_subsampling(sp, lab=None, batch_size=0.5):
     return sp_sample
 
 
+def find_classes_index(lab_array, *labels):
+    """
+    Returns the indexes corresponding to the desired class(es) (using their corresponding label).
+
+    Parameters:
+        lab_array : array
+            Labels array. Array shape = (n_spectra,) for integer labels and (n_spectra, n_classes)
+            for binary labels.
+
+        *labels : array
+            Label(s) coresponding to the desired class(es)
+
+    Returns:
+        (array) Indexes of the desired class(es)
+    """
+    classes_indexes = []
+    if lab_array.ndim == 2 and lab_array.shape[1] > 1:  # label_type = 'binary'
+        # Find indexes of elements with specific label
+        for y in labels:
+            indices = np.where(np.all(lab_array == y, axis=1))[0]
+            # Extend indexe by appending elements from the indices.
+            classes_indexes.extend(indices)
+
+    else:  # label_type = 'int'
+        for y in labels:
+            indices = np.where(lab_array == y)[0]
+            classes_indexes.extend(indices)
+
+    return np.array(classes_indexes)
+
+
+def remove_classes(sp, lab, *labels_to_remove, print_infos=False):
+    """
+    Remove desired classes from spectra and labels array
+
+    Parameters:
+        sp : array
+            Initial set of spectra to split into two new subsets. Array shape = (n_spectra, n_pixels).
+
+        lab : array
+            Labels assigned the "sp" spectra. Array shape = (n_spectra,) for integer labels and
+            (n_spectra, n_classes) for binary labels.
+
+        *labels_to_remove : array
+            Label(s) coresponding to the class(es) to remove.
+
+    Returns:
+        (array) Spectra array without the class(es) removed.
+
+        (array) Label array without the class(es) removed.
+    """
+    # Find indexes of elements with specific label
+    indexes = find_classes_index(lab, *labels_to_remove)
+
+    # Deletes spectra & labels belonging to the selected class
+    sp_modified = np.delete(sp, indexes, axis=0)
+    lab_modified = np.delete(lab, indexes, axis=0)
+
+    if print_infos:
+        print('{} spectra & labels removed belonging to {} classes'.format(len(indexes), labels_to_remove))
+
+    return sp_modified, lab_modified
+
+
+def split_by_classes(sp, lab):
+    """
+    Divides a spectra array into subsets for each unique label.
+
+    Parameters:
+        sp : array
+            Initial set of spectra to split into two new subsets. Array shape = (n_spectra, n_pixels).
+
+        lab : array
+            Labels assigned the "sp" spectra. Array shape = (n_spectra,) for integer labels and
+            (n_spectra, n_classes) for binary labels.
+
+    Returns:
+        (dict) Dictionary where keys are unique labels, and the values are the spectra with these labels.
+    """
+    # Converts binary labels to integer labels. Does nothing if they are already integer labels.
+    if lab.ndim == 2 and lab.shape[1] > 1:
+        lab = np.argmax(lab, axis=1)
+
+    unique_labels = np.unique(lab)  # Get unique labels
+    split_classes_dict = {}  # Dictionary to store subsets
+
+    for u_label in unique_labels:
+        mask = (lab == u_label)  # Create a boolean mask for the current label
+        split_classes_dict[u_label] = sp[mask]  # Use the mask to extract spectra
+    return split_classes_dict
+
+
 def load_rruff(directory):
     """
     Export a subset of Raman spectra from the RRUFF database in the form of three related lists

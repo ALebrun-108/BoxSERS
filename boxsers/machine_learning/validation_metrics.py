@@ -133,7 +133,7 @@ def cf_matrix(y_true, y_pred, normalize='true', class_names=None, title=None,
     return conf_matrix
 
 
-def clf_report(y_true, y_pred, digits=4, print_report=True, class_names=None, save_path=None):
+def clf_report(y_true, y_pred, digits=4, multilabel=False, print_report=True, class_names=None, save_path=None):
     """ Returns a classification report generated from a given set of spectra
 
     Notes:
@@ -151,6 +151,9 @@ def clf_report(y_true, y_pred, digits=4, print_report=True, class_names=None, sa
         digits : non-zero positive integer values, default=3
             Number of digits to display in the classification report.
 
+        multilabel : boolean, default=False
+            Set as True if your labels are multi-label (ex: [1, 1, 0], [0, 0, 1], [0, 0, 0])
+
         print_report : boolean, default=True
             If True, print the classification report
 
@@ -163,11 +166,13 @@ def clf_report(y_true, y_pred, digits=4, print_report=True, class_names=None, sa
     Returns:
         Scikit Learn classification report
     """
-    # Converts binary labels to integer labels. Does nothing if they are already integer labels.
-    if y_true.ndim == 2 and y_true.shape[1] > 1:
-        y_true = np.argmax(y_true, axis=1)
-    if y_pred.ndim == 2 and y_pred.shape[1] > 1:
-        y_pred = np.argmax(y_pred, axis=1)
+    # do not converts labels to integer labels if multilabel == True
+    if not multilabel:
+        # Converts one-hot encoded labels to integer labels . Does nothing if they are already integer labels.
+        if y_true.ndim == 2 and y_true.shape[1] > 1:
+            y_true = np.argmax(y_true, axis=1)
+        if y_pred.ndim == 2 and y_pred.shape[1] > 1:
+            y_pred = np.argmax(y_pred, axis=1)
 
     # generates the classification report
     report = classification_report(y_true, y_pred, target_names=class_names, digits=digits)
