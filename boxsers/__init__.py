@@ -6,9 +6,8 @@ from boxsers.preprocessing import als_baseline_cor, savgol_smoothing, spectral_c
     spectral_normalization, cosmic_filter
 from boxsers.misc_tools import data_split, load_rruff, ramanshift_converter, wavelength_converter, \
     find_classes_index, remove_classes, split_by_classes, spectro_subsampling
-
 from boxsers.visual_tools import random_plot, spectro_plot, class_plot, distribution_plot
 
 
 # Version of the boxsers package
-__version__ = "1.1.0"
+__version__ = "1.3.3"
