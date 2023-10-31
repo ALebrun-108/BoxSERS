@@ -7,7 +7,7 @@ setup(
     author_email='alexis.lebrun.1@ulaval.ca',
     # dependencies
     install_requires=['numpy', 'pandas', 'matplotlib', 'seaborn', 'scipy', 'scikit-learn', 'tensorflow',
-                      'tables'],
+                      'tables', 'scikit-image'],
     python_requires='>=3.6',
     # *strongly* suggested for sharing
     version='1.3.3',

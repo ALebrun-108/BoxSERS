@@ -34,7 +34,7 @@ def _range_converter(param_range, multiplier_cond=False):
     param_range_inf = 0.0
     param_range_sup = 0.0
 
-    if isinstance(param_range, list):
+    if isinstance(param_range, (list, tuple)):
         param_range_inf = param_range[0]
         param_range_sup = param_range[1]
     elif isinstance(param_range, (float, int)) and not multiplier_cond:
@@ -236,7 +236,7 @@ def aug_newband(sp, lab, inv_p=None, inv_p_degree=1, intensity_range=(0.05, 0.95
     inverse_density_norm = np.repeat(inverse_density_norm, quantity, axis=0)
 
     # upper and lower bounds are determined from the given range
-    intensity_range_inf, intensity_range_sup = _range_converter(intensity_range, multiplier_cond=True)
+    intensity_range_inf, intensity_range_sup = _range_converter(intensity_range)
 
     # upper and lower bounds are multiplied by the average intensity of each spectrum
     intensity_inf = np.mean(sp, axis=1) * intensity_range_inf
@@ -332,7 +332,7 @@ def aug_noise(sp, lab, snr=10, quantity=1, noise_type='proportional', shuffle_en
         # uniform noise varies with the average intensity of the spectra
         std_ref = np.mean(sp, axis=1, keepdims=True)  # shape = (n_spectra, 1)
     else:
-        std_ref = 0
+        raise ValueError('Invalid noise_type, valid choices: {\'proportional\', \'uniform\'}')
 
     # Converts to dB
     std_db = 10 * np.log10(std_ref)

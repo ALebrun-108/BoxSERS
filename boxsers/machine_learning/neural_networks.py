@@ -14,11 +14,10 @@ from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tensorflow.keras.models import load_model
-
-from sklearn.metrics import classification_report, confusion_matrix, precision_recall_fscore_support
+from sklearn.metrics import precision_recall_fscore_support
+from skimage.transform import resize
 import time
 import matplotlib.pyplot as plt
-import seaborn as sns
 import numpy as np
 from boxsers._boxsers_utils import _lightdark_switch
 
@@ -44,7 +43,6 @@ class SpectroCNN:
 
         architecture : string, default='ConvModel'
 
-
         mode : {'multiclass', 'binary or multilabel'}, defaul='multiclass'
             Application mode for the model CNN that defines some of its hyperparameters. The loss function
             can be modified when compiling the model.
@@ -57,7 +55,7 @@ class SpectroCNN:
         if mode == 'multiclass':
             self.output_activation = 'softmax'
             self.loss_function = 'categorical'
-        elif mode == 'binaryclass' or 'multilabel':
+        elif mode == 'binaryclass' or mode == 'multilabel':
             self.output_activation = 'sigmoid'
             self.loss_function = 'binary'
         else:
@@ -68,10 +66,11 @@ class SpectroCNN:
             self.model = conv_model(shape_in, shape_out, nf_0=6, ks=ks, batchnorm=True, dropout_rate=dropout_rate,
                                     hidden_activation=hidden_activation, output_activation=self.output_activation)
         else:
+            self.model = architecture
             raise ValueError('Invalid model architecture')
 
-        self.optimizer = 'adam'  # model optimizer, default = 'adam'
-        self.learning_rate = 0.0001  # learning rate, default = 1E-4
+        self.learning_rate = 0.0001  # default learning rate =  1E-4
+        self.optimizer = keras.optimizers.Adam(learning_rate=self.learning_rate)  # Default model optimizer = Adam
 
         self.callbacks = []  # callbacks for the training (earlystopping and/or modelcheckpoint)
         self.history = None  # model last training history
@@ -80,68 +79,92 @@ class SpectroCNN:
         # python dictionary holding the principal hyperparameters of the model
         self.hyperparameter_dict = {"Input shape": shape_in, "Output shape": shape_out,
                                     "Kernel size": ks, "Batch Normalisation": True,
-                                    "Drop out rate": dropout_rate, "Loss function": self.loss_function,
-                                    "Hidden activation": hidden_activation, "Output activation": self.output_activation,
-                                    "Optimizer": self.optimizer, "Learning rate": self.learning_rate,
+                                    "Drop out rate": dropout_rate,
+                                    "Loss function": self.loss_function,
+                                    "Hidden activation": hidden_activation,
+                                    "Output activation": self.output_activation,
+                                    "Optimizer": self.optimizer.__class__.__name__,
+                                    "Learning rate": self.learning_rate,
                                     "Batch size": 0, "Epochs": 0,
                                     "Training duration": 0, "Status": 'Untrained',
                                     "Train sample": 0, "Validation sample": 0}
         # extraction of some hyperparameters from the child class
 
-    def compile_model(self, optimizer=None, learning_rate=None, loss_function=None):
+    def compile_model(self, optimizer=None, learning_rate=None, loss_function=None, metrics=None):
         """ Compile the CNN model with the latest changes made to the model.
 
         Notes:
             Parameters (other than None) submitted to this method replace the corresponding self.argument.
 
         Parameters:
-            optimizer : {'adam', 'sgd', 'sgd-momentum', None}, default=None
-                - 'adam' : Sets Adam algorithm(default parameters) as optimizer.
-                - 'sdg' : Sets Stochastic Gradient Descent(default parameters) as optimizer.
-                - 'sgd-momentum' : Sets Stochastic Gradient Descent(momentum=0.9, nesterov=True) as optimizer.
-                - None : Keeps the optimizer defined by "self.optimizer".
+            optimizer : keras.optimizers.Optimizer or str, default=None
+                - Keras optimizer object : Replaces the current optimizer.
+                - String : {'adam', 'sgd', 'sgd-momentum', None}
+                    - 'adam' : Sets Adam algorithm(default parameters) as optimizer.
+                    - 'sdg' : Sets Stochastic Gradient Descent(default parameters) as optimizer.
+                    - 'sgd-momentum' : Sets Stochastic Gradient Descent(momentum=0.9, nesterov=True) as optimizer.
+                - None : Keeps the current optimizer defined by "self.optimizer".
 
             learning_rate : non-zero positive float value, default=None
-                Sets a new learning rate. If None, keeps the learning rate defined by "self.learning_rate".
+                Sets a new learning rate. If None, keeps the current learning rate defined by "self.learning_rate".
 
-            loss_function : {'categorical', 'binary', None}, default=None
-                - 'categorical' : Sets categorical cross-entropy as loss function.
-                - 'binary' : Sets binary cross-entropy as loss function.
-                - None : Keeps the loss function defined by "self.loss_function".
+            loss_function : keras.losses.Losses or str, default=None
+                - Keras loss function : Replaces the current loss function.
+                - String : Keras loss function identifier or one of the following two options:
+                    - 'categorical' : Sets categorical cross-entropy as loss function.
+                    - 'binary' : Sets binary cross-entropy as loss function.
+                - None : Keeps the current loss function defined by "self.loss_function".
+
+            metrics : list of string, default=['acc']
+                Keras metric returned during training and availlable in history
         """
-        if optimizer is not None:
-            # an optimizer is given and replaces self.optimizer
-            self.optimizer = optimizer
-            self.hyperparameter_dict["Optimizer"] = self.optimizer
+        if metrics is None:
+            metrics = ['acc']
+
+        # learning rate definition
         if learning_rate is not None:
             # a learning rate is given and replaces self.learning_rate
             self.learning_rate = learning_rate
             self.hyperparameter_dict["Learning rate"] = self.learning_rate
-        if loss_function is not None:
-            # a lost function is given and replaces self.lost_function
-            self.loss_function = loss_function
-            self.hyperparameter_dict["Loss function"] = self.loss_function
 
         # optimizer definition
-        if self.optimizer == 'adam' or 'Adam':
-            opt = keras.optimizers.Adam(learning_rate=self.learning_rate)
-        elif self.optimizer == 'sgd' or 'SGD':
-            opt = keras.optimizers.SGD(learning_rate=self.learning_rate)
-        elif self.optimizer == 'sgd-momentum' or 'SGD-Momentum':
-            opt = keras.optimizers.SGD(learning_rate=self.learning_rate, momentum=0.9, nesterov=True)
-        else:
-            raise NameError('Invalid optimizer, valid choices: {\'adam\', \'sgd\', \'sgd-momentum\'}')
+        if optimizer is not None:
+            # an optimizer is given and replaces the current self.optimizer
+            if isinstance(optimizer, str):
+                if optimizer.lower() == 'adam':
+                    self.optimizer = keras.optimizers.Adam(learning_rate=self.learning_rate)
+                elif optimizer.lower() == 'sgd':
+                    self.optimizer = keras.optimizers.SGD(learning_rate=self.learning_rate)
+                elif optimizer.lower() == 'sgd-momentum':
+                    self.optimizer = keras.optimizers.SGD(learning_rate=self.learning_rate, momentum=0.9, nesterov=True)
+            elif isinstance(optimizer, keras.optimizers.Optimizer):
+                if learning_rate is not None:
+                    # Override the learning rate of the provided optimizer
+                    optimizer.learning_rate = learning_rate
+                self.optimizer = optimizer
+            else:
+                raise ValueError('Invalid optimizer, must be a Keras optimizer object or a string value'
+                                 ', valid choices: {\'adam\', \'sgd\', \'sgd-momentum\'}')
+
+            self.hyperparameter_dict["Optimizer"] = self.optimizer.__class__.__name__
 
         # lost function definition
-        if self.loss_function == 'categorical' or 'Categorical':
-            loss = 'categorical_crossentropy'
-        elif self.loss_function == 'binary' or 'Binary':
-            loss = 'binary_crossentropy'
-        else:
-            raise NameError('Invalid loss, valid choices: {\'categorical\', \'binary\'}')
+        if loss_function is not None:
+            # a lost function is given and replaces self.lost_function
+            if isinstance(loss_function, str):
+                if loss_function.lower() == 'categorical':
+                    self.loss_function = 'categorical_crossentropy'
+                elif loss_function.lower() == 'binary':
+                    self.loss_function = 'binary_crossentropy'
+                else:
+                    self.loss_function = loss_function
+                self.hyperparameter_dict["Loss function"] = self.loss_function
+            else:  # loss_function is not a string
+                self.loss_function = loss_function
+                self.hyperparameter_dict["Loss function"] = self.loss_function.__class__.__name__
 
         # model compilation
-        self.model.compile(loss=loss, optimizer=opt, metrics=['acc'])
+        self.model.compile(loss=self.loss_function, optimizer=self.optimizer, metrics=metrics)
 
     def print_info(self, structure=True, hyperparameters=True):
         """ Prints CNN model information.
@@ -196,7 +219,7 @@ class SpectroCNN:
         self.callbacks.append(mc)
 
     def train_model(self, x_train, y_train, val_data=None, batch_size=92, n_epochs=25, reset_callbacks=True,
-                    plot_history=True):
+                    plot_history=True, verbose=1):
         """ Train the model on a given set of spectra.
 
         Parameters:
@@ -225,9 +248,14 @@ class SpectroCNN:
             plot_history: boolean, default=True,
                 If True, plot training history at the end of the training
 
+            verbose: integer value, default=1
+                s
+
         Returns:
             Model training history.
         """
+        # Todo: solve the issue that arises when no validation spectra
+        #  are provided during model training
         # Features modifications for CNN model: shape_initial = (a,b) --> shape_final = (a,b,1)
         # Also converts X-data np.array to tf.tensor
         x_train = tf.expand_dims(x_train, -1)
@@ -241,7 +269,7 @@ class SpectroCNN:
             val_data = (x_val, y_val)
 
         start_time = time.time()
-        self.history = self.model.fit(x_train, y_train, batch_size=batch_size, epochs=n_epochs, verbose=1,
+        self.history = self.model.fit(x_train, y_train, batch_size=batch_size, epochs=n_epochs, verbose=verbose,
                                       callbacks=self.callbacks, validation_data=val_data, class_weight=None,
                                       shuffle=True)
         training_time = time.time() - start_time
@@ -302,6 +330,8 @@ class SpectroCNN:
             save_path : string, default=None
                 Path where the figure is saved. If None, saving does not occur.
         """
+        # Todo: solve the issue that arises when no validation spectra
+        #  are provided during model training
 
         # update theme related parameters
         frame_color, bg_color, alpha_value = _lightdark_switch(darktheme)
@@ -501,148 +531,12 @@ class SpectroCNN:
 
         return pre_rec_f1
 
-    def get_classif_report(self, x_test, y_test, digits=4, class_names=None, save_path=None):
-        """ Returns a classification report generated from a given set of spectra
-
-        Notes:
-            This function must be preceded by the 'train_model()' function in order to properly work.
-
-        Parameters:
-            x_test : array
-                Input Spectra. Array shape = (n_spectra, n_pixels).
-
-            y_test : array
-                Labels assigned to "x_test" spectra. Array shape = (n_spectra,) for integer labels
-                and(n_spectra, n_classes) for binary labels.
-
-            digits : non-zero positive integer values, default=3
-                Number of digits to display in the classification report.
-
-            class_names : list or tupple of string, default=None
-                Names or labels associated to the class. If None, class names are not displayed.
-
-            save_path: string, default=None
-                Path where the report is saved. If None, saving does not occur.
-
-        Returns:
-            Scikit Learn classification report
+    def gradcam_heatmap(self, x_test, layer_name, pred_index=None, counterfactual_explanation=False):
         """
-        warnings.warn('\'get_classif_report\' instance method is no longer supported, use instead'
-                      ' the standalone \'clf_report\' method found in boxsers.validation_metrics module.',
-                      DeprecationWarning)
-        # Features modifications for CNN model: shape_initial = (a,b) --> shape_final = (a,b,1)
-        x_test = x_test.reshape((x_test.shape[0], x_test.shape[1], 1))
-        # Converts binary labels to integer labels. Does nothing if they are already integer labels.
-        if y_test.ndim == 2 and y_test.shape[1] > 1:
-            y_test = np.argmax(y_test, axis=1)
+        Returns the gradients class activation heatmap of a model layer for a given input spectrum.
 
-        # returns the predicted classes (format=integer label)
-        y_pred = self.predict_classes(x_test, return_integers=True)
-        # generates the classification report
-        report = classification_report(y_test, y_pred, target_names=class_names, digits=digits)
-
-        if save_path is not None:
-            text_file = open(save_path, "w")
-            text_file.write(report)
-            text_file.close()
-        return report
-
-    def get_conf_matrix(self, x_test, y_test, normalize='true', class_names=None, title=None,
-                        color_map='Blues', fmt='.2%', fontsize=10, fig_width=5.5, fig_height=5.5,
-                        save_path=None):
-        """ Returns a confusion matrix (built with scikit-learn) generated on a given set of spectra.
-
-        Also produces a good quality image that can be saved and exported.
-
-        Parameters:
-            x_test : array
-                Input Spectra. Array shape = (n_spectra, n_pixels).
-
-            y_test : array
-                Labels assigned to "x_test" spectra. Array shape = (n_spectra,) for integer labels
-                and(n_spectra, n_classes) for binary labels.
-
-            normalize : {'true', 'pred', None}, default=None
-                - 'true': Normalizes confusion matrix by true labels(row)
-                - 'predicted': Normalizes confusion matrix by predicted labels(col)
-                - None: Confusion matrix is not normalized.
-
-            class_names : list or tupple of string, default=None
-                Names or labels associated to the class. If None, class names are not displayed.
-
-            title : string, default=None
-                Confusion matrix title. If None, there is no title displayed.
-
-            color_map : string, default='Blues'
-                Color map used for the confusion matrix heatmap.
-
-            fmt: String, default='.2%'
-                String formatting code for confusion matrix values. Examples:
-                    - '.2f' = two floating values
-                    - '.3%' = percentage with three floating values
-
-            fontsize : positive float, default=10
-                Font size(pts) used for the different of the confusion matrix.
-
-            fig_width : positive float or int, default=5.5
-                Figure width in inches.
-
-            fig_height : positive float or int, default=5.5
-                Figure height in inches.
-
-            save_path : string, default=None
-                Path where the figure is saved. If None, saving does not occur.
-
-        Return:
-            Scikit Learn confusion matrix
-        """
-        warnings.warn('\'get_conf_matrix\' instance method is no longer supported, use instead'
-                      ' the standalone \'cf_matrix\' method found in boxsers.validation_metrics module.',
-                      DeprecationWarning)
-        # features modifications for CNN model: shape_initial = (a,b) --> shape_final = (a,b,1)
-        x_test = x_test.reshape((x_test.shape[0], x_test.shape[1], 1))
-        # Converts binary labels to integer labels. Does nothing if they are already integer labels.
-        if y_test.ndim == 2 and y_test.shape[1] > 1:
-            y_test = np.argmax(y_test, axis=1)
-
-        # returns the predicted classes (format=integer label)
-        y_pred = self.predict_classes(x_test, return_integers=True)
-
-        # scikit learn confusion matrix
-        conf_matrix = confusion_matrix(y_test, y_pred, normalize=normalize)
-
-        # creates a figure object
-        fig = plt.figure(figsize=(fig_width, fig_height))
-        # add an axes object
-        ax = fig.add_subplot(1, 1, 1)
-        # plot a Seaborn heatmap with the confusion matrix
-        sns.heatmap(conf_matrix, annot=True, cmap=color_map, fmt=fmt, cbar=False, annot_kws={"fontsize": fontsize},
-                    square=True)
-        for _, spine in ax.spines.items():
-            # adds a black outline to the confusion matrix
-            spine.set_visible(True)
-        # titles settings
-        ax.set_title(title, fontsize=fontsize+2)  # sets the plot title, 2 points larger font size
-        ax.set_xlabel('Predicted Label', fontsize=fontsize)  # sets the x-axis title
-        ax.set_ylabel('True Label', fontsize=fontsize)  # sets the y-axis title
-        if class_names is not None:
-            # sets the xticks labels at an angle of 45°
-            ax.set_xticklabels(class_names, rotation=45, ha="right", rotation_mode="anchor", fontsize=fontsize)
-            # sets the yticks labels vertically
-            ax.set_yticklabels(class_names, rotation=0, fontsize=fontsize)
-        # adjusts subplot params so that the subplot(s) fits in to the figure area
-        fig.tight_layout()
-        # save figure
-        if save_path is not None:
-            plt.savefig(save_path, dpi=300, bbox_inches='tight')
-        plt.show()  # display the confusion matrix image
-        return conf_matrix
-
-    def gradcam_heatmap(self, x_test, layer_name):
-        """
-        Returns the class activation heatmap of a model layer for a given input spectrum.
-
-        Adapted from https://github.com/ismailuddin/gradcam-tensorflow-2
+        Note:
+            - Adapted from https://github.com/ismailuddin/gradcam-tensorflow-2
 
         Parameters:
             x_test : array
@@ -651,26 +545,34 @@ class SpectroCNN:
             layer_name :  string, default='conv_2'
                 Name of the model layer.
 
-        Return:
-            (array) Class activation heat map
+            pred_index : int, default=None
+                Used to specify the class that needs to be analyzed. If None, use the highest predicted value
+                to determine the class.
 
+            counterfactual_explanation : boolean, default=False
+                If True, produces a heatmap that captures the pixels on which the model did not
+                focus when generating the prediction.
+
+        Return:
+            (array) Gradients Class activation heat map
         """
-        # TODO: to be updated
         # x_test initialization, x_test is forced to be a two-dimensional array
         x_test = np.array(x_test, ndmin=2)
-        # features modifications for CNN model: shape_initial = (a,b) --> shape_final = (a,b,1)
+        # Features modifications for CNN model: shape_initial = (a,b) --> shape_final = (a,b,1)
+        # Also converts X-data np.array to tf.tensor
         x_test = tf.expand_dims(x_test, -1)
 
-        # grad_model maps the input spectrum to the activations of the last conv layer
-        # as well as the output predictions
+        # Defining a intermediary grad_model that returns, for an input spectrum, the activation
+        # map of the selected convolutional layer and the output predictions.
         grad_model = tf.keras.models.Model(
             [self.model.inputs], [self.model.get_layer(layer_name).output, self.model.output]
         )
 
         with tf.GradientTape() as tape:
-            # forward propagate the image through the gradient model, and grab the loss
+            # forward propagate the image through the grad_model,and grab the loss
             last_conv_layer_output, preds = grad_model(x_test)
-            pred_index = tf.argmax(preds[0])
+            if pred_index is None:
+                pred_index = tf.argmax(preds[0])
             loss = preds[:, pred_index]
 
         # Compute the gradients of the output neuron (top predicted)
@@ -678,24 +580,62 @@ class SpectroCNN:
         grads = tape.gradient(loss, last_conv_layer_output)  # shape=(1, len_conv_filter, n_filters)
 
         # Global average pooling 1D layer, return a vector of lenght = (n_filter,)
-        pooled_grads = tf.reduce_mean(grads, axis=(0, 1))
+        if counterfactual_explanation:
+            # Negating the gradient highlights pixels that cause a decrease in prediction-related
+            # digits as their intensity increases.
+            pooled_grads = tf.reduce_mean(-1 * grads, axis=(0, 1, 2))
+        else:
+            pooled_grads = tf.reduce_mean(grads, axis=(0, 1))
 
         last_conv_layer_output = last_conv_layer_output[0]  # discard the batch
 
+        # 1) last_conv_layer_output and pooled_grads are multiplied element by element with tf.multiply. Gives a
+        #    tensor with the same form as last_conv_layer_output.
+        # 2) All values of this tensor are summed along the last axis to produce the final heatmap.
         heatmap = tf.reduce_sum(tf.multiply(last_conv_layer_output, pooled_grads), axis=-1)
 
         # Apply ReLu (all negative values are set to zero): tf.maximum(heatmap, 0)
         heatmap_norm = tf.maximum(heatmap, 0) / tf.math.reduce_max(heatmap)
-        return heatmap_norm.numpy()
 
-    def _features_extractor(self, x_test, layer_name):
-        # TODO: To be revised
+        return heatmap_norm.numpy()  # convert to numpy array
+
+    def get_learned_features(self, x_test, layer_name='conv_2', resize_to_spectra=True):
+        """
+        Returns the feature maps captured by a model layer for a given input spectrum(s).
+
+        todo: Give an overview in Github's ReadMe
+
+        Parameters:
+            x_test : array
+                Input Spectrum(s). Array shape = (n_spectra, n_pixels) for multiple spectra
+                and (n_pixels,) for a single spectrum.
+
+            layer_name : string, default='conv_2'
+                Label assigned to the layer selected.
+
+            resize_to_spectra : boolean, default=True
+                If True, resize the learned features to fit on the input spectrum(s).
+
+        Returns:
+            (array) Feature maps captured by a model layer for a given input spectrum(s).
+                    Array hape = (n_spectra, n_pixels, n_filter) if resize_to_spectra=True
+        """
+        # x_test initialization, x_test is forced to be a two-dimensional array
         x_test = np.array(x_test, ndmin=2)
-        x_test = x_test.reshape((x_test.shape[0], x_test.shape[1], 1))
-        layer = self.model.get_layer(name=layer_name)
+        # Features modifications for CNN model: shape_initial = (a,b) --> shape_final = (a,b,1)
+        # Also converts X-data np.array to tf.tensor
+        x_test = tf.expand_dims(x_test, -1)
+
+        layer = self.model.get_layer(name=layer_name)  # returns the chosen layer
+
+        # access to intermediate output of the layer
         keras_function = keras.backend.function(self.model.input, layer.output)
-        features = keras_function([x_test])
-        return features
+        features = keras_function([x_test])  # shape=(n_spectrum, layer_input_size, n_filter)
+
+        if resize_to_spectra:
+            # Resize from (n_spectra, layer_input_size, n_filter) to (n_spectra, n_pixels, n_filter)
+            features_resized = resize(features, [features.shape[0], x_test.shape[1], features.shape[2]], order=0)
+        return features_resized
 
     def save_model(self, save_path):
         """ Saves the model with its architecture, the current weight values and the current optimizer. """
@@ -705,14 +645,37 @@ class SpectroCNN:
         """ Loads the model. """
         self.model = load_model(save_path)
 
+    @staticmethod
+    def get_classif_report(self, x_test, y_test, digits=4, class_names=None, save_path=None):
+        """
+         No longer supported, use instead the standalone 'clf_report' method found in
+         boxsers.validation_metrics module.
+        """
+        warnings.warn('\'get_classif_report\' instance method is no longer supported, use instead'
+                      ' the standalone \'clf_report\' method found in boxsers.validation_metrics module.',
+                      DeprecationWarning)
+
+    @staticmethod
+    def get_conf_matrix(x_test, y_test, normalize='true', class_names=None, title=None,
+                        color_map='Blues', fmt='.2%', fontsize=10, fig_width=5.5, fig_height=5.5,
+                        save_path=None):
+        """
+        No longer supported, use instead the standalone 'cf_matrix' method found in
+        boxsers.validation_metrics module.
+        """
+        warnings.warn('\'get_conf_matrix\' instance method is no longer supported, use instead'
+                      ' the standalone \'cf_matrix\' method found in boxsers.validation_metrics module.',
+                      DeprecationWarning)
+
 
 # Convolutional neural network architectures ----------------------------------------------------------
-
-def conv_model(shape_in, shape_out, nf_0=6, ks=5, batchnorm=True, dropout_rate=0.3,
+def conv_model(shape_in, shape_out, nf_0=6, dense_layers_size=None,  ks=5, batchnorm=True, dropout_rate=0.3,
                hidden_activation='relu', output_activation='softmax'):
-    """ Returns a CNN model with an architecture based on AlexNet.
+    """
+    Returns a CNN model with an architecture based on AlexNet.
+
         Fixed hyperparameters:
-            - 3 conv layer, kernel filters number doubles from one conv layer to the next.
+            - 3 conv layer, kernel filters number doubles from one convolutional layer to the next one.
             - 2 dense layer (1000, 500) neurons fixed
 
     Parameters:
@@ -727,6 +690,8 @@ def conv_model(shape_in, shape_out, nf_0=6, ks=5, batchnorm=True, dropout_rate=0
 
         ks : Odd positive integer value, default=5
             Size of kernel filters.
+
+        dense_layers_size : default=None
 
         batchnorm : boolean, default=True
             If True, apply batch normalization after Conv and Dense layers.
@@ -743,21 +708,23 @@ def conv_model(shape_in, shape_out, nf_0=6, ks=5, batchnorm=True, dropout_rate=0
     Returns:
         Keras sequential model
     """
+    if dense_layers_size is None:
+        dense_layers_size = [1000, 500]
+
     inputs = keras.Input(shape=(shape_in, 1))
     x = inputs
 
-    cnt = 0
+    count = 0
     for filters in [nf_0, nf_0*2, nf_0*4]:
-        x = layers.Conv1D(filters, ks, strides=1, padding="same", name='conv_'+str(cnt))(x)
+        x = layers.Conv1D(filters, ks, strides=1, padding="same", name='conv_'+str(count))(x)
         if batchnorm is True:
             x = layers.BatchNormalization()(x)
         x = layers.Activation(hidden_activation)(x)
         x = layers.MaxPooling1D(pool_size=2)(x)
-        cnt += 1
-
+        count += 1
     x = layers.Flatten()(x)
 
-    for units in [1000, 500]:
+    for units in dense_layers_size:
         x = layers.Dense(units)(x)
         if batchnorm is True:
             x = layers.BatchNormalization()(x)
@@ -770,4 +737,7 @@ def conv_model(shape_in, shape_out, nf_0=6, ks=5, batchnorm=True, dropout_rate=0
 
 
 if __name__ == '__main__':
-    help(__name__)
+    # help(__name__)
+    CNN = SpectroCNN(1024, 2, mode='multiclass')
+    CNN.compile_model(optimizer='Adam', loss_function='categorical', learning_rate=0.00005)
+    CNN.print_info()

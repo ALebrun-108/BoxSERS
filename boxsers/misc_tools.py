@@ -276,7 +276,6 @@ def ramanshift_converter(x, wl):
                 Array shape = (n_pixels, ).
     """
     raman_shift = (1/wl - 1/x)*1E7
-
     return raman_shift
 
 
