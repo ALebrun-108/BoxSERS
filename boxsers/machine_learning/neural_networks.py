@@ -54,10 +54,10 @@ class SpectroCNN:
         # mode defintion
         if mode == 'multiclass':
             self.output_activation = 'softmax'
-            self.loss_function = 'categorical'
+            self.loss_function = 'categorical_crossentropy'
         elif mode == 'binaryclass' or mode == 'multilabel':
             self.output_activation = 'sigmoid'
-            self.loss_function = 'binary'
+            self.loss_function = 'binary_crossentropy'
         else:
             raise ValueError('Invalid mode, valid choices: {\'multiclass\', \'multilabel\'}')
 
