@@ -67,10 +67,10 @@ class SpectroCNN:
                                     hidden_activation=hidden_activation, output_activation=self.output_activation)
         else:
             self.model = architecture
-            raise ValueError('Invalid model architecture')
 
         self.learning_rate = 0.0001  # default learning rate =  1E-4
         self.optimizer = keras.optimizers.Adam(learning_rate=self.learning_rate)  # Default model optimizer = Adam
+        self.metrics = ['acc']  # Default metrics = accuracy
 
         self.callbacks = []  # callbacks for the training (earlystopping and/or modelcheckpoint)
         self.history = None  # model last training history
@@ -118,8 +118,8 @@ class SpectroCNN:
             metrics : list of string, default=['acc']
                 Keras metric returned during training and availlable in history
         """
-        if metrics is None:
-            metrics = ['acc']
+        if metrics is not None:
+            self.metrics = metrics
 
         # learning rate definition
         if learning_rate is not None:
@@ -164,7 +164,7 @@ class SpectroCNN:
                 self.hyperparameter_dict["Loss function"] = self.loss_function.__class__.__name__
 
         # model compilation
-        self.model.compile(loss=self.loss_function, optimizer=self.optimizer, metrics=metrics)
+        self.model.compile(loss=self.loss_function, optimizer=self.optimizer, metrics=self.metrics)
 
     def print_info(self, structure=True, hyperparameters=True):
         """ Prints CNN model information.
@@ -249,16 +249,17 @@ class SpectroCNN:
                 If True, plot training history at the end of the training
 
             verbose: integer value, default=1
-                s
+                Verbosity mode. 0 = silent, 1 = progress bar, 2 = one line per epoch.
 
         Returns:
             Model training history.
         """
-        # Todo: solve the issue that arises when no validation spectra
-        #  are provided during model training
         # Features modifications for CNN model: shape_initial = (a,b) --> shape_final = (a,b,1)
         # Also converts X-data np.array to tf.tensor
         x_train = tf.expand_dims(x_train, -1)
+
+        validation = False
+        n_val_samples = 0
 
         if val_data is not None:
             x_val = val_data[0]
@@ -267,16 +268,19 @@ class SpectroCNN:
             # Also converts X-data np.array to tf.tensor
             x_val = tf.expand_dims(x_val, -1)
             val_data = (x_val, y_val)
+            n_val_samples = x_val.shape[0]
+            validation = True
 
         start_time = time.time()
         self.history = self.model.fit(x_train, y_train, batch_size=batch_size, epochs=n_epochs, verbose=verbose,
                                       callbacks=self.callbacks, validation_data=val_data, class_weight=None,
                                       shuffle=True)
+
         training_time = time.time() - start_time
 
         if plot_history is True:
             # plot history at the end of the training.
-            self.plot_history()
+            self.plot_history(self.metrics[0], validation=validation)
 
         if self.modelcheckpoint_path is not None:
             print('best model was uploaded')
@@ -291,21 +295,27 @@ class SpectroCNN:
         self.hyperparameter_dict["Epochs"] = n_epochs
         self.hyperparameter_dict["Training duration"] = training_time
         self.hyperparameter_dict["Train sample"] = x_train.shape[0]
-        self.hyperparameter_dict["Validation sample"] = val_data[0].shape[0]
+        self.hyperparameter_dict["Validation sample"] = n_val_samples
         return self.history
 
-    def plot_history(self, title='Training History', line_width=1.5, line_style='solid', darktheme=False,
-                     grid=True, fontsize=10, fig_width=6.08, fig_height=3.8, save_path=None):
+    def plot_history(self, metric, validation=False, title='Training History', line_width=1.5, line_style='solid', darktheme=False,
+                     grid=True, fontsize=10, fig_width=6.08, fig_height=5.7, save_path=None):
         """ Plot the history of the last model training for some performance metrics.
 
         Notes:
             This function must be preceded by the 'train_model()' function in order to properly work.
 
         Parameters:
+            metric : string
+                Metric to plot following model training. The metric needs to be defined when compiling
+                the model with compile_model(..., metrics=).
+
+            validation : boolean, default=False
+
             title : string, default='Training History'
                 Plot title. If None, there is no title displayed.
 
-            line_width : positive float, default= 1.5
+            line_width : positive float, default=1.5
                 Plot line width(s).
 
             line_style : string, default='solid' or '-'
@@ -324,15 +334,12 @@ class SpectroCNN:
             fig_width : positive float or int, default=6.08
                 Figure width in inches.
 
-            fig_height : positive float or int, default=3.8
+            fig_height : positive float or int, default=5.7
                 Figure height in inches.
 
             save_path : string, default=None
                 Path where the figure is saved. If None, saving does not occur.
         """
-        # Todo: solve the issue that arises when no validation spectra
-        #  are provided during model training
-
         # update theme related parameters
         frame_color, bg_color, alpha_value = _lightdark_switch(darktheme)
 
@@ -340,20 +347,21 @@ class SpectroCNN:
         fig, (ax1, ax2) = plt.subplots(nrows=2, sharex=True)
         fig.set_size_inches(fig_width, fig_height)
 
-        ax1.plot(self.history.history['acc'], linewidth=line_width, linestyle=line_style)
-        ax1.plot(self.history.history['val_acc'], linewidth=line_width, linestyle=line_style)
-        ax1.set_title(title, fontsize=fontsize+2,  color=frame_color)
-        ax1.set_ylabel('Accuracy', fontsize=fontsize,  color=frame_color)
-
+        ax1.plot(self.history.history[metric.lower()], linewidth=line_width, linestyle=line_style)
         ax2.plot(self.history.history['loss'], linewidth=line_width, linestyle=line_style)
-        ax2.plot(self.history.history['val_loss'], linewidth=line_width, linestyle=line_style)
+        if validation:
+            ax1.plot(self.history.history['val_'+metric.lower()], linewidth=line_width, linestyle=line_style)
+            ax2.plot(self.history.history['val_loss'], linewidth=line_width, linestyle=line_style)
+
+        ax1.set_title(title, fontsize=fontsize + 2, color=frame_color)
+        ax1.set_ylabel(metric, fontsize=fontsize, color=frame_color)
         ax2.set_xlabel('Epoch #', fontsize=fontsize,  color=frame_color)
         ax2.set_ylabel('Loss', fontsize=fontsize, color=frame_color)
 
         # adds legends
-        ax1.legend(['Train Acc', 'Val Acc'], loc='best', fontsize=fontsize,
+        ax1.legend(['Train', 'Val'], loc='best', fontsize=fontsize,
                    facecolor=bg_color, labelcolor=frame_color)
-        ax2.legend(['Train loss', 'Val Loss'], loc='best', fontsize=fontsize,
+        ax2.legend(['Train', 'Val'], loc='best', fontsize=fontsize,
                    facecolor=bg_color, labelcolor=frame_color)
         for ax in [ax1, ax2]:
             # tick settings
@@ -531,74 +539,6 @@ class SpectroCNN:
 
         return pre_rec_f1
 
-    def gradcam_heatmap(self, x_test, layer_name, pred_index=None, counterfactual_explanation=False):
-        """
-        Returns the gradients class activation heatmap of a model layer for a given input spectrum.
-
-        Note:
-            - Adapted from https://github.com/ismailuddin/gradcam-tensorflow-2
-
-        Parameters:
-            x_test : array
-                Input Spectrum. Array shape = (n_pixels,), or (1, n_pixels).
-
-            layer_name :  string, default='conv_2'
-                Name of the model layer.
-
-            pred_index : int, default=None
-                Used to specify the class that needs to be analyzed. If None, use the highest predicted value
-                to determine the class.
-
-            counterfactual_explanation : boolean, default=False
-                If True, produces a heatmap that captures the pixels on which the model did not
-                focus when generating the prediction.
-
-        Return:
-            (array) Gradients Class activation heat map
-        """
-        # x_test initialization, x_test is forced to be a two-dimensional array
-        x_test = np.array(x_test, ndmin=2)
-        # Features modifications for CNN model: shape_initial = (a,b) --> shape_final = (a,b,1)
-        # Also converts X-data np.array to tf.tensor
-        x_test = tf.expand_dims(x_test, -1)
-
-        # Defining a intermediary grad_model that returns, for an input spectrum, the activation
-        # map of the selected convolutional layer and the output predictions.
-        grad_model = tf.keras.models.Model(
-            [self.model.inputs], [self.model.get_layer(layer_name).output, self.model.output]
-        )
-
-        with tf.GradientTape() as tape:
-            # forward propagate the image through the grad_model,and grab the loss
-            last_conv_layer_output, preds = grad_model(x_test)
-            if pred_index is None:
-                pred_index = tf.argmax(preds[0])
-            loss = preds[:, pred_index]
-
-        # Compute the gradients of the output neuron (top predicted)
-        # with regard to the output feature map of the conv layer selected
-        grads = tape.gradient(loss, last_conv_layer_output)  # shape=(1, len_conv_filter, n_filters)
-
-        # Global average pooling 1D layer, return a vector of lenght = (n_filter,)
-        if counterfactual_explanation:
-            # Negating the gradient highlights pixels that cause a decrease in prediction-related
-            # digits as their intensity increases.
-            pooled_grads = tf.reduce_mean(-1 * grads, axis=(0, 1, 2))
-        else:
-            pooled_grads = tf.reduce_mean(grads, axis=(0, 1))
-
-        last_conv_layer_output = last_conv_layer_output[0]  # discard the batch
-
-        # 1) last_conv_layer_output and pooled_grads are multiplied element by element with tf.multiply. Gives a
-        #    tensor with the same form as last_conv_layer_output.
-        # 2) All values of this tensor are summed along the last axis to produce the final heatmap.
-        heatmap = tf.reduce_sum(tf.multiply(last_conv_layer_output, pooled_grads), axis=-1)
-
-        # Apply ReLu (all negative values are set to zero): tf.maximum(heatmap, 0)
-        heatmap_norm = tf.maximum(heatmap, 0) / tf.math.reduce_max(heatmap)
-
-        return heatmap_norm.numpy()  # convert to numpy array
-
     def get_learned_features(self, x_test, layer_name='conv_2', resize_to_spectra=True):
         """
         Returns the feature maps captured by a model layer for a given input spectrum(s).
@@ -738,6 +678,12 @@ def conv_model(shape_in, shape_out, nf_0=6, dense_layers_size=None,  ks=5, batch
 
 if __name__ == '__main__':
     # help(__name__)
-    CNN = SpectroCNN(1024, 2, mode='multiclass')
-    CNN.compile_model(optimizer='Adam', loss_function='categorical', learning_rate=0.00005)
+    cnn_model = conv_model(1024, 2, dense_layers_size=[1000, 1000])
+    CNN = SpectroCNN(1024, 2, architecture=cnn_model, mode='multilabel')
+    CNN.compile_model(optimizer='Adam', loss_function='binary', learning_rate=0.00005, metrics=['Precision'])
     CNN.print_info()
+    a = CNN.train_model(np.random.random((100, 1024)), np.ones((100, 2)), n_epochs=50,
+                        val_data=(np.random.random((100, 1024)), np.ones((100, 2))), verbose=1)
+
+    for keys in a.history.keys():
+        print(keys)
