@@ -126,8 +126,9 @@ def aug_mixup(sp, lab, n_spec=2, alpha=0.5, quantity=1, shuffle_enabled=True, re
     """
     # sp initialization, sp is forced to be a two-dimensional array
     sp = np.array(sp, ndmin=2)
-    # lab initialization, lab is forced to be a two-dimensional array
-    lab = np.array(lab, ndmin=2)
+    if lab.ndim == 1:
+        # lab is forced to be a two-dimensional array
+        lab = np.expand_dims(lab, axis=1)
 
     n_spectra, sp_len = sp.shape  # number of spectra, spectrum length
     lab_len = lab.shape[1]  # label length
@@ -211,8 +212,9 @@ def aug_newband(sp, lab, inv_p=None, inv_p_degree=1, intensity_range=(0.05, 0.95
     """
     # sp initialization, sp is forced to be a two-dimensional array
     sp = np.array(sp, ndmin=2)
-    # lab initialization, lab is forced to be a two-dimensional array
-    lab = np.array(lab, ndmin=2)
+    if lab.ndim == 1:
+        # lab is forced to be a two-dimensional array
+        lab = np.expand_dims(lab, axis=1)
 
     n_spectra, sp_len = sp.shape  # number of spectra, spectrum length
 
@@ -315,8 +317,9 @@ def aug_noise(sp, lab, snr=10, quantity=1, noise_type='proportional', shuffle_en
     """
     # sp initialization, sp is forced to be a two-dimensional array
     sp = np.array(sp, ndmin=2)
-    # lab initialization, lab is forced to be a two-dimensional array
-    lab = np.array(lab, ndmin=2)
+    if lab.ndim == 1:
+        # lab is forced to be a two-dimensional array
+        lab = np.expand_dims(lab, axis=1)
 
     n_spectra, sp_len = sp.shape  # number of spectra, spectrum length
 
@@ -399,8 +402,9 @@ def aug_multiplier(sp, lab, mult_range, quantity=1, shuffle_enabled=True):
     """
     # sp initialization, sp is forced to be a two-dimensional array
     sp = np.array(sp, ndmin=2)
-    # lab initialization, lab is forced to be a two-dimensional array
-    lab = np.array(lab, ndmin=2)
+    if lab.ndim == 1:
+        # lab is forced to be a two-dimensional array
+        lab = np.expand_dims(lab, axis=1)
 
     n_spectra, sp_len = sp.shape  # number of spectra, spectrum length
 
@@ -465,8 +469,9 @@ def aug_offset(sp, lab, offset_range, quantity=1, shuffle_enabled=True):
     """
     # sp initialization, sp is forced to be a two-dimensional array
     sp = np.array(sp, ndmin=2)
-    # lab initialization, lab is forced to be a two-dimensional array
-    lab = np.array(lab, ndmin=2)
+    if lab.ndim == 1:
+        # lab is forced to be a two-dimensional array
+        lab = np.expand_dims(lab, axis=1)
 
     n_spectra, sp_len = sp.shape  # number of spectra, spectrum length
 
@@ -543,8 +548,9 @@ def aug_linslope(sp, lab, slope_range, xinter_range, yinter_range=0, quantity=1,
     """
     # sp initialization, sp is forced to be a two-dimensional array
     sp = np.array(sp, ndmin=2)
-    # lab initialization, lab is forced to be a two-dimensional array
-    lab = np.array(lab, ndmin=2)
+    if lab.ndim == 1:
+        # lab is forced to be a two-dimensional array
+        lab = np.expand_dims(lab, axis=1)
 
     n_spectra, sp_len = sp.shape  # number of spectra, spectrum length
 
@@ -634,8 +640,9 @@ def aug_xshift(sp, lab, xshift_range, quantity=1, fill_mode='edge', fill_value=0
     """
     # sp initialization, sp is forced to be a two-dimensional array
     sp = np.array(sp, ndmin=2)
-    # lab initialization, lab is forced to be a two-dimensional array
-    lab = np.array(lab, ndmin=2)
+    if lab.ndim == 1:
+        # lab is forced to be a two-dimensional array
+        lab = np.expand_dims(lab, axis=1)
 
     n_spectra, sp_len = sp.shape  # number of spectra, spectrum length
 
