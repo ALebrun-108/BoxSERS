@@ -134,7 +134,7 @@ def cosmic_filter(sp, ks=3):
     return sp_med
 
 
-def spectral_normalization(sp, norm='l2'):
+def spectral_normalization2(sp, norm='l2', wn=None, band=None):
     """ Normalizes the spectrum(s) using one of the available norms in this function.
 
     Notes:
@@ -152,6 +152,14 @@ def spectral_normalization(sp, norm='l2'):
                 - 'max': The maximum value of the spectrum is equal to 1.
                 - 'minmax': The values of the spectrum are scaled between 0 and 1.
                 - 'snv': The mean and the standard deviation of the spectrum are respectively equal to 0 and 1.
+                - 'band': A fixed band (one pixel) is used to normalize spectra
+
+        wn :  array or list, default=None
+            (Considered only if norm='band') X-axis(wavenumber, wavelenght, Raman shift, etc.),
+            array shape = (n_pixels, ).
+
+        band : int or float, default=None
+            (Considered only if norm='band') Band position, using wn units, used to normalize spectra.
 
     Returns:
         (array) Normalized spectrum(s). Array shape = (n_spectra, n_pixels) for multiple spectra and (n_pixels,)
@@ -173,8 +181,12 @@ def spectral_normalization(sp, norm='l2'):
         return (sp-sp_min)/(sp_max-sp_min)
     if norm == 'snv':
         return (sp-sp_mean)/sp_std
-
-    raise ValueError(norm, 'is not among the following valid choices:\'l2\', \'l1\', \'max\', \'minmax\', \'snv\'')
+    if norm == 'band':
+        # band conversion to index
+        ind = (np.abs(wn-band)).argmin()
+        return sp/sp[:, ind]
+    else:
+        raise ValueError(norm, 'is not among the following valid choices:\'l2\', \'l1\', \'max\', \'minmax\', \'snv\'')
 
 
 def savgol_smoothing(sp, window_length=9, p=3, degree=0):
