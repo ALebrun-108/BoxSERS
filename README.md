@@ -14,7 +14,7 @@ dimensional reduction, spectral correction and both supervised and unsupervised 
 ## General info on the repository
 This GitHub repository includes the following elements : 
 
-* **BoxSERS package** : Complete and ready-to-use python library includind  for the application of methods designed and adapted for vibrational spectra(RamSERS, etc.)
+* **BoxSERS package** : Complete and ready-to-use python library includind  for the application of methods designed and adapted for vibrational spectra(Raman, SERS, etc.)
 
 
 * **Jupyter notebooks** : Typical examples of BoxSERS package usage.
