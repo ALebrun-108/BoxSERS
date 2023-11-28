@@ -155,6 +155,9 @@ def remove_classes(sp, lab, *labels_to_remove, print_infos=False):
         *labels_to_remove : array
             Label(s) coresponding to the class(es) to remove.
 
+        print_infos : boolean, default=False
+            If True, prints the number of spectra removed by each class defined by labels_to_remove.
+
     Returns:
         (array) Spectra array without the class(es) removed.
 

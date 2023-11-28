@@ -134,7 +134,7 @@ def cosmic_filter(sp, ks=3):
     return sp_med
 
 
-def spectral_normalization2(sp, norm='l2', wn=None, band=None):
+def spectral_normalization(sp, norm='l2', wn=None, band=None):
     """ Normalizes the spectrum(s) using one of the available norms in this function.
 
     Notes:
