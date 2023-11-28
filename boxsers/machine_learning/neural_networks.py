@@ -609,8 +609,8 @@ class SpectroCNN:
 
 
 # Convolutional neural network architectures ----------------------------------------------------------
-def conv_model(shape_in, shape_out, nf_0=6, dense_layers_size=None,  ks=5, batchnorm=True, dropout_rate=0.3,
-               hidden_activation='relu', output_activation='softmax'):
+def conv_model(shape_in, shape_out, nf_0=6, n_conv_layers=3, dense_layers_size=None,  ks=5, batchnorm=True, dropout_rate=0.3,
+               hidden_activation='relu', output_activation='softmax', reshaping_layer='flatten'):
     """
     Returns a CNN model with an architecture based on AlexNet.
 
@@ -631,6 +631,8 @@ def conv_model(shape_in, shape_out, nf_0=6, dense_layers_size=None,  ks=5, batch
         ks : Odd positive integer value, default=5
             Size of kernel filters.
 
+        n_conv_layers :
+
         dense_layers_size : default=None
 
         batchnorm : boolean, default=True
@@ -639,11 +641,13 @@ def conv_model(shape_in, shape_out, nf_0=6, dense_layers_size=None,  ks=5, batch
         dropout_rate : positive float integer between 0 and  1
             Dropout rate in dense layers.
 
-        hidden_activation : string
-            Hidden layer activation function.
+        hidden_activation : string, default='relu'
+            Hidden layers' activation function.
 
         output_activation : string
-            Output layer activation function
+            Output layer's activation function
+
+        reshaping_layer : string
 
     Returns:
         Keras sequential model
@@ -651,39 +655,51 @@ def conv_model(shape_in, shape_out, nf_0=6, dense_layers_size=None,  ks=5, batch
     if dense_layers_size is None:
         dense_layers_size = [1000, 500]
 
-    inputs = keras.Input(shape=(shape_in, 1))
-    x = inputs
+    # definition of the number of filters per layer
+    n_filters = [nf_0 * (2 ** i) for i in range(n_conv_layers)]
 
-    count = 0
-    for filters in [nf_0, nf_0*2, nf_0*4]:
+    inputs = keras.Input(shape=(shape_in, 1))  # input initialization
+    x = inputs  # variable x is used to define the model architecture
+
+    # 1) Convolutional and pooling layers definition
+    count = 0  # used to define convolution layers name correctly
+    for filters in n_filters:
         x = layers.Conv1D(filters, ks, strides=1, padding="same", name='conv_'+str(count))(x)
         if batchnorm is True:
+            # batch normalization is applied right before the activation layer
             x = layers.BatchNormalization()(x)
         x = layers.Activation(hidden_activation)(x)
         x = layers.MaxPooling1D(pool_size=2)(x)
         count += 1
-    x = layers.Flatten()(x)
 
+    # 2) Reshaping layer definition
+    if reshaping_layer.lower() == 'flatten':
+        x = layers.Flatten()(x)
+    elif reshaping_layer.lower() == "GAP":
+        x = layers.GlobalAveragePooling1D(data_format="channels_first")(x)
+    else:
+        raise ValueError('Invalid reshaping_layer, valid choices: {\'Flatten\', \'GAP\'}')
+
+    # 3) Dense layers definition
     for units in dense_layers_size:
         x = layers.Dense(units)(x)
         if batchnorm is True:
+            # batch normalization is applied right before the activation layer
             x = layers.BatchNormalization()(x)
-        x = layers.Activation("relu")(x)
+        x = layers.Activation(hidden_activation)(x)
         x = layers.Dropout(dropout_rate)(x)
 
+    # 4) Output layer definition
     outputs = layers.Dense(shape_out, activation=output_activation, name='output_layer')(x)
-    model = keras.Model(inputs, outputs)
+    model = keras.Model(inputs, outputs)  # The Keras model architecture is built
     return model
 
 
 if __name__ == '__main__':
     # help(__name__)
-    cnn_model = conv_model(1024, 2, dense_layers_size=[1000, 1000])
+    cnn_model = conv_model(1024, 2, dense_layers_size=[1000, 1000], reshaping_layer='Flatten')
     CNN = SpectroCNN(1024, 2, architecture=cnn_model, mode='multilabel')
     CNN.compile_model(optimizer='Adam', loss_function='binary', learning_rate=0.00005, metrics=['Precision'])
     CNN.print_info()
     a = CNN.train_model(np.random.random((100, 1024)), np.ones((100, 2)), n_epochs=50,
                         val_data=(np.random.random((100, 1024)), np.ones((100, 2))), verbose=1)
-
-    for keys in a.history.keys():
-        print(keys)
