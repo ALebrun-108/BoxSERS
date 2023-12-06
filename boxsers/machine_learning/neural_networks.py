@@ -675,7 +675,7 @@ def conv_model(shape_in, shape_out, nf_0=6, n_conv_layers=3, dense_layers_size=N
     # 2) Reshaping layer definition
     if reshaping_layer.lower() == 'flatten':
         x = layers.Flatten()(x)
-    elif reshaping_layer.lower() == "GAP":
+    elif reshaping_layer.lower() == "gap":
         x = layers.GlobalAveragePooling1D(data_format="channels_first")(x)
     else:
         raise ValueError('Invalid reshaping_layer, valid choices: {\'Flatten\', \'GAP\'}')
