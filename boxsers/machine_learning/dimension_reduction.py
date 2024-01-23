@@ -109,7 +109,7 @@ class _DimReductionModel:
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
         plt.show()
 
-    def scatter_plot(self, sp, lab, component_x=1, component_y=2, class_names=None, title=None, s=50,
+    def scatter_plot(self, sp, lab, component_x=1, component_y=2, class_names=None, title=None, marker_size=50,
                      palette='tab10', darktheme=False, grid=False, fontsize=10,
                      fig_width=5.06, fig_height=3.8, save_path=None):
         """ Returns a scatter plot of the spectra as a function of two new components produced by the model
@@ -138,7 +138,7 @@ class _DimReductionModel:
             title : string, default=None
                 Plot title. If None, there is no title displayed.
 
-            s : non-zero positive float values, default=50
+            marker_size : non-zero positive float values, default=50
                 The marker size in points**2.
 
             palette : string, default = 'tab10'
@@ -183,7 +183,7 @@ class _DimReductionModel:
         fig = plt.figure(figsize=(fig_width, fig_height))
         # add an axes object
         ax = fig.add_subplot(1, 1, 1)  # nrows, ncols, index
-        sns.scatterplot(x=sp_redu[:, c0], y=sp_redu[:, c1], hue=lab, s=s, palette=palette,
+        sns.scatterplot(x=sp_redu[:, c0], y=sp_redu[:, c1], hue=lab, s=marker_size, palette=palette,
                         style=lab, edgecolor=frame_color)
 
         # title settings

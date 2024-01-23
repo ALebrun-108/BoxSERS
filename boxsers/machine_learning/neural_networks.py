@@ -667,8 +667,8 @@ def conv_model(shape_in, shape_out, nf_0=6, n_conv_layers=3, dense_layers_size=N
         x = layers.Conv1D(filters, ks, strides=1, padding="same", name='conv_'+str(count))(x)
         if batchnorm is True:
             # batch normalization is applied right before the activation layer
-            x = layers.BatchNormalization()(x)
-        x = layers.Activation(hidden_activation)(x)
+            x = layers.BatchNormalization(name='BN_'+str(count))(x)
+        x = layers.Activation(hidden_activation, name='activation_'+str(count))(x)
         x = layers.MaxPooling1D(pool_size=2)(x)
         count += 1
 
@@ -682,12 +682,13 @@ def conv_model(shape_in, shape_out, nf_0=6, n_conv_layers=3, dense_layers_size=N
 
     # 3) Dense layers definition
     for units in dense_layers_size:
-        x = layers.Dense(units)(x)
+        x = layers.Dense(units, name='dense_'+str(count))(x)
         if batchnorm is True:
             # batch normalization is applied right before the activation layer
-            x = layers.BatchNormalization()(x)
-        x = layers.Activation(hidden_activation)(x)
+            x = layers.BatchNormalization(name='BN_'+str(count))(x)
+        x = layers.Activation(hidden_activation, name='activation_'+str(count))(x)
         x = layers.Dropout(dropout_rate)(x)
+        count += 1
 
     # 4) Output layer definition
     outputs = layers.Dense(shape_out, activation=output_activation, name='output_layer')(x)
