@@ -403,8 +403,10 @@ class SpectroCNN:
                 and (n_pixels,) for a single spectrum.
 
             threshold : float value or list of float values between 0 and 1, default=[0.5]
-                Classification threshold, gives 1 for predictions above it and 0 for predictions below
-                it. Does nothing when return_integers is False.
+                Classification threshold(s), gives 1 for predictions above it and 0 for predictions below
+                it. If a single threshold is provided, it will be applied to all columns. If a list of
+                thresholds is provided, its length should match the number of predictions. Does nothing
+                when return_integers is False.
 
             return_integers : boolean, default=True
                 If True, returns integer values instead of one-hot labels
@@ -436,7 +438,7 @@ class SpectroCNN:
         if isinstance(threshold, (int, float)):  # convert it to a list of length equal to the number of columns
             threshold = [threshold] * y_pred.shape[1]
         elif len(threshold) != y_pred.shape[1]:  # Ensure the number of thresholds matches the number of columns
-            raise ValueError("Threshold lenght must be a unique value or equal to the number of prediction.")
+            raise ValueError("Threshold must be a float value or a list (lenght = number of prediction).")
 
         # converts the value above the threshold to 1 and the value below to 0
         # Apply each threshold to the corresponding column of predictions
@@ -713,13 +715,3 @@ if __name__ == '__main__':
     CNN.print_info()
     a = CNN.train_model(np.random.random((100, 1024)), np.ones((100, 2)), n_epochs=50,
                         val_data=(np.random.random((100, 1024)), np.ones((100, 2))), verbose=1)
-
-    test_value = np.random.random((10, 1024))
-
-    b = CNN.predict_proba(test_value)
-    c = CNN.predict_classes(test_value, threshold=[0.5, 0.8], return_integers=False)
-    d = CNN.predict_classes(test_value, threshold=[0.5, 0.2], return_integers=False)
-    print(b)
-    print(c)
-    print(d.shape
-          )
