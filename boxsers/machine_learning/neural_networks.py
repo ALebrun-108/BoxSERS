@@ -20,6 +20,8 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 from boxsers._boxsers_utils import _lightdark_switch
+from typing import Union, List
+from numpy.typing import ArrayLike
 
 
 class SpectroCNN:
@@ -389,23 +391,23 @@ class SpectroCNN:
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
         plt.show()
 
-    def predict_classes(self, x_test, return_integers=True, threshold=0.5, sums_classes=False):
+    def predict_classes(self, x_test, threshold: Union[float, list] = 0.5, return_integers=True, sums_classes=False):
         """ Predicts classes for the input spectra.
 
         Notes:
             This function must be preceded by the 'train_model()' function in order to properly work.
 
         Parameters:
-            x_test : array
+            x_test : array_like
                 Input Spectrum(s). Array shape = (n_spectra, n_pixels) for multiple spectra
                 and (n_pixels,) for a single spectrum.
 
-            return_integers : boolean, default=True
-                If True, returns integer values instead of one-hot labels
-
-            threshold : floating value between 0 and 1, default=0.5
+            threshold : float value or list of float values between 0 and 1, default=[0.5]
                 Classification threshold, gives 1 for predictions above it and 0 for predictions below
                 it. Does nothing when return_integers is False.
+
+            return_integers : boolean, default=True
+                If True, returns integer values instead of one-hot labels
 
             sums_classes : boolean, default=False
                 If True, returns the total amount of detections for each class. If False, returns
@@ -431,8 +433,15 @@ class SpectroCNN:
         if return_integers:  # convert class labels to integer numbers
             return np.argmax(y_pred, axis=1)
 
+        if isinstance(threshold, (int, float)):  # convert it to a list of length equal to the number of columns
+            threshold = [threshold] * y_pred.shape[1]
+        elif len(threshold) != y_pred.shape[1]:  # Ensure the number of thresholds matches the number of columns
+            raise ValueError("Threshold lenght must be a unique value or equal to the number of prediction.")
+
         # converts the value above the threshold to 1 and the value below to 0
-        y_pred = np.where(y_pred > threshold, 1, 0)
+        # Apply each threshold to the corresponding column of predictions
+        for i, t in enumerate(threshold):
+            y_pred[:, i] = np.where(y_pred[:, i] > t, 1, 0)
 
         if sums_classes:
             # sums the classes
@@ -704,3 +713,13 @@ if __name__ == '__main__':
     CNN.print_info()
     a = CNN.train_model(np.random.random((100, 1024)), np.ones((100, 2)), n_epochs=50,
                         val_data=(np.random.random((100, 1024)), np.ones((100, 2))), verbose=1)
+
+    test_value = np.random.random((10, 1024))
+
+    b = CNN.predict_proba(test_value)
+    c = CNN.predict_classes(test_value, threshold=[0.5, 0.8], return_integers=False)
+    d = CNN.predict_classes(test_value, threshold=[0.5, 0.2], return_integers=False)
+    print(b)
+    print(c)
+    print(d.shape
+          )
