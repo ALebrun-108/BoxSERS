@@ -8,7 +8,7 @@ This module provides different tools to evaluate the quality of a model’s pred
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, precision_recall_curve
 from boxsers._boxsers_utils import _lightdark_switch
 
 
@@ -185,6 +185,38 @@ def clf_report(y_true, y_pred, digits=4, multilabel=False, print_report=True, cl
         text_file.write(report)
         text_file.close()
     return report
+
+
+def fbeta_threshold(y_true, y_pred, beta=1.0, pred_index=0):
+    """ Return a threshold value that maximizes the fbeta score.
+
+    Parameters:
+        y_true : array
+            True labels. Array shape = (n_spectra,) for integer labels
+            and (n_spectra, n_classes) for binary labels.
+
+        y_pred : array
+            Predicted labels. Array shape = (n_spectra, n_classes) for binary labels.
+        
+        beta : non-zero positive float value, default=1.0
+            Determines importance ratio between recall and precision in the calculation of
+            the Fbeta value. A beta = 1 results in the conventional F1 score, a beta > 1 focuses
+            more on the recall and a beta < 1 focuses more on the precision.
+
+        pred_index : int, default=0
+            Used to specify the class that needs to be analyzed.
+
+    Returns:
+        float : Threshold value that maximizes the f_beta score.
+    """
+    # Precision-recall curve computation
+    precision, recall, thresholds = precision_recall_curve(y_true[:, pred_index], y_pred[:, pred_index])
+    # f_beta score calculation
+    f_beta = ((1 + beta**2) * precision * recall)/(beta**2 * precision + recall)
+    # Determining the threshold value that maximizes the f_beta score
+    optimal_threshold_index = np.argmax(f_beta)
+    optimal_threshold = thresholds[optimal_threshold_index]
+    return optimal_threshold
 
 
 if __name__ == "__main__":
