@@ -20,8 +20,7 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 from boxsers._boxsers_utils import _lightdark_switch
-from typing import Union, List
-from numpy.typing import ArrayLike
+from typing import Union
 
 
 class SpectroCNN:
@@ -37,7 +36,7 @@ class SpectroCNN:
         ks : Odd positive integer value, default=5
             Size of kernel filters.
 
-        dropout_rate : positive float integer between 0 and  1, default=0.4
+        dropout_rate : positive float between 0 and  1, default=0.4
             Dropout rate in dense layers.
 
         hidden_activation : string, default='relu'
