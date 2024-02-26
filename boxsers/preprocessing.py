@@ -184,7 +184,7 @@ def spectral_normalization(sp, norm='l2', wn=None, band=None):
     if norm == 'band':
         # band conversion to index
         ind = (np.abs(wn-band)).argmin()
-        return sp/sp[:, ind]
+        return sp/sp[:, ind, np.newaxis]  # np.newaxis is used to obtain an array of size (n_spectres, 1)
     else:
         raise ValueError(norm, 'is not among the following valid choices:\'l2\', \'l1\', \'max\', \'minmax\', \'snv\'')
 
