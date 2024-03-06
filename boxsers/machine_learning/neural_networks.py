@@ -167,7 +167,7 @@ class SpectroCNN:
         # model compilation
         self.model.compile(loss=self.loss_function, optimizer=self.optimizer, metrics=self.metrics)
 
-    def print_info(self, structure=True, hyperparameters=True):
+    def print_info(self, structure=True, hyperparameters=False):
         """ Prints CNN model information.
 
         Parameters:
@@ -202,21 +202,23 @@ class SpectroCNN:
         es = EarlyStopping(monitor=monit, patience=epoch, verbose=1)
         self.callbacks.append(es)
 
-    def config_modelcheckpoint(self, save_path='best_model', monit='val_acc'):
+    def config_modelcheckpoint(self, save_path='best_model', monit='val_acc', verbose=2):
         """ Configures a checkpoint during CNN model training.
 
         Stores the model with the best performance and reinstores it at the end of training.
 
         Parameters:
-            save_path : string, default='best_model
+            save_path : string, default='best_model'
                 Path where the model is saved
 
             monit : {'acc', 'loss', 'val_acc', 'val_loss'}, default='val_loss'
                 Metric used to determine whether or not the model is improving. The metrics 'val_acc'
                 and 'val_loss' are not available if val_data=None in 'self.train_model' method.
+
+            verbose : int, default=2
         """
         self.modelcheckpoint_path = save_path
-        mc = ModelCheckpoint(monitor=monit, filepath=self.modelcheckpoint_path, verbose=2, save_best_only=True)
+        mc = ModelCheckpoint(monitor=monit, filepath=self.modelcheckpoint_path, verbose=verbose, save_best_only=True)
         self.callbacks.append(mc)
 
     def train_model(self, x_train, y_train, val_data=None, batch_size=92, n_epochs=25, reset_callbacks=True,
@@ -390,7 +392,7 @@ class SpectroCNN:
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
         plt.show()
 
-    def predict_classes(self, x_test, threshold: Union[float, list] = 0.5, return_integers=True, sums_classes=False):
+    def predict_classes(self, x_test, threshold=0.5, return_integers=True, sums_classes=False):
         """ Predicts classes for the input spectra.
 
         Notes:
@@ -619,8 +621,9 @@ class SpectroCNN:
 
 
 # Convolutional neural network architectures ----------------------------------------------------------
-def conv_model(shape_in, shape_out, nf_0=6, n_conv_layers=3, dense_layers_size=None,  ks=5, batchnorm=True, dropout_rate=0.3,
-               hidden_activation='relu', output_activation='softmax', reshaping_layer='flatten'):
+def conv_model(shape_in, shape_out, nf_0=6, n_conv_layers=3, dense_layers_size=None,  ks=5, batchnorm=True,
+               dropout_rate=0.3, hidden_activation='relu', output_activation='softmax',
+               reshaping_layer='flatten'):
     """
     Returns a CNN model with an architecture based on AlexNet.
 
