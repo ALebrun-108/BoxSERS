@@ -216,7 +216,7 @@ def savgol_smoothing(sp, window_length=9, p=3, degree=0):
     return sp_svg
 
 
-def spectral_cut(sp, wn, wn_start, wn_end, sub_mode='zero'):
+def spectral_cut(sp, wn, wn_start, wn_end, sub_mode='zero', keep_it=False):
     """
     Subtracts or sets to zero a delimited spectral region of the spectrum(s)
 
@@ -232,12 +232,15 @@ def spectral_cut(sp, wn, wn_start, wn_end, sub_mode='zero'):
             Starting point (same unit as wn) of the subtracted spectral region.
 
         wn_end : Int or float
-            Ending point (same unit as wn) of the subtracted spectral region.
+            Ending point (same unit as wn) of the subtracted spectral region. d
 
         sub_mode : {'zero', 'remove'}, default='zero'
             Determines how the subtracted part of the spectrum is handled.
                 - 'zero': The subtracted part of the spectrum is set to zero.
-                - 'remove': The subtracted part of the spectrum is removed and the remaining parts are joined together.
+                - 'remove': The subtracted part of the spectrum is removed.
+
+        keep_it : boolean, default=False
+            if True, keeps the specified region instead and subtracts the rest.
 
     Returns:
         (array) Cutted spectrum(s). Array shape = (n_spectra, n_pixels) for multiple spectra and (n_pixels,)
@@ -246,29 +249,42 @@ def spectral_cut(sp, wn, wn_start, wn_end, sub_mode='zero'):
         (array) New x-axis( if sub_mode = 'removed') or the intial one(if sub_mode = 'zero').
                 Array shape = (n_pixels, ).
     """
+    sp = sp.copy()
     # sp is forced to be a two-dimensional array
     sp = np.array(sp, ndmin=2)
     # conversion to indexes
     i_start = (np.abs(wn - wn_start)).argmin()
     i_end = (np.abs(wn - wn_end)).argmin()
-    if sub_mode == 'zero':
-        # preserved part on the left side of the spectral cut
-        sp[:, i_start:i_end] = 0
+
+    if sub_mode not in ['zero', 'remove']:
+        raise ValueError('Invalid sub_mode, must be \'zero\' or \'remove\'')
+
+    if keep_it:
+        if sub_mode == 'zero':
+            sp[:, :i_start] = 0  # sets the left side part of the spectral cut to zero
+            sp[:, i_end + 1:] = 0  # sets the right side part of the spectral cut to zero
+
+        elif sub_mode == 'remove':
+            sp = sp[:, i_start:i_end + 1]
+            wn = wn[i_start:i_end + 1]
         return sp, wn
+    else:
+        if sub_mode == 'zero':
+            # preserved part on the left side of the spectral cut
+            sp[:, i_start:i_end+1] = 0
+            return sp, wn
 
-    elif sub_mode == 'remove':
-        # preserved part on the left side of the spectral cut
-        sp_l = sp[:, 0:i_start]
-        wn_l = wn[0:i_start]
-        # preserved part on the right side of the spectral cut
-        sp_r = sp[:, i_end:]
-        wn_r = wn[i_end:]
-        # remaining parts are joined together
-        sp_cut = np.concatenate([sp_l, sp_r], axis=1)
-        wn_cut = np.concatenate([wn_l, wn_r])
-        return sp_cut, wn_cut
-
-    raise ValueError('invalid sub_mode among \'zero\' and \'remove\'')
+        elif sub_mode == 'remove':
+            # preserves the left side part of the spectral cut
+            sp_l = sp[:, 0:i_start]
+            wn_l = wn[0:i_start]
+            # preserves the right side part of the spectral cut
+            sp_r = sp[:, i_end+1:]
+            wn_r = wn[i_end+1:]
+            # remaining parts are joined together
+            sp_cut = np.concatenate([sp_l, sp_r], axis=1)
+            wn_cut = np.concatenate([wn_l, wn_r])
+            return sp_cut, wn_cut
 
 
 def spline_interpolation(sp, wn, new_wn, degree=1, same_w=False):
