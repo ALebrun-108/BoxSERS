@@ -104,6 +104,9 @@ def spectro_subsampling(sp, lab=None, batch_size=0.5):
     random_row = np.random.choice(sp.shape[0], size=batch_size, replace=False)
     sp_sample = sp[random_row, :]
     if lab is not None:
+        if lab.ndim == 1:
+            # lab is forced to be a two-dimensional array
+            lab = np.expand_dims(lab, axis=1)
         lab_sample = lab[random_row, :]
         return sp_sample, lab_sample
     return sp_sample
