@@ -216,9 +216,10 @@ def savgol_smoothing(sp, window_length=9, p=3, degree=0):
     return sp_svg
 
 
-def spectral_cut(sp, wn, wn_start, wn_end, sub_mode='zero', keep_it=False):
+def spectral_cut(sp, wn, wn_start, wn_end, sub_mode='zero', keep_it=False, reduce_gap=False):
     """
-    Subtracts or sets to zero a delimited spectral region of the spectrum(s)
+    Subtracts or sets to zero a spectral region of the spectrum(s) bounded by [wn_start, wn_end]. Can also
+    be used to keep only the delimited part of the spectrum.
 
     Parameters:
         sp : array
@@ -240,7 +241,10 @@ def spectral_cut(sp, wn, wn_start, wn_end, sub_mode='zero', keep_it=False):
                 - 'remove': The subtracted part of the spectrum is removed.
 
         keep_it : boolean, default=False
-            if True, keeps the specified region instead and subtracts the rest.
+            If True, keeps the specified region instead and subtracts the rest.
+
+        reduce_gap : boolean, default=False
+            If True, reduces the gap to zero between the left and right parts to minimize discontinuity.
 
     Returns:
         (array) Cutted spectrum(s). Array shape = (n_spectra, n_pixels) for multiple spectra and (n_pixels,)
@@ -255,6 +259,13 @@ def spectral_cut(sp, wn, wn_start, wn_end, sub_mode='zero', keep_it=False):
     # conversion to indexes
     i_start = (np.abs(wn - wn_start)).argmin()
     i_end = (np.abs(wn - wn_end)).argmin()
+
+    intensity_left = sp[:, i_start]
+    intensity_right = sp[:, i_end]
+
+    # intensity gap determination
+    intensity_gap = intensity_left - intensity_right
+    intensity_gap = np.expand_dims(intensity_gap, axis=1)
 
     if sub_mode not in ['zero', 'remove']:
         raise ValueError('Invalid sub_mode, must be \'zero\' or \'remove\'')
@@ -281,6 +292,10 @@ def spectral_cut(sp, wn, wn_start, wn_end, sub_mode='zero', keep_it=False):
             # preserves the right side part of the spectral cut
             sp_r = sp[:, i_end+1:]
             wn_r = wn[i_end+1:]
+            if reduce_gap:
+                # Reduces the gap to zero between the left and right parts
+                sp_r = sp_r + intensity_gap
+
             # remaining parts are joined together
             sp_cut = np.concatenate([sp_l, sp_r], axis=1)
             wn_cut = np.concatenate([wn_l, wn_r])
