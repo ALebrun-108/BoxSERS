@@ -526,12 +526,12 @@ def aug_linslope(sp, lab, slope_range, xinter_range, yinter_range=0, quantity=1,
                 - slope_range = a --> -a is the left limit value and +a is the right limit value.
 
         xinter_range : float or integer, list or tuple
-            Values delimiting the possible random values for the x-intersept. These values are specified the
+            Values delimiting the possible random values for the x-intercept. These values are specified the
             same way as "slope_range". If = 0, the x-intercept will be at the left end of the spectrum, and
             if =1 at the right end.
 
         yinter_range : float or integer, list or tuple
-            Values delimiting the possible random values for the y-intersept. Same effect as adding an offset
+            Values delimiting the possible random values for the y-intercept. Same effect as adding an offset
             with the function "aug_ioffset". These values are specified the same way as "slope_range".
 
         quantity : integer, default=1
