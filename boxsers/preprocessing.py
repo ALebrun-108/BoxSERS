@@ -113,7 +113,7 @@ def rubberband_baseline_cor(sp, return_baseline=False):
     return sp - baseline
 
 
-def cosmic_filter(sp, ks=3):
+def _deprecated_cosmic_filter(sp, ks=3):
     """
     Apply a median filter to the spectrum(s) to remove cosmic rays.
 
@@ -133,6 +133,61 @@ def cosmic_filter(sp, ks=3):
     ks_1d = (1, ks)
     sp_med = medfilt(sp, ks_1d)  # from scipy
     return sp_med
+
+
+def cosmic_filter(sp, width=3, threshold=11.0):
+    """
+    Suppresses cosmic rays using a sliding window that compares each portion of each spectrum with the other spectra.
+
+    Notes:
+        - Does not work for an individual spectrum, since this function relies on other spectra
+           to determine the presence of a cosmic peak in a spectrum.
+        - The cosmic peak is replaced by the linear interpolation of the two closest values of the window.
+
+    Parameters:
+        sp : array
+            Input Spectrum(s). Array shape = (n_spectra, n_pixels). Does not work for an individual
+             spectrum.
+
+        width : positive odd integer, default = 7
+            Size(in pixel) of the moving window.
+
+        threshold : positive float, default = 11.0
+            Threshold used to detect cosmic peaks. This threshold is multiplied by the standard deviation
+             and compare to the median of the moving window
+
+    Returns:
+        (array) Filtered spectrum(s). Array shape = (n_spectra, n_pixels).
+    """
+    half_width = width // 2  # integer division
+    # To avoid modifying the original spectra
+    sp = sp.copy()
+    filtered_spectrum = sp.copy()
+
+    if sp.ndim == 1 or (sp.ndim == 2 and sp.shape[0] == 1):
+        raise ValueError('This function does not work for an individual spectrum, since it'
+                         ' relies on other spectra to determine the presence of a cosmic peak'
+                         ' in a spectrum.')
+
+    for i in range(half_width, sp.shape[1] - half_width):  # window slides over the spectral axis.
+        window = sp[:, i - half_width:i + half_width + 1]
+        median_value = np.median(window)  # median value of the window for the entire sp dataset
+        std_value = np.std(window)  # std value of the window for the entire sp dataset
+
+        abs_diff = np.abs(sp[:, i] - median_value)
+        # Returns a mask with True values where cosmic peaks are detected
+        cosmspike_mask = abs_diff > threshold * std_value
+
+        for n in range(sp.shape[0]):  # loop over the spectra
+            if cosmspike_mask[n]:  # a cosmic peak was detected
+                # Following max and min function are used for spectrum edge cases
+                left_index = max(i - half_width - 1, 0)
+                right_index = min(i + half_width + 1, sp.shape[1] - 1)
+                left_value = sp[n, left_index]
+                right_value = sp[n, right_index]
+                # Cosmic peak detected are removed by linear interpolation
+                filtered_spectrum[n, i] = np.interp(i, [left_index, right_index], [left_value, right_value])
+    return filtered_spectrum
 
 
 def spectral_normalization(sp, norm='l2', wn=None, band=None):
