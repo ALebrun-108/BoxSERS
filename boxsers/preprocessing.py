@@ -113,26 +113,66 @@ def rubberband_baseline_cor(sp, return_baseline=False):
     return sp - baseline
 
 
-def _deprecated_cosmic_filter(sp, ks=3):
+def rollingball_baseline_cor(sp, window=40, smoothing_window=None, return_baseline=False):
     """
-    Apply a median filter to the spectrum(s) to remove cosmic rays.
+        Notes:
+            - Kneen, M. A.; Annegarn, H. J. Nuclear Instruments and Methods in Physics Research Section B: Beam
+              Interactions with Materials and Atoms 1996, 109–110, 209–213.
 
-    Parameters:
-        sp : array
-            Input Spectrum(s). Array shape = (n_spectra, n_pixels) for multiple spectra and (n_pixels,)
-             for a single spectrum.
-
-        ks : positive odd integer, default = 3
-            Size of the median filter window in pixel.
-
-    Returns:
-        (array) Filtered spectrum(s). Array shape = (n_spectra, n_pixels) for multiple spectra and (n_pixels,)
+        Parameters:
+            sp : array
+                Input Spectrum(s). Array shape = (n_spectra, n_pixels) for multiple spectra and (n_pixels,)
                 for a single spectrum.
-    """
-    sp = np.array(sp, ndmin=2)  # sp is forced to be a two-dimensional array
-    ks_1d = (1, ks)
-    sp_med = medfilt(sp, ks_1d)  # from scipy
-    return sp_med
+
+            window : integer value, default=50
+                Radius of the rolling ball used to calculate the baseline. Smaller radius increases effect
+                of the baseline correction, but this can result in a loss of information. In contrast, a
+                larger radius reduces the effect of the baseline correction.
+
+            smoothing_window : integer value, default=None,
+                Width of the window used to smooth the baseline in the last step. If None, the rolling ball
+                window value is used as smoothing_window.
+
+            return_baseline : Boolean, default=False
+                If True, the function also returns the baseline array.
+
+        Returns:
+            (array) Baseline substracted spectrum(s). Array shape = (n_spectra, n_pixels) for multiple spectra
+                    and = (n_pixels,) for a single spectrum.
+
+            (array)(OPTIONAL) Baseline signal(s). Array shape = (n_spectra, n_pixels) for multiple spectra
+                    and = (n_pixels,) for a single spectrum.
+        """
+    if smoothing_window is None:
+        # if smoothing_window is None, the rolling ball window value is used as smoothing_window
+        smoothing_window = window
+
+    # sp is forced to be a two-dimensional array
+    sp = np.array(sp, ndmin=2)
+    n_spectra, sp_length = sp.shape  # number of spectra, spectrum length
+
+    # initialization and space allocation
+    baseline = np.zeros_like(sp)
+    minima = np.zeros_like(sp)
+    maxima = np.zeros_like(sp)
+
+    for i in np.arange(sp_length):
+        i_start = max(0, i - window)  # first index of the rolling ball, 0 if i-window < 0
+        i_end = min(sp_length, i + window + 1)  # last index of the rolling ball, sp_length if i+window+1 > sp_length
+        minima[:, i] = np.min(sp[:, i_start:i_end], axis=1)  # measures minima
+    for i in np.arange(sp_length):
+        i_start = max(0, i - window)
+        i_end = min(sp_length, i + window + 1)
+        maxima[:, i] = np.max(minima[:, i_start:i_end], axis=1)  # measures maxima from minima
+    for i in np.arange(sp_length):
+        i_start = max(0, i - smoothing_window)
+        i_end = min(sp_length, i + smoothing_window + 1)
+        baseline[:, i] = np.mean(maxima[:, i_start:i_end], axis=1)  # Average smoothing of maxima
+
+    if return_baseline:
+        # returns the baseline signal if requested
+        return sp - baseline, baseline, minima, maxima
+    return sp - baseline
 
 
 def cosmic_filter(sp, width=3, threshold=11.0):
@@ -413,6 +453,32 @@ def spline_interpolation(sp, wn, new_wn, degree=1, same_w=False):
         print('Erroneous spectrum indexes are identified by the second output of this function.')
         print('Delete the corresponding label with this command: new_label = np.delete(label, erroneous_index)')
     return new_sp, error_ind
+
+
+def _deprecated_cosmic_filter(sp, ks=3):
+    """
+    Apply a median filter to the spectrum(s) to remove cosmic rays.
+
+    Note:
+        - Former and deprecated version of the cosmic_filter function. It is likely to be removed in
+          subsequent BoxSERS versions.
+
+    Parameters:
+        sp : array
+            Input Spectrum(s). Array shape = (n_spectra, n_pixels) for multiple spectra and (n_pixels,)
+             for a single spectrum.
+
+        ks : positive odd integer, default = 3
+            Size of the median filter window in pixel.
+
+    Returns:
+        (array) Filtered spectrum(s). Array shape = (n_spectra, n_pixels) for multiple spectra and (n_pixels,)
+                for a single spectrum.
+    """
+    sp = np.array(sp, ndmin=2)  # sp is forced to be a two-dimensional array
+    ks_1d = (1, ks)
+    sp_med = medfilt(sp, ks_1d)  # from scipy
+    return sp_med
 
 
 if __name__ == "__main__":
