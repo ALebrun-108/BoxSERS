@@ -153,25 +153,25 @@ def rollingball_baseline_cor(sp, window=40, smoothing_window=None, return_baseli
 
     # initialization and space allocation
     baseline = np.zeros_like(sp)
-    minima = np.zeros_like(sp)
-    maxima = np.zeros_like(sp)
+    loc_minima = np.zeros_like(sp)
+    loc_maxima = np.zeros_like(sp)
 
     for i in np.arange(sp_length):
         i_start = max(0, i - window)  # first index of the rolling ball, 0 if i-window < 0
         i_end = min(sp_length, i + window + 1)  # last index of the rolling ball, sp_length if i+window+1 > sp_length
-        minima[:, i] = np.min(sp[:, i_start:i_end], axis=1)  # measures minima
+        loc_minima[:, i] = np.min(sp[:, i_start:i_end], axis=1)  # measures local minima
     for i in np.arange(sp_length):
         i_start = max(0, i - window)
         i_end = min(sp_length, i + window + 1)
-        maxima[:, i] = np.max(minima[:, i_start:i_end], axis=1)  # measures maxima from minima
+        loc_maxima[:, i] = np.max(loc_minima[:, i_start:i_end], axis=1)  # measures local maxima from minima
     for i in np.arange(sp_length):
         i_start = max(0, i - smoothing_window)
         i_end = min(sp_length, i + smoothing_window + 1)
-        baseline[:, i] = np.mean(maxima[:, i_start:i_end], axis=1)  # Average smoothing of maxima
+        baseline[:, i] = np.mean(loc_maxima[:, i_start:i_end], axis=1)  # Average smoothing of local maxima
 
     if return_baseline:
         # returns the baseline signal if requested
-        return sp - baseline, baseline, minima, maxima
+        return sp - baseline, baseline
     return sp - baseline
 
 
