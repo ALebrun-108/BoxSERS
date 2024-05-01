@@ -124,13 +124,11 @@ def rollingball_baseline_cor(sp, window=40, smoothing_window=None, return_baseli
                 Input Spectrum(s). Array shape = (n_spectra, n_pixels) for multiple spectra and (n_pixels,)
                 for a single spectrum.
 
-            window : integer value, default=50
-                Radius of the rolling ball used to calculate the baseline. Smaller radius increases effect
-                of the baseline correction, but this can result in a loss of information. In contrast, a
-                larger radius reduces the effect of the baseline correction.
+            window : int, default=50
+                Half-width the window, or radius, of the rolling ball used to calculate the baseline.
 
-            smoothing_window : integer value, default=None,
-                Width of the window used to smooth the baseline in the last step. If None, the rolling ball
+            smoothing_window : int, default=None,
+                Half-width of the window used to smooth the baseline in the last step. If None, the rolling ball
                 window value is used as smoothing_window.
 
             return_baseline : Boolean, default=False
