@@ -10,7 +10,7 @@ setup(
                       'tables', 'scikit-image'],
     python_requires='>=3.6',
     # *strongly* suggested for sharing
-    version='1.5.0',
+    version='1.5.1',
     # The license can be anything you like
     license='MIT',
     description='Python package that provides a full range of functionality to process and analyze vibrational'
