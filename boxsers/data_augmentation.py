@@ -81,10 +81,10 @@ def _xshift(sp, x_shft, fill_mode, fill_value):
 
 def aug_mixup(sp, lab, n_spec=2, alpha=0.5, quantity=1, shuffle_enabled=True, return_infos=False):
     """
-    Randomly generates new spectra by mixing together several spectra with
-    a Dirichlet probability distribution.
+    Randomly generates new spectra by mixing together several spectra weighted with a symetric
+    Dirichlet probability distribution.
 
-    This function is inspired of the Mixeup method proposed by zang (Zhang, Hongyi, et al. 2017).
+    This function is inspired of the Mixeup method proposed by (Zhang, Hongyi, et al. 2017).
 
     Notes:
         Updated [2023-05-31]:
@@ -502,13 +502,13 @@ def aug_offset(sp, lab, offset_range, quantity=1, shuffle_enabled=True):
     return sp_aug, lab_aug
 
 
-def aug_linslope(sp, lab, slope_range, xinter_range, yinter_range=0, quantity=1, shuffle_enabled=True):
+def aug_linslope(sp, lab, slope_range, xinter_range=(0, 1), quantity=1, shuffle_enabled=True):
     """
     Randomly generates new spectra with additional linear slopes.
 
     Notes:
-        Updated [2023-05-31]:
-            - Computation time and memory consumption reduced !
+        - Updated [2023-05-31]: Computation time and memory consumption reduced!
+        - Updated [2024-07-31]: yinter_range removed
 
     Parameters:
         sp : array
@@ -529,10 +529,6 @@ def aug_linslope(sp, lab, slope_range, xinter_range, yinter_range=0, quantity=1,
             Values delimiting the possible random values for the x-intercept. These values are specified the
             same way as "slope_range". If = 0, the x-intercept will be at the left end of the spectrum, and
             if =1 at the right end.
-
-        yinter_range : float or integer, list or tuple
-            Values delimiting the possible random values for the y-intercept. Same effect as adding an offset
-            with the function "aug_ioffset". These values are specified the same way as "slope_range".
 
         quantity : integer, default=1
             Quantity of new spectra generated for one spectrum. If less than or equal to zero, no new
@@ -565,26 +561,22 @@ def aug_linslope(sp, lab, slope_range, xinter_range, yinter_range=0, quantity=1,
     # upper and lower bounds are determined from the given range
     slope_range_inf, slope_range_sup = _range_converter(slope_range)
     xinter_range_inf, xinter_range_sup = _range_converter(xinter_range)
-    yinter_range_inf, yinter_range_sup = _range_converter(yinter_range)
 
     # upper and lower bounds are multiplied by the average intensity of each spectrum (slope and y_intercept only)
     slope_range_inf = slope_range_inf * sp_mean
     slope_range_sup = slope_range_sup * sp_mean
-    yinter_range_inf = yinter_range_inf * sp_mean
-    yinter_range_sup = yinter_range_sup * sp_mean
     # upper and lower bounds are multiplied by the spectrum lenght
     xinter_range_inf = xinter_range_inf * sp_len
     xinter_range_sup = xinter_range_sup * sp_len
 
     # random slope(s) and intercept(s) generation using uniform distribution
     slopes = np.random.uniform(slope_range_inf.repeat(quantity), slope_range_sup.repeat(quantity))
-    xinters = -1 * np.random.uniform(xinter_range_inf, xinter_range_sup, size=(quantity * n_spectra))
-    yinters = np.random.uniform(yinter_range_inf.repeat(quantity), yinter_range_sup.repeat(quantity))
+    xinters = np.random.uniform(xinter_range_inf, xinter_range_sup, size=(quantity * n_spectra))
 
     indexes = np.arange(sp_len)
-    for i, (slope, xinter, yinter) in enumerate(zip(slopes, xinters, yinters)):
+    for i, (slope, xinter) in enumerate(zip(slopes, xinters)):
         # generation of new spectra
-        sp_slope = sp[i // quantity] + ((indexes + xinter) * slope / sp_len + yinter)
+        sp_slope = sp[i // quantity] + (indexes - xinter) * slope / sp_len
         # sp_aug is filled progressively
         sp_aug[i] = sp_slope
 
