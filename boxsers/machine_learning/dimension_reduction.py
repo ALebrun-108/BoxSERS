@@ -547,8 +547,8 @@ class SpectroICA(_DimReductionModel):
     Inherits several methods from the parent class "_DimReductionModel".
 
     Notes:
-        - FastICA is a fast algorithm for Independent Component Analysis whose implementation is based on
-          https://doi.org/10.1016/S0893-6080(00)00026-5
+        FastICA is a fast algorithm for Independent Component Analysis whose implementation is
+        based on https://doi.org/10.1016/S0893-6080(00)00026-5.
 
     Parameters:
             n_comp : non-zero positive integer values, default=10
