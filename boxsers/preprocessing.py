@@ -14,6 +14,23 @@ from scipy.spatial import ConvexHull
 from sklearn.preprocessing import normalize
 
 
+def _find_raman_indices(wn, raman_region):
+    if isinstance(raman_region, (list, tuple)) and len(raman_region) == 2:
+        wn_start, wn_end = raman_region
+        mask = (wn >= wn_start) & (wn <= wn_end)
+        indices = np.where(mask)[0]
+        if indices.size > 0:
+            return indices
+        else:
+            return "No indices were found in the given range."
+    elif isinstance(raman_region, (int, float)):
+        center = (np.abs(wn - raman_region)).argmin()
+        print('center', center)
+        return [center-1, center, center+1]
+    else:
+        raise TypeError('Invalid raman_region type, valid choices: int, float, list, tuple')
+
+
 def als_baseline_cor(sp, lam=1e4, p=0.001, niter=10, return_baseline=False):
     """
     Subtracts the baseline signal from the spectrum(s) using Asymmetric Least Squares estimation.
@@ -26,9 +43,11 @@ def als_baseline_cor(sp, lam=1e4, p=0.001, niter=10, return_baseline=False):
 
         lam : integer or float,  default = 1e4
             ALS 2nd derivative constraint that defines the smoothing degree of the baseline correction.
+            Suggested lam range = [1e2, 1e8]
 
         p : int or float, default=0.001
-            ALS positive residue weighting that defines the asymmetry of the baseline correction.
+            ALS positive residue weighting that defines the asymmetry of the baseline correction. Negative
+            weighting is equal to (1-p). Suggested p range = [0.001, 0.1]
 
         niter : int, default=10
             Maximum number of iterations to optimize the baseline.
@@ -228,7 +247,7 @@ def cosmic_filter(sp, width=3, threshold=11.0):
     return filtered_spectrum
 
 
-def spectral_normalization(sp, norm='l2', wn=None, band=None):
+def spectral_normalization(sp, norm='max', wn=None, raman_region=None):
     """ Normalizes the spectrum(s) using one of the available norms in this function.
 
     Notes:
@@ -237,23 +256,23 @@ def spectral_normalization(sp, norm='l2', wn=None, band=None):
     Parameters:
         sp : array
             Input Spectrum(s). Array shape = (n_spectra, n_pixels) for multiple spectra and (n_pixels,)
-             for a single spectrum.
+            for a single spectrum.
 
         norm : {'l2', 'l1', 'max', 'maxmin', 'snv'}, default = 'max'
             Procedure used to normalize/scale each spectrum.
-                - 'l2': The sum of the squared values of the spectrum is equal to 1.
-                - 'l1': The sum of the absolute values of the spectrum is equal to 1.
-                - 'max': The maximum value of the spectrum is equal to 1.
+                - 'l2': The sqrt(sum(x^2)) of the selected spectrum region is equal to 1.
+                - 'l1': The sum of the absolute values of the selected spectrum region is equal to 1.
+                - 'max': The maximum value of the selected spectrum region is equal to 1.
                 - 'minmax': The values of the spectrum are scaled between 0 and 1.
                 - 'snv': The mean and the standard deviation of the spectrum are respectively equal to 0 and 1.
-                - 'band': A fixed band (one pixel) is used to normalize spectra
 
         wn :  array or list, default=None
-            (Considered only if norm='band') X-axis(wavenumber, wavelenght, Raman shift, etc.),
-            array shape = (n_pixels, ).
+            X-axis(wavenumber, wavelenght, Raman shift, etc.), array shape = (n_pixels, ). Considered only if
+            raman_region is not None.
 
-        band : int or float, default=None
-            (Considered only if norm='band') Band position, using wn units, used to normalize spectra.
+        raman_region : int, float, tuple or list, default=None
+            Raman band (int or float) or spectral region ([start, end]) position, in wn units, used to
+            calculate the norm value. If None or if norm={'maxmin' or 'snv'}, the whole spectral range is used.
 
     Returns:
         (array) Normalized spectrum(s). Array shape = (n_spectra, n_pixels) for multiple spectra and (n_pixels,)
@@ -262,23 +281,30 @@ def spectral_normalization(sp, norm='l2', wn=None, band=None):
     # sp is forced to be a two-dimensional array
     sp = np.array(sp, ndmin=2)
 
+    # definition of the raman region or band used to calculate the norm
+    if raman_region is not None:
+        sp_r = sp[:, _find_raman_indices(wn, raman_region)]
+    else:
+        sp_r = sp.copy()  # the whole spectral range is used to calculate the norm
+
     # max, min, mean, std calculation for each spectrum
     sp_max = np.max(sp, axis=1, keepdims=True)
     sp_min = np.min(sp, axis=1, keepdims=True)
     sp_mean = np.mean(sp, axis=1, keepdims=True)
     sp_std = np.std(sp, axis=1, keepdims=True)
 
-    # normalization operations
-    if norm in {'l2', 'l1', 'max'}:
-        return normalize(sp, norm=norm)  # from sklearn
+    # normalization operations:
+    if norm == 'max':
+        return sp/np.max(sp_r, axis=1, keepdims=True)
+    if norm == 'l1':
+        return sp/np.sum(np.abs(sp_r), axis=1, keepdims=True)
+    if norm == 'l2':
+        return sp/np.sqrt(np.sum(sp_r**2, axis=1, keepdims=True))
+    # normalization & scaling operations (applied only on the whole spectrum):
     if norm == 'minmax':
         return (sp-sp_min)/(sp_max-sp_min)
     if norm == 'snv':
         return (sp-sp_mean)/sp_std
-    if norm == 'band':
-        # band conversion to index
-        ind = (np.abs(wn-band)).argmin()
-        return sp/sp[:, ind, np.newaxis]  # np.newaxis is used to obtain an array of size (n_spectres, 1)
     else:
         raise ValueError(norm, 'is not among the following valid choices:\'l2\', \'l1\', \'max\', \'minmax\', \'snv\'')
 
@@ -296,7 +322,7 @@ def savgol_smoothing(sp, window_length=9, p=3, degree=0):
             Savitzky-Golay filters moving window length. Must be less than or equal to the length of the spectra.
 
         p : int, default=3
-            Polynomial order used to fit the spectra. Must be less than window_length.
+            Polynomial order used to fit the spectra. Must be less than window_length. Suggested value = 2 or 3
 
         degree: Positive integer, default=0
             Savitzky-Golay derivative order.
@@ -305,6 +331,8 @@ def savgol_smoothing(sp, window_length=9, p=3, degree=0):
         (array) Smoothed spectrum(s). Array shape = (n_spectra, n_pixels) for multiple spectra and (n_pixels,)
                 for a single spectrum.
     """
+    # sp is forced to be a two-dimensional array
+    sp = np.array(sp, ndmin=2)
     #  Scipy's Savitzky-Golay filter is used
     sp_svg = savgol_filter(sp, window_length, polyorder=p, deriv=degree)  # from Scipy
     return sp_svg
