@@ -208,8 +208,6 @@ class _DimReductionModel:
 
         # legend settings
         handles, labels = ax.get_legend_handles_labels()  # get the legend handles
-        for ha in handles:
-            ha.set_edgecolor(frame_color)  # iterate through the handles and call `set_edgecolor` on each
         ax.legend(handles, class_names,
                   fontsize=fontsize - 2,  # 2.0 points smaller font size
                   facecolor=bg_color, labelcolor=frame_color)
@@ -439,8 +437,8 @@ class _DimReductionModel:
 class SpectroPCA(_DimReductionModel):
     """ Principal Component Analysis(PCA) model object.
 
-    Uses the class provided by scikit-learn, but adds new functionality, including visual features
-    to improve the analysis.
+    Uses the PCA class provided by scikit-learn, but it's optimize for spectral analysis and
+    adds new functionality, including visual features to improve the analysis.
 
     Inherits several methods from the parent class "_DimReductionModel".
 
@@ -543,7 +541,14 @@ class SpectroPCA(_DimReductionModel):
 class SpectroICA(_DimReductionModel):
     """ Independant Component Analysis(ICA) model object.
 
+    Uses the FastICA class provided by scikit-learn, but it's optimize for spectral analysis and
+    adds new functionality, including visual features to improve the analysis.
+
     Inherits several methods from the parent class "_DimReductionModel".
+
+    Notes:
+        - FastICA is a fast algorithm for Independent Component Analysis whose implementation is based on
+          https://doi.org/10.1016/S0893-6080(00)00026-5
 
     Parameters:
             n_comp : non-zero positive integer values, default=10
