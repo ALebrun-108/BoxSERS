@@ -355,7 +355,7 @@ def spectral_cut(sp, wn, wn_start, wn_end, sub_mode='zero', keep_it=False, reduc
             Starting point (same unit as wn) of the subtracted spectral region.
 
         wn_end : Int or float
-            Ending point (same unit as wn) of the subtracted spectral region. d
+            Ending point (same unit as wn) of the subtracted spectral region.
 
         sub_mode : {'zero', 'remove'}, default='zero'
             Determines how the subtracted part of the spectrum is handled.

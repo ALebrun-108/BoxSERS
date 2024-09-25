@@ -326,13 +326,17 @@ def distribution_plot(lab, bar_width=0.8, avg_line=False, class_names=None,  tit
     ax.set_title(title, fontsize=fontsize + 1.2)  # sets the plot title, 1.2 points larger font size
     ax.set_xlabel(xlabel, fontsize=fontsize)  # sets the x-axis title
     ax.set_ylabel(ylabel, fontsize=fontsize)  # sets the y-axis title
+
     # axis limit settings
     ax.set_xlim(-0.6 * bar_width, y_pos[-1] + 0.6 * bar_width)
     ax.set_ylim(0, 1.1 * np.max(distribution))
+
     # tick settings
+    ax.tick_params(axis='both', which='major', labelsize=fontsize)  # sets the tick labels font size
     if class_names is not None:
         ax.set_xticks(y_pos)
         ax.set_xticklabels(class_names, fontsize=fontsize)
+
     # adjusts subplot params so that the subplot(s) fits in to the figure area
     fig.tight_layout()
     if save_path is not None:
