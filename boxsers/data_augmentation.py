@@ -79,6 +79,57 @@ def _xshift(sp, x_shft, fill_mode, fill_value):
     return shft_sp
 
 
+def estimate_snr(sp, wn, noise_start, noise_end):
+    """
+    Estimates the Signal-to-Noise Ratio (SNR) of a spectrum or multiple spectra.
+
+    Notes:
+        - The SNR is calculated as the ratio of the average signal power to the average noise power.
+        - The signal power is calculated as the average intensity of the spectrum(s).
+        - The noise power is calculated as the average standard deviation measured in a chosen silent region
+            of the spectrum(s). The silent region is a region without Raman peaks.
+
+    Parameters:
+        sp : array
+                Input Spectrum(s). Array shape = (n_spectra, n_pixels) for multiple spectra and (n_pixels,)
+                 for a single spectrum.
+
+        wn : array
+            X-axis(wavenumber, wavelenght, Raman shift, etc.) used for the spectra. Array shape = (n_pixels, ).
+
+        noise_start : Int or float
+            Starting point (same unit as wn) of the silent spectral region used to estimate the noise.
+
+        noise_end : Int or float
+            Ending point (same unit as wn) of the silent spectral region used to estimate the noise.
+
+    Returns:
+        (float) : Estimated Signal-to-Noise Ratio (SNR) in dB.
+    """
+    # sp initialization, sp is forced to be a two-dimensional array
+    sp = sp.copy()
+    sp = np.array(sp, ndmin=2)
+
+    # conversion to indexes
+    i_start = (np.abs(wn - noise_start)).argmin()
+    i_end = (np.abs(wn - noise_end)).argmin()
+
+    # signal is calculated as the average intensity of the spectrum(s)
+    sp_signal = np.mean(sp)
+    # noise is the averaged standard deviation measured in a chosen silent region
+    sp_noise = np.mean(np.std(sp[:, i_start:i_end]))
+
+    # Calculates signal and noise power
+    signal_power = np.mean(sp_signal ** 2)
+    noise_power = np.mean(sp_noise ** 2)
+
+    #  SNR calculation
+    snr = signal_power / noise_power
+    # Conversion in dB
+    snr_db = 10 * np.log10(snr)
+    return snr_db
+
+
 def aug_mixup(sp, lab, n_spec=2, alpha=0.5, quantity=1, shuffle_enabled=True, return_infos=False):
     """
     Randomly generates new spectra by mixing together several spectra weighted with a symetric
@@ -87,9 +138,11 @@ def aug_mixup(sp, lab, n_spec=2, alpha=0.5, quantity=1, shuffle_enabled=True, re
     This function is inspired of the Mixeup method proposed by (Zhang, Hongyi, et al. 2017).
 
     Notes:
-        Updated [2023-05-31]:
+        - Updated [2023-05-31]:
             - parameter `mode` removed, use `return_infos` instead for parameters selection and validation.
             - Computation time and memory consumption reduced !
+        - The lambda values are generated using a Dirichlet distribution.
+            - alpha parameter controls the concentration of the distribution.
 
     Parameters:
         sp : array
@@ -166,6 +219,7 @@ def aug_newband(sp, lab, inv_p=None, inv_p_degree=1, intensity_range=(0.05, 0.95
                 quantity=1, shuffle_enabled=True, return_band=False):
     """
     Randomly generates new spectra with additionnal Gaussian peak added.
+
 
     Parameters:
         sp : array
@@ -589,7 +643,7 @@ def aug_linslope(sp, lab, slope_range, xinter_range=(0, 1), quantity=1, shuffle_
 
 def aug_xshift(sp, lab, xshift_range, quantity=1, fill_mode='edge', fill_value=0, shuffle_enabled=True):
     """
-    Randomly generates new spectra shifted in wavelength.
+    Randomly generates new spectra shifted on Raman shift/wavelength axis.
 
     Notes:
         Updated [2023-05-31]:
@@ -651,7 +705,7 @@ def aug_xshift(sp, lab, xshift_range, quantity=1, fill_mode='edge', fill_value=0
     if 0 in xshift_range_cor:
         xshift_range_cor.remove(0)
 
-    # random shift(s) generation using an uniform random distribution
+    # random shift(s) generation using an uniform discrete random distribution
     xshifts = np.random.choice(xshift_range_cor, size=(quantity * n_spectra, 1), replace=True)
 
     for i, xshift in enumerate(xshifts):
